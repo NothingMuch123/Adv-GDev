@@ -1,0 +1,24 @@
+﻿Build started 23/10/2015 3:47:44 PM.
+     1>Project "C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev\Y2S2_Framework\Common\Common.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D _VARIADIC_MAX=10 /D WIN32 /D _DEBUG /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Source\MathUtility.cpp Source\MatrixStack.cpp Source\Mtx44.cpp Source\timer.cpp Source\Vector2.cpp Source\Vector3.cpp
+         Vector3.cpp
+         Vector2.cpp
+         timer.cpp
+         Mtx44.cpp
+         MatrixStack.cpp
+         MathUtility.cpp
+         Generating Code...
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\Lib.exe /OUT:"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev\Y2S2_Framework\Debug\Common.lib" /NOLOGO Debug\MathUtility.obj
+         Debug\MatrixStack.obj
+         Debug\Mtx44.obj
+         Debug\timer.obj
+         Debug\Vector2.obj
+         Debug\Vector3.obj
+         Common.vcxproj -> C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev\Y2S2_Framework\Debug\Common.lib
+     1>Done Building Project "C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev\Y2S2_Framework\Common\Common.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:05.00
