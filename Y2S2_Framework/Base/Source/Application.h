@@ -4,6 +4,8 @@
 #include "timer.h"
 #include "SceneManager.h"
 #include "SceneManager2D.h"
+#include "GameStateManager.h"
+#include "PlayState.h"
 
 #define TYPE_OF_VIEW 3	// 2 = 2D, 3 = 3D
 
@@ -48,6 +50,9 @@ private:
 	#else
 		CSceneManager2D *scene;	// Use this for 2D gameplay
 	#endif
+
+		// Game State Management
+		CGameStateManager* m_GSM;
 };
 
 #endif

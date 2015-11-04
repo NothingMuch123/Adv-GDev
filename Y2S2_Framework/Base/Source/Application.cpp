@@ -60,7 +60,8 @@ bool Application::GetMouseUpdate()
 {
     glfwGetCursorPos(m_window, &mouse_current_x, &mouse_current_y);
 
-	// Calculate the difference in positions
+	/* Scene */
+	/*// Calculate the difference in positions
 	mouse_diff_x = mouse_current_x - mouse_last_x;
 	mouse_diff_y = mouse_current_y - mouse_last_y;
 
@@ -83,10 +84,46 @@ bool Application::GetMouseUpdate()
 	// Store the current position as the last position
 	mouse_last_x = mouse_current_x;
 	mouse_last_y = mouse_current_y;
-
+	
 	// Get the mouse button status
 	if (glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
-		scene->UpdateWeaponStatus(scene->WA_FIRE);
+		scene->UpdateWeaponStatus(scene->WA_FIRE);*/
+
+	/* GSM */
+	// Calculate the difference in positions
+	mouse_diff_x = mouse_current_x - mouse_last_x;
+	mouse_diff_y = mouse_current_y - mouse_last_y;
+
+	//Calculate the yaw and pitch
+	camera_yaw = (float)mouse_diff_x * 0.0174555555555556f;// * 3.142f / 180.0f;
+	camera_pitch = mouse_diff_y * 0.0174555555555556f;// 3.142f / 180.0f );
+
+													  // Do a wraparound if the mouse cursor has gone out of the deadzone
+	if ((mouse_current_x < m_window_deadzone) || (mouse_current_x > m_window_width - m_window_deadzone))
+	{
+		mouse_current_x = m_window_width >> 1;
+		glfwSetCursorPos(m_window, mouse_current_x, mouse_current_y);
+	}
+	if ((mouse_current_y < m_window_deadzone) || (mouse_current_y > m_window_height - m_window_deadzone))
+	{
+		mouse_current_y = m_window_height >> 1;
+		glfwSetCursorPos(m_window, mouse_current_x, mouse_current_y);
+	}
+	// Store the current position as the last position
+	mouse_last_x = mouse_current_x;
+	mouse_last_y = mouse_current_y;
+
+	// Get the mouse button status
+	int Button_Left = glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_LEFT);
+	int Button_Right = glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_RIGHT);
+	int Button_Middle = glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_MIDDLE);
+
+	m_GSM->HandleEvents(camera_yaw,
+						camera_pitch,
+						Button_Left,
+						Button_Middle,
+						Button_Right
+					   );
 
     return false;
 }
@@ -96,7 +133,8 @@ bool Application::GetMouseUpdate()
  ********************************************************************************/
 bool Application::GetKeyboardUpdate()
 {
-	if (IsKeyPressed('A'))
+	// Scene
+	/*if (IsKeyPressed('A'))
 	{
 		scene->UpdateAvatarStatus('a');
 	}
@@ -165,6 +203,44 @@ bool Application::GetKeyboardUpdate()
 	else
 	{
 		scene->UpdateCameraStatus(VK_DOWN, false);
+	}*/
+
+	// GSM
+	if (IsKeyPressed('A'))	// Move left
+	{
+		m_GSM->HandleEvents('a');
+	}
+	else
+	{
+		m_GSM->HandleEvents('a', false);
+	}
+	if (IsKeyPressed('D'))	// Move right
+	{
+		m_GSM->HandleEvents('d');
+	}
+	else
+	{
+		m_GSM->HandleEvents('d', false);
+	}
+	if (IsKeyPressed('W'))	// Move forward
+	{
+		m_GSM->HandleEvents('w');
+	}
+	else
+	{
+		m_GSM->HandleEvents('w', false);
+	}
+	if (IsKeyPressed('S'))	// Move backwards
+	{
+		m_GSM->HandleEvents('s');
+	}
+	else
+	{
+		m_GSM->HandleEvents('s', false);
+	}
+	if (IsKeyPressed(' '))	// Space
+	{
+		m_GSM->HandleEvents(' ');
 	}
     return true;
 }
@@ -174,6 +250,7 @@ bool Application::GetKeyboardUpdate()
  ********************************************************************************/
 Application::Application()
 	: scene(NULL)
+	, m_GSM(NULL)
 {
 }
 
@@ -182,6 +259,11 @@ Application::Application()
  ********************************************************************************/
 Application::~Application()
 {
+	if (m_GSM)
+	{
+		delete m_GSM;
+		m_GSM = NULL;
+	}
 }
 
 /********************************************************************************
@@ -242,6 +324,11 @@ void Application::Init()
 	m_dElapsedTime = 0.0;
 	m_dAccumulatedTime_ThreadOne = 0.0;
 	m_dAccumulatedTime_ThreadTwo = 0.0;
+
+	// Init Game State Manager
+	m_GSM = new CGameStateManager();
+	m_GSM->Init("GSM", m_window_width, m_window_height);
+	m_GSM->ChangeState(CPlayState::Instance());
 }
 
 /********************************************************************************
@@ -267,7 +354,11 @@ void Application::Run()
 		{
 			GetMouseUpdate();
 			GetKeyboardUpdate();
+			m_GSM->HandleEvents();
+			m_GSM->Update(m_dElapsedTime);
+			/*
 			scene->Update(m_dElapsedTime);
+			*/
 			m_dAccumulatedTime_ThreadOne = 0.0;
 		}
 		if (m_dAccumulatedTime_ThreadTwo > 1.0)
@@ -276,7 +367,8 @@ void Application::Run()
 			m_dAccumulatedTime_ThreadTwo = 0.0;
 		}
 		// Render the scene
-		scene->Render();
+		m_GSM->Draw();
+		//scene->Render();
 		//Swap buffers
 		glfwSwapBuffers(m_window);
 		//Get and organize events, like keyboard and mouse input, window resizing, etc...
@@ -286,8 +378,13 @@ void Application::Run()
 	} //Check if the ESC key had been pressed or if the window had been closed
 
 	// Delete the scene
-	scene->Exit();
-	delete scene;
+	m_GSM->Cleanup();
+	//scene->Exit();
+	if (scene)
+	{
+		delete scene;
+		scene = NULL;
+	}
 }
 
 /********************************************************************************
