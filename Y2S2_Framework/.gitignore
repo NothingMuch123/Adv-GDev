@@ -26,3 +26,10 @@
 *.exe
 *.out
 *.app
+
+# Useless files
+/ipch/
+/Debug/
+/Release/
+*.sdf
+*.opensdf
