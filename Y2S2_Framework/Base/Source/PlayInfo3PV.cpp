@@ -151,6 +151,18 @@ void CPlayInfo3PV::MoveLeftRight(const bool mode, const float timeDiff)
 	}
 }
 
+void CPlayInfo3PV::MoveUpDown(const bool mode, const float timeDiff)
+{
+	if (mode) // Move up
+	{
+		curPosition.y += CAMERA_SPEED * timeDiff;
+	}
+	else
+	{
+		curPosition.y -= CAMERA_SPEED * timeDiff;
+	}
+}
+
 
 // Get position x of the player
 int CPlayInfo3PV::GetPos_x(void)
@@ -273,6 +285,15 @@ void CPlayInfo3PV::Update(double dt)
 //		MoveVel_D = 0.0f;
 	}
 
+	if (myKeys['q'])
+	{
+		MoveUpDown(true, dt);
+	}
+	if (myKeys['e'])
+	{
+		MoveUpDown(false, dt);
+	}
+
 	// Rotation
 	/*
 	if ( myKeys[VK_UP] == true)
@@ -314,10 +335,12 @@ void CPlayInfo3PV::Update(double dt)
 	*/
 }
 
-void CPlayInfo3PV::UpdateDir(double dt, float rotate)
+void CPlayInfo3PV::UpdateDir(float yaw, float pitch)
 {
 	Mtx44 rotation;
-	rotation.SetToRotation(rotate, 0, 1, 0);
-	Vector3 facingZTarget(curPosition + Vector3(0, 0, 1));
-	curDirection = ((rotation * CAMERA_SPEED) * (facingZTarget - curPosition).Normalized()).Normalized();
+	rotation.SetToRotation(yaw, 0, 1, 0);
+	curDirection = rotation * curDirection;
+
+	rotation.SetToRotation(pitch, 1, 0, 0);
+	curDirection = rotation * curDirection;
 }

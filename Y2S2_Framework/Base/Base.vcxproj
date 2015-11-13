@@ -30,6 +30,10 @@
     <ClCompile Include="Source\PlayerInfo.cpp" />
     <ClCompile Include="Source\PlayInfo3PV.cpp" />
     <ClCompile Include="Source\PlayState.cpp" />
+    <ClCompile Include="Source\SceneGraph\Model.cpp" />
+    <ClCompile Include="Source\SceneGraph\Node.cpp" />
+    <ClCompile Include="Source\SceneGraph\SceneNode.cpp" />
+    <ClCompile Include="Source\SceneGraph\Transform.cpp" />
     <ClCompile Include="Source\SceneManager.cpp" />
     <ClCompile Include="Source\SceneManager2D.cpp" />
     <ClCompile Include="Source\shader.cpp" />
@@ -62,6 +66,10 @@
     <ClInclude Include="Source\PlayInfo3PV.h" />
     <ClInclude Include="Source\PlayState.h" />
     <ClInclude Include="Source\Scene.h" />
+    <ClInclude Include="Source\SceneGraph\Model.h" />
+    <ClInclude Include="Source\SceneGraph\Node.h" />
+    <ClInclude Include="Source\SceneGraph\SceneNode.h" />
+    <ClInclude Include="Source\SceneGraph\Transform.h" />
     <ClInclude Include="Source\SceneManager.h" />
     <ClInclude Include="Source\SceneManager2D.h" />
     <ClInclude Include="Source\shader.hpp" />

@@ -9,6 +9,7 @@
 #include "Light.h"
 #include "Minimap.h"
 #include "PlayInfo3PV.h"
+#include "SceneGraph/SceneNode.h"
 
 const float SKYBOXSIZE = 1000.f;
 
@@ -84,6 +85,13 @@ class CSceneManager : public Scene
 		NUM_GEOMETRY,
 	};
 
+	enum SCENEGRAPH_PARTS
+	{
+		P_BOTTOM,
+		P_TOP,
+		NUM_PARTS,
+	};
+
 public:
 	CSceneManager(void);
 	CSceneManager(const int m_window_width, const int m_window_height);
@@ -97,8 +105,14 @@ public:
 	virtual void UpdateAvatarStatus(const unsigned char key, const bool status = true);
 	// Update Weapon status
 	virtual void UpdateWeaponStatus(const unsigned char key);
+	// Update character direction
+	void UpdateCharDir(float yaw, float pitch);
 	virtual void Render();
 	virtual void Exit();
+
+	// Low level render tools
+	void PreRendering(Vector3 translate, Vector3 rotate, Vector3 scale, bool enableLight);
+	void PostRendering();
 
 	// Low level render tools
 	void RenderText(Mesh* mesh, std::string text, Color color);
@@ -113,6 +127,9 @@ public:
 	void RenderLights();
 	void RenderGround();
 	void RenderSkybox();
+
+	// Init features
+	void InitSceneGraph();
 
 	enum WEAPON_ACTION
 	{
@@ -154,5 +171,8 @@ private:
 
 	// Handle to 3rd Person View's avatar
 	CPlayInfo3PV* m_cAvatar;
+
+	// Scene graph
+	CSceneNode* m_cSceneGraph;
 };
 #endif

@@ -47,6 +47,7 @@ public:
 	// Update Movements
 	void MoveFrontBack(const bool mode, const float timeDiff);
 	void MoveLeftRight(const bool mode, const float timeDiff);
+	void MoveUpDown(const bool mode, const float timeDiff);
 
 	// Get position x of the player
 	int GetPos_x(void);
@@ -69,7 +70,7 @@ public:
 	void UpdateMovement(const unsigned char key, const bool status = true);
 	// Update
 	void Update(double dt);
-	void UpdateDir(double dt, float rotate);
+	void UpdateDir(float yaw, float pitch);
 
 	// Constrain the position of the Hero to within the border
 	void ConstrainHero(const int leftBorder, const int rightBorder, 

@@ -50,7 +50,7 @@ void resize_callback(GLFWwindow* window, int w, int h)
  ********************************************************************************/
 bool Application::IsKeyPressed(unsigned short key)
 {
-    return ((GetAsyncKeyState(key) & 0x8001) != 0);
+	return ((GetAsyncKeyState(key) & 0x8001) != 0);
 }
 
 /********************************************************************************
@@ -58,7 +58,7 @@ bool Application::IsKeyPressed(unsigned short key)
  ********************************************************************************/
 bool Application::GetMouseUpdate()
 {
-    glfwGetCursorPos(m_window, &mouse_current_x, &mouse_current_y);
+	glfwGetCursorPos(m_window, &mouse_current_x, &mouse_current_y);
 
 	/* Scene */
 	/*// Calculate the difference in positions
@@ -125,7 +125,7 @@ bool Application::GetMouseUpdate()
 						Button_Right
 					   );
 
-    return false;
+	return false;
 }
 
 /********************************************************************************
@@ -238,11 +238,27 @@ bool Application::GetKeyboardUpdate()
 	{
 		m_GSM->HandleEvents('s', false);
 	}
+	if (IsKeyPressed('Q'))	// Move upwards
+	{
+		m_GSM->HandleEvents('q');
+	}
+	else
+	{
+		m_GSM->HandleEvents('q', false);
+	}
+	if (IsKeyPressed('E'))	// Move downwards
+	{
+		m_GSM->HandleEvents('e');
+	}
+	else
+	{
+		m_GSM->HandleEvents('e', false);
+	}
 	if (IsKeyPressed(' '))	// Space
 	{
 		m_GSM->HandleEvents(' ');
 	}
-    return true;
+	return true;
 }
 
 /********************************************************************************
@@ -373,7 +389,7 @@ void Application::Run()
 		glfwSwapBuffers(m_window);
 		//Get and organize events, like keyboard and mouse input, window resizing, etc...
 		glfwPollEvents();
-        m_timer.waitUntil(frameTime);       // Frame rate limiter. Limits each frame to a specified time in ms.   
+		m_timer.waitUntil(frameTime);       // Frame rate limiter. Limits each frame to a specified time in ms.   
 
 	} //Check if the ESC key had been pressed or if the window had been closed
 

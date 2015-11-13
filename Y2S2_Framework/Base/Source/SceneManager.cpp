@@ -13,6 +13,7 @@ CSceneManager::CSceneManager(void)
 	, m_window_width(800)
 	, m_window_height(600)
 	, m_cAvatar(NULL)
+	, m_cSceneGraph(NULL)
 {
 }
 
@@ -34,6 +35,11 @@ CSceneManager::~CSceneManager(void)
 	{
 		delete m_cAvatar;
 		m_cAvatar = NULL;
+	}
+	if (m_cSceneGraph)
+	{
+		delete m_cSceneGraph;
+		m_cSceneGraph = NULL;
 	}
 }
 
@@ -203,6 +209,9 @@ void CSceneManager::Init()
 	m_cAvatar = new CPlayInfo3PV();
 	m_cAvatar->SetModel(MeshBuilder::GenerateCone("Cone", Color(0.5f, 1.f, 0.3f), 36, 10.f, 10.f));
 
+	// Create scenegraph
+	InitSceneGraph();
+
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 1000 units
 	Mtx44 perspective;
 	perspective.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
@@ -263,8 +272,9 @@ void CSceneManager::Update(double dt)
 		lights[0].position.y += (float)(10.f * dt);
 
 	rotateAngle -= Application::camera_yaw;// += (float)(10 * dt);
+	m_cSceneGraph->GetNode(P_BOTTOM)->ApplyRotate(180 * dt, 0, 1, 0);
+	m_cSceneGraph->GetNode(P_TOP)->ApplyTranslate(1 * dt, 0, 0);
 
-	m_cAvatar->UpdateDir(dt, rotateAngle);
 	m_cAvatar->Update(dt);
 	camera.UpdatePosition(m_cAvatar->GetPosition(), m_cAvatar->GetDirection());
 	//camera.Update(dt);
@@ -494,6 +504,9 @@ void CSceneManager::RenderMobileObjects()
 	RenderMesh(meshList[GEO_LIGHTBALL], false);
 	modelStack.PopMatrix();
 
+	// Render scene graph
+	m_cSceneGraph->Draw(this);
+
 	// Render avatar
 	modelStack.PushMatrix();
 	modelStack.Translate(m_cAvatar->GetPos_x(), m_cAvatar->GetPos_y() - 10, m_cAvatar->GetPos_z());
@@ -645,6 +658,30 @@ void CSceneManager::RenderSkybox()
 	modelStack.PopMatrix();
 }
 
+void CSceneManager::InitSceneGraph()
+{
+	const Vector3 SIZE(3,3,3);
+	m_cSceneGraph = new CSceneNode(P_BOTTOM);
+	CModel *newModel = new CModel();
+	newModel->Init();
+	CTransform *newTransform = new CTransform();
+	newTransform->SetTranslate(10,0,0);
+	newTransform->SetScale(SIZE.x, SIZE.y, SIZE.z);
+	cout << m_cSceneGraph->SetNode(newTransform, newModel) << endl;
+
+	newModel = new CModel();
+	newModel->Init();
+	newTransform = new CTransform();
+	newTransform->SetTranslate(0, 5, 0);
+	newTransform->SetScale(2,2,2);
+	cout << m_cSceneGraph->AddChild(P_TOP, newTransform, newModel) << endl;
+}
+
+void CSceneManager::UpdateCharDir(float yaw, float pitch)
+{
+	m_cAvatar->UpdateDir(-yaw, pitch);
+}
+
 /********************************************************************************
  Render this scene
  ********************************************************************************/
@@ -687,4 +724,37 @@ void CSceneManager::Exit()
 	}
 	glDeleteProgram(m_programID);
 	glDeleteVertexArrays(1, &m_vertexArrayID);
+}
+
+void CSceneManager::PreRendering(Vector3 translate, Vector3 rotate, Vector3 scale, bool enableLight)
+{
+	modelStack.PushMatrix();
+	modelStack.Translate(translate.x, translate.y, translate.z);
+	modelStack.Rotate(rotate.x, 1, 0, 0);
+	modelStack.Rotate(rotate.y, 0, 1, 0);
+	modelStack.Rotate(rotate.z, 0, 0, 1);
+	modelStack.Scale(scale.x, scale.y, scale.z);
+
+	Mtx44 MVP, modelView, modelView_inverse_transpose;
+
+	MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
+	glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
+	if (enableLight && bLightEnabled)
+	{
+		glUniform1i(m_parameters[U_LIGHTENABLED], 1);
+		modelView = viewStack.Top() * modelStack.Top();
+		glUniformMatrix4fv(m_parameters[U_MODELVIEW], 1, GL_FALSE, &modelView.a[0]);
+		modelView_inverse_transpose = modelView.GetInverse().GetTranspose();
+		glUniformMatrix4fv(m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE], 1, GL_FALSE, &modelView.a[0]);
+	}
+	else
+	{
+		glUniform1i(m_parameters[U_LIGHTENABLED], 0);
+	}
+}
+
+void CSceneManager::PostRendering()
+{
+	glBindTexture(GL_TEXTURE_2D, 0);
+	modelStack.PopMatrix();
 }

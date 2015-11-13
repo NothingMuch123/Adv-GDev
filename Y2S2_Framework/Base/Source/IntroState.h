@@ -29,5 +29,4 @@ protected:
 
 private:
 	static CIntroState theIntroState;
-	CSceneManager2D *scene;
 };

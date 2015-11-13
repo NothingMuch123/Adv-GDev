@@ -16,6 +16,12 @@
     <Filter Include="2D">
       <UniqueIdentifier>{78a69225-fe6f-4174-b4c6-ada9c7bd7b5a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\SceneGraph">
+      <UniqueIdentifier>{a601e01c-c772-4791-8235-fdf32c196ebe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\SceneGraph">
+      <UniqueIdentifier>{736d2cda-0ec2-4fd2-9563-20f9cbed34d1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
@@ -95,6 +101,18 @@
     </ClCompile>
     <ClCompile Include="Source\PlayState.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SceneGraph\Model.cpp">
+      <Filter>Source Files\SceneGraph</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SceneGraph\Node.cpp">
+      <Filter>Source Files\SceneGraph</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SceneGraph\SceneNode.cpp">
+      <Filter>Source Files\SceneGraph</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SceneGraph\Transform.cpp">
+      <Filter>Source Files\SceneGraph</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -190,6 +208,18 @@
     </ClInclude>
     <ClInclude Include="Source\PlayState.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneGraph\Model.h">
+      <Filter>Header Files\SceneGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneGraph\Node.h">
+      <Filter>Header Files\SceneGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneGraph\SceneNode.h">
+      <Filter>Header Files\SceneGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneGraph\Transform.h">
+      <Filter>Header Files\SceneGraph</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
