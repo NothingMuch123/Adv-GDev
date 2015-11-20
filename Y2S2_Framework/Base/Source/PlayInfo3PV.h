@@ -84,6 +84,7 @@ private:
 	// Hero's information
 	Vector3 curPosition;
 	Vector3 curDirection;
+	Vector3 curUp;
 	int jumpspeed;
 
 	bool myKeys[255];

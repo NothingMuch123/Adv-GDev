@@ -23,6 +23,7 @@ void CPlayInfo3PV::Init(void)
 {
 	curPosition.Set( 0, 0, 0);
 	curDirection.Set( 0, 0, 1 );
+	curUp.Set(0, 1, 0);
 
 	// Initialise the Avatar's movement flags
 	for(int i=0; i<255; i++){
@@ -337,10 +338,23 @@ void CPlayInfo3PV::Update(double dt)
 
 void CPlayInfo3PV::UpdateDir(float yaw, float pitch)
 {
+	// Yaw
 	Mtx44 rotation;
 	rotation.SetToRotation(yaw, 0, 1, 0);
 	curDirection = rotation * curDirection;
+	Vector3 right = curDirection.Cross(curUp);
+	right.y = 0;
+	right.Normalize();
+	curUp = right.Cross(curDirection).Normalized();
 
-	rotation.SetToRotation(pitch, 1, 0, 0);
+	// Pitch
+	//rotation.SetToRotation(pitch, 1, 0, 0);
+
+	right = curDirection.Cross(curUp);
+	right.y = 0;
+	right.Normalize();
+	curUp = right.Cross(curDirection).Normalized();
+	rotation.SetToRotation(pitch, right.x, right.y, right.z);
+
 	curDirection = rotation * curDirection;
 }

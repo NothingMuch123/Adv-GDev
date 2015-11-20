@@ -5,6 +5,15 @@
 
 using namespace std;
 
+struct CGridIndex
+{
+	int x, y;
+	CGridIndex()
+	{
+		x = y = 0;
+	}
+};
+
 class CGrid
 {
 public:

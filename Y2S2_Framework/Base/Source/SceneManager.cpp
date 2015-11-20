@@ -14,11 +14,15 @@ CSceneManager::CSceneManager(void)
 	, m_window_height(600)
 	, m_cAvatar(NULL)
 	, m_cSceneGraph(NULL)
+	, m_cSpatialPartition(NULL)
 {
 }
 
 CSceneManager::CSceneManager(const int m_window_width, const int m_window_height)
 	: m_cMinimap(NULL)
+	, m_cAvatar(NULL)
+	, m_cSceneGraph(NULL)
+	, m_cSpatialPartition(NULL)
 {
 	this->m_window_width = m_window_width;
 	this->m_window_height = m_window_height;
@@ -40,6 +44,11 @@ CSceneManager::~CSceneManager(void)
 	{
 		delete m_cSceneGraph;
 		m_cSceneGraph = NULL;
+	}
+	if (m_cSpatialPartition)
+	{
+		delete m_cSpatialPartition;
+		m_cSpatialPartition = NULL;
 	}
 }
 
@@ -212,6 +221,9 @@ void CSceneManager::Init()
 	// Create scenegraph
 	InitSceneGraph();
 
+	// Create Spatial Partition
+	InitSpatialPartition();
+
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 1000 units
 	Mtx44 perspective;
 	perspective.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
@@ -273,11 +285,12 @@ void CSceneManager::Update(double dt)
 
 	rotateAngle -= Application::camera_yaw;// += (float)(10 * dt);
 	m_cSceneGraph->GetNode(P_BOTTOM)->ApplyRotate(180 * dt, 0, 1, 0);
-	m_cSceneGraph->GetNode(P_TOP)->ApplyTranslate(1 * dt, 0, 0);
+	//m_cSceneGraph->GetNode(P_TOP)->ApplyTranslate(1 * dt, 0, 0);
 
 	m_cAvatar->Update(dt);
 	camera.UpdatePosition(m_cAvatar->GetPosition(), m_cAvatar->GetDirection());
 	//camera.Update(dt);
+	m_cSpatialPartition->Update();
 
 	fps = (float)(1.f / dt);
 }
@@ -606,6 +619,24 @@ void CSceneManager::RenderGround()
 		}
 	}
 	modelStack.PopMatrix();
+
+	// Spatial Partition render
+	modelStack.PushMatrix();
+	modelStack.Rotate(-90, 1, 0, 0);
+	modelStack.Translate(0, 0, -9);
+	modelStack.Rotate(-90, 0, 0, 1);
+
+	for (int col = 0; col < m_cSpatialPartition->GetxNumOfGrid(); ++col)
+	{
+		for (int row = 0; row < m_cSpatialPartition->GetyNumOfGrid(); ++row)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(m_cSpatialPartition->xGridSize * col, m_cSpatialPartition->yGridSize * row, 0.f);
+			RenderMesh(m_cSpatialPartition->GetGridMesh(col, row), false);
+			modelStack.PopMatrix();
+		}
+	}
+	modelStack.PopMatrix();
 }
 
 /********************************************************************************
@@ -673,13 +704,34 @@ void CSceneManager::InitSceneGraph()
 	newModel->Init();
 	newTransform = new CTransform();
 	newTransform->SetTranslate(0, 5, 0);
+	newTransform->AddToTranslate(-10, 0, 0);
 	newTransform->SetScale(2,2,2);
 	cout << m_cSceneGraph->AddChild(P_TOP, newTransform, newModel) << endl;
 }
 
+void CSceneManager::InitSpatialPartition()
+{
+	static const float S_GRID_SIZE = 100.f;
+	m_cSpatialPartition = new CSpatialPartition();
+	m_cSpatialPartition->Init(S_GRID_SIZE, S_GRID_SIZE, 3, 3);
+	for (int col = 0; col < m_cSpatialPartition->GetxNumOfGrid(); ++col)
+	{
+		for (int row = 0; row < m_cSpatialPartition->GetyNumOfGrid(); ++row)
+		{
+			m_cSpatialPartition->SetGridMesh(col, row, MeshBuilder::GenerateQuad("Grid mesh", Color(1.f / col, 1.f / row, 1.f / (row * col)), S_GRID_SIZE));
+		}
+	}
+	m_cSpatialPartition->PrintSelf();
+}
+
+void CSceneManager::AddToSpatialPartition()
+{
+	m_cSpatialPartition->AddObject(m_cSceneGraph);
+}
+
 void CSceneManager::UpdateCharDir(float yaw, float pitch)
 {
-	m_cAvatar->UpdateDir(-yaw, pitch);
+	m_cAvatar->UpdateDir(-yaw, -pitch);
 }
 
 /********************************************************************************

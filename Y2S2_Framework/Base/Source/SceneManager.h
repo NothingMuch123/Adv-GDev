@@ -9,7 +9,8 @@
 #include "Light.h"
 #include "Minimap.h"
 #include "PlayInfo3PV.h"
-#include "SceneGraph/SceneNode.h"
+#include "SceneGraph\SceneNode.h"
+#include "SpatialPartition\SpatialPartition.h"
 
 const float SKYBOXSIZE = 1000.f;
 
@@ -130,6 +131,8 @@ public:
 
 	// Init features
 	void InitSceneGraph();
+	void InitSpatialPartition();
+	void AddToSpatialPartition();
 
 	enum WEAPON_ACTION
 	{
@@ -174,5 +177,8 @@ private:
 
 	// Scene graph
 	CSceneNode* m_cSceneGraph;
+	
+	// Spatial Partition
+	CSpatialPartition* m_cSpatialPartition;
 };
 #endif

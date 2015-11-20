@@ -16,11 +16,11 @@
     <Filter Include="2D">
       <UniqueIdentifier>{78a69225-fe6f-4174-b4c6-ada9c7bd7b5a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\SceneGraph">
-      <UniqueIdentifier>{a601e01c-c772-4791-8235-fdf32c196ebe}</UniqueIdentifier>
+    <Filter Include="SpatialPartition">
+      <UniqueIdentifier>{db192f7c-61e0-42e0-8b5b-a304b567e342}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\SceneGraph">
-      <UniqueIdentifier>{736d2cda-0ec2-4fd2-9563-20f9cbed34d1}</UniqueIdentifier>
+    <Filter Include="SceneGraph">
+      <UniqueIdentifier>{ccf40ce0-d204-4a29-8abd-90bade5b6b6c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -102,17 +102,23 @@
     <ClCompile Include="Source\PlayState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\SpatialPartition\Grid.cpp">
+      <Filter>SpatialPartition</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SpatialPartition\SpatialPartition.cpp">
+      <Filter>SpatialPartition</Filter>
+    </ClCompile>
     <ClCompile Include="Source\SceneGraph\Model.cpp">
-      <Filter>Source Files\SceneGraph</Filter>
+      <Filter>SceneGraph</Filter>
     </ClCompile>
     <ClCompile Include="Source\SceneGraph\Node.cpp">
-      <Filter>Source Files\SceneGraph</Filter>
+      <Filter>SceneGraph</Filter>
     </ClCompile>
     <ClCompile Include="Source\SceneGraph\SceneNode.cpp">
-      <Filter>Source Files\SceneGraph</Filter>
+      <Filter>SceneGraph</Filter>
     </ClCompile>
     <ClCompile Include="Source\SceneGraph\Transform.cpp">
-      <Filter>Source Files\SceneGraph</Filter>
+      <Filter>SceneGraph</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -209,17 +215,23 @@
     <ClInclude Include="Source\PlayState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SceneGraph\Model.h">
-      <Filter>Header Files\SceneGraph</Filter>
+    <ClInclude Include="Source\SpatialPartition\Grid.h">
+      <Filter>SpatialPartition</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SceneGraph\Node.h">
-      <Filter>Header Files\SceneGraph</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\SceneGraph\SceneNode.h">
-      <Filter>Header Files\SceneGraph</Filter>
+    <ClInclude Include="Source\SpatialPartition\SpatialPartition.h">
+      <Filter>SpatialPartition</Filter>
     </ClInclude>
     <ClInclude Include="Source\SceneGraph\Transform.h">
-      <Filter>Header Files\SceneGraph</Filter>
+      <Filter>SceneGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneGraph\Model.h">
+      <Filter>SceneGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneGraph\Node.h">
+      <Filter>SceneGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneGraph\SceneNode.h">
+      <Filter>SceneGraph</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

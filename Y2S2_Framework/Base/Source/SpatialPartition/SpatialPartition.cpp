@@ -117,13 +117,13 @@ void CSpatialPartition::AddObject(CSceneNode* theObject)
 	int index_bottomright = index_bottomright_x*yNumOfGrid + index_bottomright_z;
 
 	// Add them to each grid
-	if ((index_topleft>0) && (index_topleft<xNumOfGrid*yNumOfGrid))
+	if ((index_topleft>=0) && (index_topleft<xNumOfGrid*yNumOfGrid))
 	{
 		theGrid[ index_topleft ].AddObject( theObject );
 	}
 
 	// if part of the object is in another grid, then add it in as well.
-	if ((index_bottomright>0) && (index_bottomright<xNumOfGrid*yNumOfGrid))
+	if ((index_bottomright>=0) && (index_bottomright<xNumOfGrid*yNumOfGrid))
 	{
 		if (index_topleft != index_bottomright)
 		{
