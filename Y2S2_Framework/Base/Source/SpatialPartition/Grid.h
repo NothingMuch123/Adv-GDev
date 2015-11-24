@@ -41,6 +41,11 @@ public:
 	// Update the grid
 	void Update(void);
 
+	// Get top left position of this grid
+	Vector3 GetTopLeft();
+	// Get bottom right position of this grid
+	Vector3 GetBottomRight();
+
 	// PrintSelf
 	void PrintSelf();
 
@@ -56,4 +61,7 @@ public:
 	int xSize;
 	// The size of this grid in the y-axis
 	int ySize;
+
+	// Boolean flag to indicate if this grid is displayed
+	bool m_bDisplayed;
 };

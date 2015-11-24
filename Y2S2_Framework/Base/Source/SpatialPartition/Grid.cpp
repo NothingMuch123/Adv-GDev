@@ -11,6 +11,7 @@ CGrid::CGrid(void)
 	, ySize(1)
 	, theGridMesh(NULL)
 	, ListOfObjects(NULL)
+	, m_bDisplayed(true)
 {
 }
 
@@ -145,6 +146,16 @@ void CGrid::DeleteObjects(void)
  ********************************************************************************/
 void CGrid::Update(void)
 {
+}
+
+Vector3 CGrid::GetTopLeft()
+{
+	return Vector3(xSize * index_x, 999999.0f, ySize * index_y);
+}
+
+Vector3 CGrid::GetBottomRight()
+{
+	return Vector3(xSize * index_x + xSize, -999999.f, ySize * index_y + ySize);
 }
 
 

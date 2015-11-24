@@ -1,5 +1,26 @@
 #include "SpatialPartition.h"
 #include "stdio.h"
+#include <algorithm>
+
+struct MyStruct
+{
+	float key;
+	int indexValue;
+
+	MyStruct(float k, int iv) : key(k), indexValue(iv)
+	{
+	}
+};
+
+struct less_than_key
+{
+	inline bool operator() (const MyStruct& struct1, const MyStruct& struct2)
+	{
+		return (struct1.key < struct2.key);
+	}
+};
+
+vector<MyStruct> vec;
 
 /********************************************************************************
  Constructor
@@ -90,7 +111,14 @@ CGrid CSpatialPartition::GetGrid(const int xIndex, const int yIndex)
  ********************************************************************************/
 Mesh* CSpatialPartition::GetGridMesh(const int xIndex, const int yIndex)
 {
-	return theGrid[ xIndex*yNumOfGrid + yIndex ].theGridMesh;
+	if (theGrid[xIndex*yNumOfGrid + yIndex].m_bDisplayed)
+	{
+		return theGrid[xIndex*yNumOfGrid + yIndex].theGridMesh;
+	}
+	else
+	{
+		return NULL;
+	}
 }
 
 /********************************************************************************
@@ -143,6 +171,13 @@ float CSpatialPartition::CalculateDistanceSquare(Vector3* theCameraPosition, con
 	return (float) ( xDistance*xDistance + yDistance*yDistance );
 }
 
+float CSpatialPartition::CalculateDistanceSquare(Vector3 pos, Vector3 dir, const int xIndex, const int yIndex)
+{
+	float xDist = (xIndex * xGridSize + (xGridSize * 0.5)) - pos.x;
+	float yDist = (yIndex * yGridSize + (yGridSize * 0.5)) - pos.z;
+	return (float) (xDist*xDist + yDist*yDist);
+}
+
 /********************************************************************************
  Render the spatial partition
  ********************************************************************************/
@@ -190,7 +225,7 @@ void CSpatialPartition::Render(Vector3* theCameraPosition)
 /********************************************************************************
  Update the spatial partition
  ********************************************************************************/
-void CSpatialPartition::Update(void)
+void CSpatialPartition::Update(Vector3 cameraPos, Vector3 cameraNormal)
 {
 	for (int i=0; i<xNumOfGrid; i++)
 	{
@@ -199,6 +234,94 @@ void CSpatialPartition::Update(void)
 			// Update the Grids
 			theGrid[ i*yNumOfGrid + j ].Update();
 		}
+	}
+
+	// Check for occlusion
+	findNearestGrid(cameraPos, cameraNormal);
+
+	occulusionChecker.SetScreenCoordinate(cameraPos);
+	occulusionChecker.SetScreenNormal(cameraNormal);
+
+#if _DEBUG
+	cout << "Camera pos: " << cameraPos << endl;
+#endif
+
+	if (vec.size() > 1)
+	{
+		// Use the nearest grid as the reference grid
+		Vector3 posReference_TopLeft = occulusionChecker.GetProjectedCoordinate(theGrid[vec[0].indexValue].GetTopLeft());
+		Vector3 posReference_BottomRight = occulusionChecker.GetProjectedCoordinate(theGrid[vec[0].indexValue].GetBottomRight());
+
+#if _DEBUG
+		cout << "0. Before projection: " << theGrid[vec[0].indexValue].GetTopLeft() << ", " << theGrid[vec[0].indexValue].GetBottomRight() << endl;
+		cout << "0. After projection: " << posReference_TopLeft << ", " << posReference_BottomRight << endl;
+#endif
+
+		// Set the nearest grid's display boolean flag to true first
+		theGrid[vec[0].indexValue].m_bDisplayed = true;
+
+		for (int i = 1; i < vec.size(); ++i)
+		{
+			Vector3 posCheck_TopLeft = occulusionChecker.GetProjectedCoordinate(theGrid[vec[i].indexValue].GetTopLeft());
+			Vector3 posCheck_BottomRight = occulusionChecker.GetProjectedCoordinate(theGrid[vec[i].indexValue].GetBottomRight());
+
+#if _DEBUG
+			cout << i << ". Before projection: " << theGrid[vec[i].indexValue].GetTopLeft() << ", " << theGrid[vec[i].indexValue].GetBottomRight() << endl;
+			cout << i << ". After projection: " << posCheck_TopLeft << ", " << posReference_BottomRight << endl;
+			cout << "========== Start of Occulusion ==========" << endl;
+#endif
+
+			// Set the grid's display boolean flag to false first
+			theGrid[vec[i].indexValue].m_bDisplayed = false;
+
+			// Check the top left corner of a grid against the reference positions
+			if (posReference_TopLeft.x > posCheck_TopLeft.x)
+			{
+#if _DEBUG
+				cout << "posReference_TopLeft.x set from " << posReference_TopLeft.x << "to " << posCheck_TopLeft.x << endl;
+#endif
+				posReference_TopLeft.x = posCheck_TopLeft.x;
+				theGrid[vec[i].indexValue].m_bDisplayed = true;
+			}
+			if (posReference_TopLeft.z > posCheck_TopLeft.z)
+			{
+#if _DEBUG
+				cout << "posReference_TopLeft.z set from " << posReference_TopLeft.z << "to " << posCheck_TopLeft.z << endl;
+#endif
+				posReference_TopLeft.z = posCheck_TopLeft.z;
+				theGrid[vec[i].indexValue].m_bDisplayed = true;
+			}
+
+			// Check the bottom right corner of a grid against the reference position
+			if (posReference_BottomRight.x < posCheck_BottomRight.x)
+			{
+#if _DEBUG
+				cout << "posReference_BottomRight.x set from " << posReference_BottomRight.x << "to " << posCheck_BottomRight.x << endl;
+#endif
+				posReference_BottomRight.x = posCheck_BottomRight.x;
+				theGrid[vec[i].indexValue].m_bDisplayed = true;
+			}
+			if (posReference_BottomRight.z < posCheck_BottomRight.z)
+			{
+#if _DEBUG
+				cout << "posReference_BottomRight.z set from " << posReference_BottomRight.z << "to " << posCheck_BottomRight.z << endl;
+#endif
+				posReference_BottomRight.z = posCheck_BottomRight.z;
+				theGrid[vec[i].indexValue].m_bDisplayed = true;
+			}
+#if _DEBUG
+			cout << "========== End of Occulusion ==========" << endl;
+			cout << "Current Reference: " << posReference_TopLeft << ", " << posReference_BottomRight << endl << endl;
+#endif
+		}
+#if _DEBUG
+		cout << endl << "Printout of vec" << endl;
+		for (int i = 0; i < vec.size(); ++i)
+		{
+			cout << i << ": " << theGrid[vec[i].indexValue].GetTopLeft() << ", " << theGrid[vec[i].indexValue].GetBottomRight() << theGrid[vec[i].indexValue].m_bDisplayed << endl;
+		}
+#endif
+		vec.clear();
 	}
 }
 
@@ -228,4 +351,39 @@ void CSpatialPartition::PrintSelf()
 	else
 		cout << "theGrid : NULL" << endl;
 	cout << "********************************************************************************" << endl;
+}
+
+void CSpatialPartition::findNearestGrid(Vector3 pos, Vector3 dir)
+{
+	float dist = -1.f;
+
+	for (int i = 0; i < xNumOfGrid; ++i)
+	{
+		for (int j = 0; j < yNumOfGrid; ++j)
+		{
+			dist = CalculateDistanceSquare(pos, dir, i, j);
+			vec.push_back(MyStruct(dist, i*yNumOfGrid + j));
+		}
+	}
+
+#if _DEBUG
+	// Display list of grids before sorting
+	cout << "Before sort" << endl;
+	for (int i = 0; i < vec.size(); ++i)
+	{
+		cout << i << ": index = " << vec[i].indexValue << ", key = " << vec[i].key << " => " << theGrid[vec[i].indexValue].m_bDisplayed << endl;
+	}
+#endif
+
+	// Sort vector
+	sort(vec.begin(), vec.end(), less_than_key());
+
+#if _DEBUG
+	// DIsplay list of grids after sorting
+	cout << "After sort" << endl;
+	for (int i = 0; i < vec.size(); ++i)
+	{
+		cout << i << ": index = " << vec[i].indexValue << ", key = " << vec[i].key << " => " << theGrid[vec[i].indexValue].m_bDisplayed << endl;
+	}
+#endif
 }

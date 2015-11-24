@@ -3,6 +3,7 @@
 #include "Grid.h"
 #include "Vector3.h"
 #include "..\SceneGraph\SceneNode.h"
+#include "..\Occlusion\Occlusion.h"
 
 class CSpatialPartition
 {
@@ -30,9 +31,10 @@ public:
 
 	// Calculate the squared distance from camera to a grid's centrepoint
 	float CalculateDistanceSquare(Vector3* theCameraPosition, const int xIndex, const int yIndex);
+	float CalculateDistanceSquare(Vector3 pos, Vector3 dir, const int xIndex, const int yIndex);
 
 	// Update the spatial partition
-	void Update(void);
+	void Update(Vector3 cameraPos, Vector3 cameraNormal);
 	// Render the spatial partition
 	void Render(Vector3* theCameraPosition = NULL);
 
@@ -47,4 +49,10 @@ public:
 	int yGridSize;
 	int xNumOfGrid;
 	int yNumOfGrid;
+
+private:
+	// Find the index of a grid which is nearest to a position
+	void findNearestGrid(Vector3 pos, Vector3 dir);
+	// Occlusion
+	COcclusion occulusionChecker;
 };

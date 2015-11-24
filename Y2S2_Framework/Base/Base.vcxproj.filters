@@ -22,6 +22,9 @@
     <Filter Include="SceneGraph">
       <UniqueIdentifier>{ccf40ce0-d204-4a29-8abd-90bade5b6b6c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Occlusion">
+      <UniqueIdentifier>{c7b2656d-f3ff-4933-8f1f-3fa957341008}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
@@ -119,6 +122,9 @@
     </ClCompile>
     <ClCompile Include="Source\SceneGraph\Transform.cpp">
       <Filter>SceneGraph</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Occlusion\Occlusion.cpp">
+      <Filter>Occlusion</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -232,6 +238,9 @@
     </ClInclude>
     <ClInclude Include="Source\SceneGraph\SceneNode.h">
       <Filter>SceneGraph</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Occlusion\Occlusion.h">
+      <Filter>Occlusion</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -223,6 +223,7 @@ void CSceneManager::Init()
 
 	// Create Spatial Partition
 	InitSpatialPartition();
+	AddToSpatialPartition();
 
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 1000 units
 	Mtx44 perspective;
@@ -290,7 +291,7 @@ void CSceneManager::Update(double dt)
 	m_cAvatar->Update(dt);
 	camera.UpdatePosition(m_cAvatar->GetPosition(), m_cAvatar->GetDirection());
 	//camera.Update(dt);
-	m_cSpatialPartition->Update();
+	m_cSpatialPartition->Update(camera.position, (camera.target - camera.position).Normalized());
 
 	fps = (float)(1.f / dt);
 }
@@ -630,10 +631,13 @@ void CSceneManager::RenderGround()
 	{
 		for (int row = 0; row < m_cSpatialPartition->GetyNumOfGrid(); ++row)
 		{
-			modelStack.PushMatrix();
-			modelStack.Translate(m_cSpatialPartition->xGridSize * col, m_cSpatialPartition->yGridSize * row, 0.f);
-			RenderMesh(m_cSpatialPartition->GetGridMesh(col, row), false);
-			modelStack.PopMatrix();
+			if (m_cSpatialPartition->GetGridMesh(col, row))
+			{
+				modelStack.PushMatrix();
+				modelStack.Translate(m_cSpatialPartition->xGridSize * col, m_cSpatialPartition->yGridSize * row, 0.f);
+				RenderMesh(m_cSpatialPartition->GetGridMesh(col, row), false);
+				modelStack.PopMatrix();
+			}
 		}
 	}
 	modelStack.PopMatrix();
