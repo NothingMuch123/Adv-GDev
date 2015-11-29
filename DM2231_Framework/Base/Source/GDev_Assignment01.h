@@ -8,6 +8,8 @@
 #include "Target.h"
 #include "AmmoCrate.h"
 
+#include "Object\GameObject.h"
+
 class GDev_Assignment01 : public SceneBase
 {
 public:

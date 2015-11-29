@@ -10,6 +10,13 @@ CTransform::~CTransform()
 {
 }
 
+void CTransform::Init(Vector3 translate, Vector3 rotate, Vector3 scale)
+{
+	this->m_translate = translate;
+	this->m_rotate = rotate;
+	this->m_scale = scale;
+}
+
 void CTransform::Reset()
 {
 	m_translate = m_rotate = Vector3::ZERO_VECTOR;

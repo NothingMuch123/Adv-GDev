@@ -77,6 +77,6 @@ private:
 	bool AABBCollision(CCollider& other, const double dt);
 	bool distCollision(CCollider& other, const double dt);
 	bool AABB_Dist_Collision(CCollider& other, const double dt); // Other MUST be dist
-}
+};
 
 #endif

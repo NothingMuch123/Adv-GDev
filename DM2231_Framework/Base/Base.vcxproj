@@ -28,6 +28,7 @@
     <ClCompile Include="Source\Minimap.cpp" />
     <ClCompile Include="Source\Obj.cpp" />
     <ClCompile Include="Source\Object\Collider.cpp" />
+    <ClCompile Include="Source\Object\GameObject.cpp" />
     <ClCompile Include="Source\Object\Object.cpp" />
     <ClCompile Include="Source\Object\Transform.cpp" />
     <ClCompile Include="Source\Projectile.cpp" />
@@ -59,6 +60,7 @@
     <ClInclude Include="Source\Minimap.h" />
     <ClInclude Include="Source\Obj.h" />
     <ClInclude Include="Source\Object\Collider.h" />
+    <ClInclude Include="Source\Object\GameObject.h" />
     <ClInclude Include="Source\Object\Object.h" />
     <ClInclude Include="Source\Object\Transform.h" />
     <ClInclude Include="Source\Projectile.h" />

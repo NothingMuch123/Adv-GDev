@@ -14,6 +14,7 @@ public:
 	CTransform(Vector3 translate = Vector3::ZERO_VECTOR, Vector3 rotate = Vector3::ZERO_VECTOR, Vector3 scale = Vector3(1.f, 1.f, 1.f));
 	~CTransform();
 
+	void Init(Vector3 translate, Vector3 rotate, Vector3 scale);
 	void Reset(); // Reset obj
 
 	// Setters and Getters
