@@ -37,6 +37,9 @@
     <Filter Include="Header Files\Mesh related">
       <UniqueIdentifier>{ac4d6580-cbfe-4fb0-83ca-b3fcbe72a634}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{ed428f56-0315-4310-9217-4b29031e954a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
@@ -110,6 +113,15 @@
     </ClCompile>
     <ClCompile Include="Source\Entity.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Object\Transform.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Object\Collider.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Object\Object.cpp">
+      <Filter>Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -199,6 +211,15 @@
     </ClInclude>
     <ClInclude Include="Source\Entity.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Object\Transform.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Object\Collider.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Object\Object.h">
+      <Filter>Object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
