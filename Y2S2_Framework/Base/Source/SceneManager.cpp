@@ -15,6 +15,7 @@ CSceneManager::CSceneManager(void)
 	, m_cAvatar(NULL)
 	, m_cSceneGraph(NULL)
 	, m_cSpatialPartition(NULL)
+	, m_ProjectileManager(NULL)
 {
 }
 
@@ -23,6 +24,7 @@ CSceneManager::CSceneManager(const int m_window_width, const int m_window_height
 	, m_cAvatar(NULL)
 	, m_cSceneGraph(NULL)
 	, m_cSpatialPartition(NULL)
+	, m_ProjectileManager(NULL)
 {
 	this->m_window_width = m_window_width;
 	this->m_window_height = m_window_height;
@@ -49,6 +51,11 @@ CSceneManager::~CSceneManager(void)
 	{
 		delete m_cSpatialPartition;
 		m_cSpatialPartition = NULL;
+	}
+	if (m_ProjectileManager)
+	{
+		delete m_ProjectileManager;
+		m_ProjectileManager = NULL;
 	}
 }
 
@@ -181,7 +188,7 @@ void CSceneManager::Init()
 	meshList[GEO_OBJECT]->textureID = LoadTGA("Image//chair.tga");
 	meshList[GEO_RING] = MeshBuilder::GenerateRing("ring", Color(1, 0, 1), 36, 1, 0.5f);
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("lightball", Color(1, 0, 0), 18, 36, 1.f);
-	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1, 0, 0), 18, 36, 10.f);
+	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1, 0, 0), 18, 36, 1.f);
 	//meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", 1, 1, 1);
 	//meshList[GEO_TORUS] = MeshBuilder::GenerateCylinder("torus", 36, 36, 5, 1);
 	meshList[GEO_CONE] = MeshBuilder::GenerateCone("cone", Color(0.5f, 1, 0.3f), 36, 10.f, 10.f);
@@ -224,6 +231,8 @@ void CSceneManager::Init()
 	// Create Spatial Partition
 	InitSpatialPartition();
 	AddToSpatialPartition();
+
+	m_ProjectileManager = new CProjectileManager();
 
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 1000 units
 	Mtx44 perspective;
@@ -293,6 +302,8 @@ void CSceneManager::Update(double dt)
 	//camera.Update(dt);
 	m_cSpatialPartition->Update(camera.position, (camera.target - camera.position).Normalized());
 
+	m_ProjectileManager->Update(dt);
+
 	fps = (float)(1.f / dt);
 }
 
@@ -317,6 +328,8 @@ void CSceneManager::UpdateWeaponStatus(const unsigned char key)
 	if (key == WA_FIRE)
 	{
 		// Add a bullet object which starts at the camera position and moves in the camera's direction
+		m_ProjectileManager->AddProjectile(m_cAvatar->GetPosition(), m_cAvatar->GetDirection(), 50.f); // Shoot by avatar
+		//m_ProjectileManager->AddProjectile(camera.position, (camera.target - camera.position).Normalized(), 50.f); // Shoot by camera
 	}
 }
 
@@ -499,10 +512,13 @@ void CSceneManager::RenderGUI()
 	RenderMeshIn2D( m_cMinimap->GetBackground(), false, 20.0f, 68, -48);
 
 	//On screen text
-	std::ostringstream ss;
+	std::ostringstream ss, projInfo;
 	ss.precision(5);
 	ss << "FPS: " << fps;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 30, 0, 6);
+
+	projInfo << "Projectiles: " << m_ProjectileManager->NumOfActiveProjectile;
+	RenderTextOnScreen(meshList[GEO_TEXT], projInfo.str(), Color(0, 1, 0), 30, 200, 6);
 	
 	RenderTextOnScreen(meshList[GEO_TEXT], "Hello Screen", Color(0, 1, 0), 3, 0, 0);
 }
@@ -520,6 +536,19 @@ void CSceneManager::RenderMobileObjects()
 
 	// Render scene graph
 	m_cSceneGraph->Draw(this);
+
+	// Render projectiles
+	for (int i = 0; i < m_ProjectileManager->GetMaxNumberOfProjectiles(); ++i)
+	{
+		if (m_ProjectileManager->IsActive(i))
+		{
+			Vector3 pos = m_ProjectileManager->theListOfProjectiles[i]->GetPosition();
+			modelStack.PushMatrix();
+			modelStack.Translate(pos.x, pos.y, pos.z);
+			RenderMesh(meshList[GEO_SPHERE], false);
+			modelStack.PopMatrix();
+		}
+	}
 
 	// Render avatar
 	modelStack.PushMatrix();

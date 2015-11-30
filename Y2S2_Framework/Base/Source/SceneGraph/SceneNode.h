@@ -65,4 +65,7 @@ public:
 
 	// Set the Colour of a child
 	void SetColorForChild(const int m_iChildIndex, const float red, const float green, const float blue);
+
+	// Check a position for collision with objects and its child
+	bool CheckForCollision(Vector3 pos);
 };

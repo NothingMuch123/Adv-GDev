@@ -281,3 +281,15 @@ void CSceneNode::SetColorForChild(const int m_iChildIndex, const float red, cons
 		}
 	}
 }
+
+bool CSceneNode::CheckForCollision(Vector3 pos)
+{
+	Vector3 ObjTopLeft = GetTopLeft();
+	Vector3 ObjBottomRight = GetBottomRight();
+
+	if (pos.x < ObjBottomRight.x || pos.x > ObjTopLeft.x || pos.y < ObjBottomRight.y || pos.y > ObjTopLeft.y || pos.z < ObjBottomRight.z || pos.z > ObjTopLeft.z)
+	{
+		return false;
+	}
+	return true;
+}

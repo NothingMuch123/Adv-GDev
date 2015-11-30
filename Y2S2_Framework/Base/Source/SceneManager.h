@@ -11,6 +11,7 @@
 #include "PlayInfo3PV.h"
 #include "SceneGraph\SceneNode.h"
 #include "SpatialPartition\SpatialPartition.h"
+#include "Projectile\ProjectileManager.h"
 
 const float SKYBOXSIZE = 1000.f;
 
@@ -180,5 +181,8 @@ private:
 	
 	// Spatial Partition
 	CSpatialPartition* m_cSpatialPartition;
+
+	// Projectile
+	CProjectileManager* m_ProjectileManager;
 };
 #endif

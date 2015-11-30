@@ -31,6 +31,8 @@
     <ClCompile Include="Source\PlayerInfo.cpp" />
     <ClCompile Include="Source\PlayInfo3PV.cpp" />
     <ClCompile Include="Source\PlayState.cpp" />
+    <ClCompile Include="Source\Projectile\Projectile.cpp" />
+    <ClCompile Include="Source\Projectile\ProjectileManager.cpp" />
     <ClCompile Include="Source\SceneGraph\Model.cpp" />
     <ClCompile Include="Source\SceneGraph\Node.cpp" />
     <ClCompile Include="Source\SceneGraph\SceneNode.cpp" />
@@ -69,6 +71,8 @@
     <ClInclude Include="Source\PlayerInfo.h" />
     <ClInclude Include="Source\PlayInfo3PV.h" />
     <ClInclude Include="Source\PlayState.h" />
+    <ClInclude Include="Source\Projectile\Projectile.h" />
+    <ClInclude Include="Source\Projectile\ProjectileManager.h" />
     <ClInclude Include="Source\Scene.h" />
     <ClInclude Include="Source\SceneGraph\Model.h" />
     <ClInclude Include="Source\SceneGraph\Node.h" />

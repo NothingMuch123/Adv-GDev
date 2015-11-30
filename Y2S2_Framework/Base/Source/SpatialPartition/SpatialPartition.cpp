@@ -236,6 +236,7 @@ void CSpatialPartition::Update(Vector3 cameraPos, Vector3 cameraNormal)
 		}
 	}
 
+	/*
 	// Check for occlusion
 	findNearestGrid(cameraPos, cameraNormal);
 
@@ -323,6 +324,7 @@ void CSpatialPartition::Update(Vector3 cameraPos, Vector3 cameraNormal)
 #endif
 		vec.clear();
 	}
+	*/
 }
 
 
