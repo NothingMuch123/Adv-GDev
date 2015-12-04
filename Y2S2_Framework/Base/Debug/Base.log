@@ -1,5 +1,48 @@
-﻿Build started 30/11/2015 9:14:49 AM.
+﻿Build started 4/12/2015 3:25:22 PM.
+     1>Project "C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\Base\Base.vcxproj" on node 2 (Build target(s)).
+     1>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\Debug\Base.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\Debug" /LIBPATH:"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\/glfw/lib-msvc100" /LIBPATH:"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\/glew/lib" Common.lib winmm.lib opengl32.lib glu32.lib glew32.lib glfw3.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Base.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\Debug\Base.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\Debug\Base.lib" /MACHINE:X86 Debug\Application.obj
+         Debug\Camera.obj
+         Debug\Camera3.obj
+         Debug\Enemy.obj
+         Debug\GameStateManager.obj
+         Debug\Goodies.obj
+         Debug\GoodiesFactory.obj
+         Debug\IntroState.obj
+         Debug\LoadOBJ.obj
+         Debug\LoadTGA.obj
+         Debug\main.obj
+         Debug\Map.obj
+         Debug\MenuState.obj
+         Debug\Mesh.obj
+         Debug\MeshBuilder.obj
+         Debug\Minimap.obj
+         Debug\Occlusion.obj
+         Debug\PlayerInfo.obj
+         Debug\PlayInfo3PV.obj
+         Debug\PlayState.obj
+         Debug\Projectile.obj
+         Debug\ProjectileManager.obj
+         Debug\Model.obj
+         Debug\Node.obj
+         Debug\SceneNode.obj
+         Debug\Transform.obj
+         Debug\SceneManager.obj
+         Debug\SceneManager2D.obj
+         Debug\shader.obj
+         Debug\Grid.obj
+         Debug\SpatialPartition.obj
+         Debug\Strategy.obj
+         Debug\Strategy_Kill.obj
+         Debug\TreasureChest.obj
+         Debug\Utility.obj
+     1>Application.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/INCREMENTAL:NO' specification
+     1>LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+         Base.vcxproj -> C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\Debug\Base.exe
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\Debug\Base.exe;#1" /manifest Debug\Base.exe.intermediate.manifest
+     1>Done Building Project "C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\Base\Base.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.05
+Time Elapsed 00:00:00.75

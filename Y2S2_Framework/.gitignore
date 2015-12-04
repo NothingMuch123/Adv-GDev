@@ -2,7 +2,6 @@
 *.slo
 *.lo
 *.o
-*.obj
 
 # Precompiled Headers
 *.gch
@@ -11,7 +10,6 @@
 # Compiled Dynamic libraries
 *.so
 *.dylib
-*.dll
 
 # Fortran module files
 *.mod
@@ -20,16 +18,41 @@
 *.lai
 *.la
 *.a
-*.lib
 
 # Executables
 *.exe
 *.out
 *.app
-
-# Useless files
-/ipch/
-/Debug/
-/Release/
+Base/Debug/
+Common/Debug/
+ipch/
+DM2231_Framework.opensdf
+LoadSON/Debug/
 *.sdf
-*.opensdf
+*.pdb
+Sound/Debug/
+.vs/
+LoadSON/Release/
+Common/Release/
+Base/Release/
+Sound/Release/
+Base/Base.vcxproj.user
+SONIO/Debug/
+SONIO/Release/
+*.user
+*.suo
+Debug/Common.lib
+Debug/SONIO.lib
+Debug/Sound.lib
+Release/Common.lib
+Release/SONIO.lib
+Release/Sound.lib
+*.orig
+*.ilk
+A-Star Path Finding/Debug/
+Debug/A-Star Path Finding.lib
+A-Star Path Finding/Release/
+Installer/Debug/
+Installer/Release/
+Release/A-Star Path Finding.lib
+~$ResourceCredits.xlsx
