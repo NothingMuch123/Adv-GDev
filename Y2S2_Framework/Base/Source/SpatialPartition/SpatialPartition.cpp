@@ -178,6 +178,47 @@ float CSpatialPartition::CalculateDistanceSquare(Vector3 pos, Vector3 dir, const
 	return (float) (xDist*xDist + yDist*yDist);
 }
 
+bool CSpatialPartition::CheckForCollision(Vector3 pos)
+{
+	int GridIndex_x = ((int)pos.x / (xSize*xNumOfGrid));
+	int GridIndex_z = ((int)pos.x / (ySize*yNumOfGrid));
+
+	int GridIndex = GridIndex_x * yNumOfGrid + GridIndex_z;
+	pos.y = 0.f;
+	if ((GridIndex >= 0) && (GridIndex < xNumOfGrid * yNumOfGrid))
+	{
+		vector<CSceneNode*> theListOfObjects = theGrid[GridIndex].GetListOfObject();
+
+		Vector3 ObjTopLeft, ObjBottomRight;
+		for (int i = 0; i < theListOfObjects.size(); ++i)
+		{
+			return theListOfObjects[i]->CheckForCollision(pos);
+		}
+	}
+	return false;
+}
+
+bool CSpatialPartition::CheckForCollision(Vector3 pos_start, Vector3 pos_End)
+{
+	int GridIndex_x = ((int)pos_start.x / (xSize*xNumOfGrid));
+	int GridIndex_z = ((int)pos_start.x / (ySize*yNumOfGrid));
+
+	int GridIndex = GridIndex_x * yNumOfGrid + GridIndex_z;
+	pos_start.y = 0.f;
+	if ((GridIndex >= 0) && (GridIndex < xNumOfGrid * yNumOfGrid))
+	{
+		vector<CSceneNode*> theListOfObjects = theGrid[GridIndex].GetListOfObject();
+
+		Vector3 ObjTopLeft, ObjBottomRight;
+		for (int i = 0; i < theListOfObjects.size(); ++i)
+		{
+			Vector3 hits;
+			return theListOfObjects[i]->CheckForCollision(pos_start, pos_End, hits);
+		}
+	}
+	return false;
+}
+
 /********************************************************************************
  Render the spatial partition
  ********************************************************************************/

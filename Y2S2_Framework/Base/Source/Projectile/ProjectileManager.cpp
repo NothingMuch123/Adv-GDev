@@ -59,12 +59,52 @@ bool CProjectileManager::AddProjectile(Vector3 position, Vector3 direction, cons
 
 		if (CurrentEmptyProjectile < theMaxNumberOfProjectiles && IsActive(CurrentEmptyProjectile)==false)
 		{
+			theListOfProjectiles[CurrentEmptyProjectile]->SetType(CProjectile::PROJ_TYPE_DISCRETE);
 			theListOfProjectiles[CurrentEmptyProjectile]->SetPosition( position );
 			theListOfProjectiles[CurrentEmptyProjectile]->SetDirection( direction );
 			theListOfProjectiles[CurrentEmptyProjectile]->SetSpeed( speed );
 			theListOfProjectiles[CurrentEmptyProjectile]->SetActivate( true );
 			CurrentEmptyProjectile++;
 			NumOfActiveProjectile++;
+
+			return true;
+		}
+	}
+	return false;
+}
+
+bool CProjectileManager::AddRayProjectile(Vector3 pos, Vector3 dir, const float speed, const float length)
+{
+	if (NumOfActiveProjectile < theMaxNumberOfProjectiles)
+	{
+		int startIndex = CurrentEmptyProjectile;
+		// Loop until we find an empty slot
+		while (CurrentEmptyProjectile < theMaxNumberOfProjectiles && theListOfProjectiles[CurrentEmptyProjectile]->GetStatus() == true)
+		{
+			CurrentEmptyProjectile++;
+			if (CurrentEmptyProjectile >= theMaxNumberOfProjectiles)
+				CurrentEmptyProjectile = 0;
+			// If we have checked 'theMaxNumberOfProjectiles' number of slots, and
+			// still have not found a vacancy, then stop this loop. As the slot at 
+			// CurrentEmptyProjectile is not empty, we will not be able to add it in.
+			if (CurrentEmptyProjectile == startIndex)
+				break;
+		}
+
+		if (IsActive(CurrentEmptyProjectile) == false)
+		{
+			pos += Vector3(0.f, 0.5f, 0.f);
+			theListOfProjectiles[CurrentEmptyProjectile]->SetPosition(pos);
+			theListOfProjectiles[CurrentEmptyProjectile]->SetDirection(dir);
+			theListOfProjectiles[CurrentEmptyProjectile]->SetSpeed(speed);
+			theListOfProjectiles[CurrentEmptyProjectile]->SetLength(length);
+			theListOfProjectiles[CurrentEmptyProjectile]->SetActivate(true);
+			++CurrentEmptyProjectile;
+			if (CurrentEmptyProjectile >= theMaxNumberOfProjectiles)
+			{
+				CurrentEmptyProjectile = 0;
+			}
+			++NumOfActiveProjectile;
 
 			return true;
 		}

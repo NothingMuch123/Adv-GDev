@@ -214,6 +214,8 @@ void CSceneManager::Init()
 	meshList[GEO_GRASS_LIGHTGREEN] = MeshBuilder::GenerateQuad("GEO_GRASS_LIGHTGREEN", Color(1, 1, 1), 1.f);
 	meshList[GEO_GRASS_LIGHTGREEN]->textureID = LoadTGA("Image//grass_lightgreen.tga");
 
+	meshList[GEO_RAY] = MeshBuilder::GenerateRay("Bullet ray", 10.f);
+
 	// Load the texture for minimap
 	m_cMinimap = new CMinimap();
 	m_cMinimap->SetBackground(MeshBuilder::GenerateMinimap("MINIMAP", Color(1, 1, 1), 1.f));
@@ -304,6 +306,41 @@ void CSceneManager::Update(double dt)
 
 	m_ProjectileManager->Update(dt);
 
+	// Check collision or 
+	Vector3 ProjPos_Start, ProjPos_End;
+	for (int i = 0; i < m_ProjectileManager->GetMaxNumberOfProjectiles(); ++i)
+	{
+		if (m_ProjectileManager->IsActive(i))
+		{
+			ProjPos_Start = m_ProjectileManager->theListOfProjectiles[i]->GetPosition();
+
+			switch (m_ProjectileManager->theListOfProjectiles[i]->GetType())
+			{
+			case CProjectile::PROJ_TYPE_DISCRETE:
+				{
+					// Destroy the projectile after collision
+					if (m_cSpatialPartition->CheckForCollision(ProjPos_Start))
+					{
+					m_ProjectileManager->RemoveProjectile(i);
+					}
+				}
+				break;
+			case CProjectile::PROJ_TYPE_RAY:
+				{
+					ProjPos_End = ProjPos_Start + m_ProjectileManager->theListOfProjectiles[i]->GetDirection() * m_ProjectileManager->theListOfProjectiles[i]->GetLength();
+
+					// Destroy the ray projectile after collision
+					if (m_cSpatialPartition->CheckForCollision(ProjPos_Start, ProjPos_End))
+					{
+						m_ProjectileManager->RemoveProjectile(i);
+					}
+				}
+				break;
+			}
+			
+		}
+	}
+
 	fps = (float)(1.f / dt);
 }
 
@@ -330,6 +367,10 @@ void CSceneManager::UpdateWeaponStatus(const unsigned char key)
 		// Add a bullet object which starts at the camera position and moves in the camera's direction
 		m_ProjectileManager->AddProjectile(m_cAvatar->GetPosition(), m_cAvatar->GetDirection(), 50.f); // Shoot by avatar
 		//m_ProjectileManager->AddProjectile(camera.position, (camera.target - camera.position).Normalized(), 50.f); // Shoot by camera
+	}
+	else if (key == WA_FIRE_SECONDARY)
+	{
+		m_ProjectileManager->AddRayProjectile(m_cAvatar->GetPosition(), m_cAvatar->GetDirection(), 50.f);
 	}
 }
 
@@ -542,11 +583,30 @@ void CSceneManager::RenderMobileObjects()
 	{
 		if (m_ProjectileManager->IsActive(i))
 		{
-			Vector3 pos = m_ProjectileManager->theListOfProjectiles[i]->GetPosition();
-			modelStack.PushMatrix();
-			modelStack.Translate(pos.x, pos.y, pos.z);
-			RenderMesh(meshList[GEO_SPHERE], false);
-			modelStack.PopMatrix();
+			CProjectile* p = m_ProjectileManager->theListOfProjectiles[i];
+			switch (p->GetType())
+			{
+			case CProjectile::PROJ_TYPE_DISCRETE:
+				{
+				Vector3 pos = p->GetPosition();
+				modelStack.PushMatrix();
+				modelStack.Translate(pos.x, pos.y, pos.z);
+				RenderMesh(meshList[GEO_SPHERE], false);
+				modelStack.PopMatrix();
+				}
+				break;
+			case CProjectile::PROJ_TYPE_RAY:
+				{
+					Vector3 pos = p->GetPosition();
+					modelStack.PushMatrix();
+					modelStack.Translate(pos.x, pos.y, pos.z);
+					glLineWidth(5.f);
+					RenderMesh(meshList[GEO_RAY], false);
+					glLineWidth(1.f);
+					modelStack.PopMatrix();
+				}
+				break;
+			}
 		}
 	}
 

@@ -8,6 +8,8 @@ CProjectile::CProjectile(void)
 , thePosition(0, 0, 0)
 , theDirection(0, 0, 0)
 , speed(0.0f)
+, length(0.f)
+, type(PROJ_TYPE_DISCRETE)
 {
 }
 
@@ -89,4 +91,25 @@ void CProjectile::SetDirection(Vector3 theNewDirection)
 void CProjectile::SetSpeed(const float speed)
 {
 	this->speed = speed;
+}
+
+void CProjectile::SetLength(float length)
+{
+	this->length = length;
+	type = PROJ_TYPE_RAY;
+}
+
+float CProjectile::GetLength()
+{
+	return length;
+}
+
+void CProjectile::SetType(PROJECTILE_TYPE type)
+{
+	this->type = type;
+}
+
+CProjectile::PROJECTILE_TYPE CProjectile::GetType()
+{
+	return type;;
 }

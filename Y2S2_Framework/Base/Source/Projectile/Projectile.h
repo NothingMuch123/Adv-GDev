@@ -8,6 +8,14 @@ class CProjectile
 public:
 	CProjectile(void);
 	~CProjectile(void);
+
+	enum PROJECTILE_TYPE
+	{
+		PROJ_TYPE_DISCRETE,
+		PROJ_TYPE_RAY,
+		NUM_PROJ_TYPE,
+	};
+
 private:
 	// Boolean flag to indicate if this projectile is active. If not active, then do not compute/update
 	bool m_bActive;
@@ -28,6 +36,12 @@ public:
 	void SetDirection(Vector3 theNewDirection);
 	// Set speed
 	void SetSpeed(const float speed);
+
+	void SetLength(float length);
+	float GetLength();
+
+	void SetType(PROJECTILE_TYPE type);
+	PROJECTILE_TYPE GetType();
 private:
 	// The position of the projectile
 	Vector3 thePosition;
@@ -35,4 +49,9 @@ private:
 	Vector3 theDirection;
 	// Speed
 	float speed;
+
+	// Length of ray projectile
+	float length;
+	// Type
+	PROJECTILE_TYPE type;
 };

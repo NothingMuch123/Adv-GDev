@@ -33,6 +33,10 @@ public:
 	float CalculateDistanceSquare(Vector3* theCameraPosition, const int xIndex, const int yIndex);
 	float CalculateDistanceSquare(Vector3 pos, Vector3 dir, const int xIndex, const int yIndex);
 
+	// Check a position for collision with objects in any of the grids
+	bool CheckForCollision(Vector3 pos);
+	bool CheckForCollision(Vector3 pos_start, Vector3 pos_End);
+
 	// Update the spatial partition
 	void Update(Vector3 cameraPos, Vector3 cameraNormal);
 	// Render the spatial partition

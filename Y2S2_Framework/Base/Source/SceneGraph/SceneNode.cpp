@@ -293,3 +293,73 @@ bool CSceneNode::CheckForCollision(Vector3 pos)
 	}
 	return true;
 }
+
+int CSceneNode::CheckForCollision(Vector3 position_start, Vector3 position_end, Vector3 &Hit)
+{
+	Vector3 ObjectTopLeft = GetTopLeft();
+	Vector3 ObjectBottomRight = GetBottomRight();
+	if (position_end.x < ObjectBottomRight.x && position_start.x < ObjectBottomRight.x)
+		return false;
+	if (position_end.x > ObjectTopLeft.x && position_start.x > ObjectTopLeft.x)
+		return false;
+	if (position_end.y < ObjectBottomRight.y && position_start.y < ObjectBottomRight.y)
+		return false;
+	if (position_end.y > ObjectTopLeft.y && position_start.y > ObjectTopLeft.y)
+		return false;
+	if (position_end.z < ObjectBottomRight.z && position_start.z < ObjectBottomRight.z)
+		return false;
+	if (position_end.z > ObjectTopLeft.z && position_start.z > ObjectTopLeft.z)
+		return false;
+	if (position_start.x > ObjectBottomRight.x && position_start.x < ObjectTopLeft.x &&
+		position_start.y > ObjectBottomRight.y && position_start.y < ObjectTopLeft.y &&
+		position_start.z > ObjectBottomRight.z && position_start.z < ObjectTopLeft.z)
+	{
+		Hit = position_start;
+		return true;
+	}
+	if ((GetIntersection(position_start.x - ObjectBottomRight.x, position_end.x - ObjectBottomRight.x, position_start,
+		position_end, Hit) && InBox(Hit, ObjectBottomRight, ObjectTopLeft, 1))
+		|| (GetIntersection(position_start.y - ObjectBottomRight.y, position_end.y - ObjectBottomRight.y, position_start,
+			position_end, Hit) && InBox(Hit, ObjectBottomRight, ObjectTopLeft, 2))
+		|| (GetIntersection(position_start.z - ObjectBottomRight.z, position_end.z - ObjectBottomRight.z, position_start,
+			position_end, Hit) && InBox(Hit, ObjectBottomRight, ObjectTopLeft, 3))
+		|| (GetIntersection(position_start.x - ObjectTopLeft.x, position_end.x - ObjectTopLeft.x, position_start,
+			position_end, Hit) && InBox(Hit, ObjectBottomRight, ObjectTopLeft, 1))
+		|| (GetIntersection(position_start.y - ObjectTopLeft.y, position_end.y - ObjectTopLeft.y, position_start,
+			position_end, Hit) && InBox(Hit, ObjectBottomRight, ObjectTopLeft, 2))
+		|| (GetIntersection(position_start.z - ObjectTopLeft.z, position_end.z - ObjectTopLeft.z, position_start,
+			position_end, Hit) && InBox(Hit, ObjectBottomRight, ObjectTopLeft, 3)))
+		return true;
+	return false;
+}
+
+int CSceneNode::GetIntersection(float fDst1, float fDst2, Vector3 P1, Vector3 P2, Vector3 & Hit)
+{
+	if ((fDst1 * fDst2) >= 0.f)
+	{
+		return 0;
+	}
+	if (fDst1 == fDst2)
+	{
+		return 0;
+	}
+	Hit = P1 + (P2 - P1) * (-fDst1 / (fDst2 - fDst1));
+	return 1;
+}
+
+int CSceneNode::InBox(Vector3 Hit, Vector3 B1, Vector3 B2, const int Axis)
+{
+	if (Axis == 1 && Hit.z > B1.z && Hit.z < B2.z && Hit.y > B1.y && Hit.y < B2.y)
+	{
+		return 1;
+	}
+	if (Axis == 2 && Hit.z > B1.z && Hit.z < B2.z && Hit.x > B1.x && Hit.x < B2.x)
+	{
+		return 1;
+	}
+	if (Axis == 3 && Hit.x > B1.x && Hit.x < B2.x && Hit.y > B1.y && Hit.y < B2.y)
+	{
+		return 1;
+	}
+	return 0;
+}

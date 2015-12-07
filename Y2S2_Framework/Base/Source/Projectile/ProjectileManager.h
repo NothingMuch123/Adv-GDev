@@ -10,6 +10,7 @@ public:
 
 	// Projectile
 	bool AddProjectile(Vector3 position, Vector3 direction, const float speed = 10.0f);
+	bool AddRayProjectile(Vector3 pos, Vector3 dir, const float speed = 10.f, const float length = 10.f);
 	void SetProjectile(const int index, Vector3 position, Vector3 direction);
 	void RemoveProjectile(const int index);
 

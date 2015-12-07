@@ -84,6 +84,8 @@ class CSceneManager : public Scene
 		GEO_GRASS_LIGHTGREEN,
 		GEO_OBJECT,
 		GEO_TEXT,
+
+		GEO_RAY,
 		NUM_GEOMETRY,
 	};
 
@@ -139,6 +141,7 @@ public:
 	{
 		WA_NIL = 0,
 		WA_FIRE,
+		WA_FIRE_SECONDARY,
 		WA_RELOAD,
 		WA_CHANGEWEAPON,
 		WA_TOTAL,

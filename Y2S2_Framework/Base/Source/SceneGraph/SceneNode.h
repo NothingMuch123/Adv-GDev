@@ -19,6 +19,11 @@ private:
 	CTransform* theTransform;
 	int sceneNodeID;
 
+	// Check where a line segment between two positions intersects a plane
+	int GetIntersection(float fDst1, float fDst2, Vector3 P1, Vector3 P2, Vector3 &Hit);
+	// Check two positions are within a box region
+	int InBox(Vector3 Hit, Vector3 B1, Vector3 B2, const int Axis);
+
 public:
 	CSceneNode(void);
 	CSceneNode(const int sceneNodeID);
@@ -68,4 +73,7 @@ public:
 
 	// Check a position for collision with objects and its child
 	bool CheckForCollision(Vector3 pos);
+
+	// Check two positions for collision with objects in any of the grid
+	int CheckForCollision(Vector3 position_start, Vector3 position_end, Vector3 &Hit);
 };
