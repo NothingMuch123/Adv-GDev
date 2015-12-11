@@ -40,6 +40,7 @@ public:
 	void RenderObjects(const int RESOLUTION);	
 	// Update the grid
 	void Update(void);
+	void Update(const CModel::RESOLUTION_TYPE type);
 
 	// Get top left position of this grid
 	Vector3 GetTopLeft();

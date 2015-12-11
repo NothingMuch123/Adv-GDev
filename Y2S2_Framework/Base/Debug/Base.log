@@ -1,4 +1,4 @@
-﻿Build started 4/12/2015 5:47:40 PM.
+﻿Build started 11/12/2015 4:01:22 PM.
      1>Project "C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\Base\Base.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\/Common/Source" /I"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\/glew/include" /I"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\/glfw/include" /ZI /nologo /W3 /WX- /Od /Oy- /D _VARIADIC_MAX=10 /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Source\SpatialPartition\SpatialPartition.cpp
@@ -8,8 +8,8 @@
      1>c:\users\envy 15.envy\documents\school work\semester 4\dm2240 agdev (git)\y2s2_framework\base\source\spatialpartition\spatialpartition.cpp(193): warning C4018: '<' : signed/unsigned mismatch
      1>c:\users\envy 15.envy\documents\school work\semester 4\dm2240 agdev (git)\y2s2_framework\base\source\spatialpartition\spatialpartition.cpp(213): warning C4018: '<' : signed/unsigned mismatch
      1>c:\users\envy 15.envy\documents\school work\semester 4\dm2240 agdev (git)\y2s2_framework\base\source\spatialpartition\spatialpartition.cpp(216): warning C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
-     1>c:\users\envy 15.envy\documents\school work\semester 4\dm2240 agdev (git)\y2s2_framework\base\source\spatialpartition\spatialpartition.cpp(415): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\envy 15.envy\documents\school work\semester 4\dm2240 agdev (git)\y2s2_framework\base\source\spatialpartition\spatialpartition.cpp(427): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\envy 15.envy\documents\school work\semester 4\dm2240 agdev (git)\y2s2_framework\base\source\spatialpartition\spatialpartition.cpp(428): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\envy 15.envy\documents\school work\semester 4\dm2240 agdev (git)\y2s2_framework\base\source\spatialpartition\spatialpartition.cpp(440): warning C4018: '<' : signed/unsigned mismatch
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\Debug\Base.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\Debug" /LIBPATH:"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\/glfw/lib-msvc100" /LIBPATH:"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\/glew/lib" Common.lib winmm.lib opengl32.lib glu32.lib glew32.lib glfw3.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Base.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\Debug\Base.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\Debug\Base.lib" /MACHINE:X86 Debug\Application.obj
          Debug\Camera.obj
@@ -55,4 +55,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.06
+Time Elapsed 00:00:01.02

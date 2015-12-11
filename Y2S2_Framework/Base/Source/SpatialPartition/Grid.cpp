@@ -148,6 +148,14 @@ void CGrid::Update(void)
 {
 }
 
+void CGrid::Update(const CModel::RESOLUTION_TYPE type)
+{
+	for (int i = 0; i < ListOfObjects.size(); ++i)
+	{
+		ListOfObjects[i]->Update(type);
+	}
+}
+
 Vector3 CGrid::GetTopLeft()
 {
 	return Vector3(xSize * index_x, 999999.0f, ySize * index_y);

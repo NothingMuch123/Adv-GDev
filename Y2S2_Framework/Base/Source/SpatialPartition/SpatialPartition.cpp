@@ -272,6 +272,19 @@ void CSpatialPartition::Update(Vector3 cameraPos, Vector3 cameraNormal)
 	{
 		for (int j=0; j<yNumOfGrid; j++)
 		{
+			float distGrid2Cam = CalculateDistanceSquare(cameraPos, cameraNormal, i, j);
+			if (distGrid2Cam < 10000)
+			{
+				theGrid[i *yNumOfGrid + j].Update(CModel::RES_HIGH);
+			}
+			else if (distGrid2Cam < 40000)
+			{
+				theGrid[i *yNumOfGrid + j].Update(CModel::RES_MID);
+			}
+			else
+			{
+				theGrid[i *yNumOfGrid + j].Update(CModel::RES_LOW);
+			}
 			// Update the Grids
 			theGrid[ i*yNumOfGrid + j ].Update();
 		}

@@ -46,6 +46,24 @@ CSceneNode::~CSceneNode(void)
 	}
 }
 
+void CSceneNode::Update(const CModel::RESOLUTION_TYPE type)
+{
+	if (theModel)
+	{
+		theModel->SetResolution(type);
+	}
+
+	if (theChildren.size() > 0)
+	{
+		CNode* aChild = NULL;
+		for (unsigned i = 0; i < theChildren.size(); ++i)
+		{
+			aChild = theChildren[i];
+			((CSceneNode*)aChild)->Update(type);
+		}
+	}
+}
+
 void CSceneNode::Draw(void)
 {
 	if (theTransform)

@@ -29,6 +29,9 @@ public:
 	CSceneNode(const int sceneNodeID);
 	~CSceneNode(void);
 
+	// Update resolution
+	void Update(const CModel::RESOLUTION_TYPE type);
+
 	// Draw this Node and its children
 	void Draw(void);
 	void Draw(CSceneManager* theSceneManager);

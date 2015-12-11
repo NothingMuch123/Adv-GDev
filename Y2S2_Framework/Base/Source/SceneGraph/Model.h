@@ -7,12 +7,25 @@
 
 class CModel
 {
+public:
+	enum RESOLUTION_TYPE
+	{
+		RES_LOW,
+		RES_MID,
+		RES_HIGH,
+		NUM_RES,
+	};
+
 private:
 	Vector3 vTopLeft, vBottomRight;
 	float red, green, blue;
 	
 	// Handle to the Mesh
 	Mesh* m_cModelMesh;
+	Mesh** theArrayOfMeshes;
+
+	// Current resolution
+	RESOLUTION_TYPE m_iCurrentResolution;
 
 public:
 	CModel(void);
@@ -26,5 +39,11 @@ public:
 	Vector3 GetTopLeft(void);
 	// Get the bottomright of the bounding box of the instance
 	Vector3 GetBottomRight(void);
+
+	// Get current resolution
+	int GetResolution();
+	// Set current resolution
+	void SetResolution(const RESOLUTION_TYPE type);
+
 
 };
