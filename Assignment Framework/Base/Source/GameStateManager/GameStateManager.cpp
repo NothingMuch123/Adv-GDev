@@ -45,6 +45,7 @@ void CGameStateManager::ChangeState(CGameState * newState)
 	// Store and init new state
 	m_states.push_back(newState);
 	m_states.back()->Init(this, m_window_width, m_window_height);
+	resetInputData();
 }
 
 void CGameStateManager::PushState(CGameState * newState)
@@ -55,6 +56,7 @@ void CGameStateManager::PushState(CGameState * newState)
 	}
 	m_states.push_back(newState);
 	m_states.back()->Init(this, m_window_width, m_window_height);
+	resetInputData();
 }
 
 void CGameStateManager::PopState()
@@ -151,4 +153,10 @@ void CGameStateManager::resetKeys()
 	{
 		m_keys[i] = false;
 	}
+}
+
+void CGameStateManager::resetInputData()
+{
+	resetKeys();
+	m_pending_pitch = m_pending_yaw = 0.f;
 }

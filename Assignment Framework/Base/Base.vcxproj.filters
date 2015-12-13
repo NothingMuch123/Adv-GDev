@@ -37,6 +37,9 @@
     <Filter Include="GameState\States">
       <UniqueIdentifier>{a9a44366-c5af-4300-93bc-625cd16f776a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SceneGraph">
+      <UniqueIdentifier>{9ceec25c-5d4d-454f-a508-719290e75e3c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
@@ -128,6 +131,9 @@
     </ClCompile>
     <ClCompile Include="Source\Scene\AGDev_Assign01.cpp">
       <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SceneGraph\SceneNode.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -232,6 +238,9 @@
     </ClInclude>
     <ClInclude Include="Source\Scene\AGDev_Assign01.h">
       <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneGraph\SceneNode.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

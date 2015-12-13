@@ -33,6 +33,7 @@
     <ClCompile Include="Source\Object\Transform.cpp" />
     <ClCompile Include="Source\Projectile.cpp" />
     <ClCompile Include="Source\SceneBase.cpp" />
+    <ClCompile Include="Source\SceneGraph\SceneNode.cpp" />
     <ClCompile Include="Source\Scene\AGDev_Assign01.cpp" />
     <ClCompile Include="Source\shader.cpp" />
     <ClCompile Include="Source\SpriteAnimation.cpp" />
@@ -68,6 +69,7 @@
     <ClInclude Include="Source\Projectile.h" />
     <ClInclude Include="Source\Scene.h" />
     <ClInclude Include="Source\SceneBase.h" />
+    <ClInclude Include="Source\SceneGraph\SceneNode.h" />
     <ClInclude Include="Source\Scene\AGDev_Assign01.h" />
     <ClInclude Include="Source\shader.hpp" />
     <ClInclude Include="Source\SpriteAnimation.h" />

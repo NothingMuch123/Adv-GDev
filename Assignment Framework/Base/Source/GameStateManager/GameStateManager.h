@@ -48,6 +48,7 @@ public:
 
 private:
 	void resetKeys();
+	void resetInputData();
 
 	vector<CGameState*> m_states; // Works in a form of a stack
 
