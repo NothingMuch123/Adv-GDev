@@ -3,7 +3,8 @@
 
 #include "timer.h"
 #include "SceneTerrain.h"
-#include "GDev_Assignment01.h"
+#include "Scene\AGDev_Assign01.h"
+#include "GameStateManager\GameStateManager.h"
 
 class Application
 {
@@ -38,7 +39,10 @@ private:
 	double m_dAccumulatedTime_ThreadTwo;
 
 	//Scene
-	GDev_Assignment01 *scene;
+	//AGDev_Assign01 *scene;
+
+	// Game state manager
+	CGameStateManager* m_GSM;
 };
 
 #endif

@@ -26,7 +26,16 @@ public:
 	{
 		Y_BOTTOM = 0,
 		Y_MIDDLE,
+		Y_TOP,
 		NUM_Y_START,
+	};
+
+	enum E_X_START
+	{
+		X_LEFT = 0,
+		X_MIDDLE,
+		X_RIGHT,
+		NUM_X_START,
 	};
 
 private:
@@ -35,6 +44,7 @@ private:
 	Vector3 m_diameter, m_position; // Distance-based collision data (Store as vector for irregular diameter like oval)
 	bool m_ignore[NUM_IGNORE];
 	E_Y_START m_yStart;
+	E_X_START m_xStart;
 	bool m_active;
 
 public:
@@ -59,7 +69,7 @@ public:
 
 
 	// Main functions
-	void Init(E_COLLIDER_TYPE type, CTransform& transform, E_Y_START yStart, bool active); // Create collision bounds
+	void Init(E_COLLIDER_TYPE type, CTransform& transform, E_X_START xStart, E_Y_START yStart, bool active); // Create collision bounds
 	void Update(CTransform& transform); // Updates collision details
 	void Reset();
 

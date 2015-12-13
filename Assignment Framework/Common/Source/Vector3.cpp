@@ -10,6 +10,8 @@ Struct to define a 3D vector
 #include <cmath>
 #include "Vector3.h"
 
+const Vector3 Vector3::ZERO_VECTOR = Vector3(0.f, 0.f, 0.f);
+
 bool Vector3::IsEqual(float a, float b) const
 {
 	return a - b <= Math::EPSILON && b - a <= Math::EPSILON;

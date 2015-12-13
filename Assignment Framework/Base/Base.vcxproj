@@ -18,7 +18,7 @@
     <ClCompile Include="Source\Camera3.cpp" />
     <ClCompile Include="Source\Character.cpp" />
     <ClCompile Include="Source\Entity.cpp" />
-    <ClCompile Include="Source\GDev_Assignment01.cpp" />
+    <ClCompile Include="Source\GameStateManager\GameStateManager.cpp" />
     <ClCompile Include="Source\LoadHmap.cpp" />
     <ClCompile Include="Source\LoadOBJ.cpp" />
     <ClCompile Include="Source\LoadTGA.cpp" />
@@ -33,9 +33,11 @@
     <ClCompile Include="Source\Object\Transform.cpp" />
     <ClCompile Include="Source\Projectile.cpp" />
     <ClCompile Include="Source\SceneBase.cpp" />
-    <ClCompile Include="Source\SceneTerrain.cpp" />
+    <ClCompile Include="Source\Scene\AGDev_Assign01.cpp" />
     <ClCompile Include="Source\shader.cpp" />
     <ClCompile Include="Source\SpriteAnimation.cpp" />
+    <ClCompile Include="Source\State\GameState.cpp" />
+    <ClCompile Include="Source\State\PlayState.cpp" />
     <ClCompile Include="Source\Target.cpp" />
     <ClCompile Include="Source\Utility.cpp" />
     <ClCompile Include="Source\Weapon.cpp" />
@@ -48,7 +50,7 @@
     <ClInclude Include="Source\Camera3.h" />
     <ClInclude Include="Source\Character.h" />
     <ClInclude Include="Source\Entity.h" />
-    <ClInclude Include="Source\GDev_Assignment01.h" />
+    <ClInclude Include="Source\GameStateManager\GameStateManager.h" />
     <ClInclude Include="Source\Geometry.h" />
     <ClInclude Include="Source\Light.h" />
     <ClInclude Include="Source\LoadHmap.h" />
@@ -66,10 +68,11 @@
     <ClInclude Include="Source\Projectile.h" />
     <ClInclude Include="Source\Scene.h" />
     <ClInclude Include="Source\SceneBase.h" />
-    <ClInclude Include="Source\SceneSkyPlane.h" />
-    <ClInclude Include="Source\SceneTerrain.h" />
+    <ClInclude Include="Source\Scene\AGDev_Assign01.h" />
     <ClInclude Include="Source\shader.hpp" />
     <ClInclude Include="Source\SpriteAnimation.h" />
+    <ClInclude Include="Source\State\GameState.h" />
+    <ClInclude Include="Source\State\PlayState.h" />
     <ClInclude Include="Source\Target.h" />
     <ClInclude Include="Source\Utility.h" />
     <ClInclude Include="Source\Vertex.h" />

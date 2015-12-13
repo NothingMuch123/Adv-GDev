@@ -1,6 +1,13 @@
 #include "Collider.h"
 
-CCollider::CCollider() : m_maxBound(Vector3::ZERO_VECTOR), m_minBound(Vector3::ZERO_VECTOR), m_position(Vector3::ZERO_VECTOR), m_diameter(1.f, 1.f, 1.f), m_type(CT_AABB), m_yStart(Y_BOTTOM)
+CCollider::CCollider()
+	: m_maxBound(Vector3::ZERO_VECTOR)
+	, m_minBound(Vector3::ZERO_VECTOR)
+	, m_position(Vector3::ZERO_VECTOR)
+	, m_diameter(1.f, 1.f, 1.f)
+	, m_type(CT_AABB)
+	, m_yStart(Y_BOTTOM)
+	, m_xStart(X_MIDDLE)
 {
 	for (int i = 0; i < NUM_IGNORE; ++i) // Set ignores to false
 	{
@@ -21,7 +28,7 @@ void CCollider::SetType(E_COLLIDER_TYPE type, CTransform& transform)
 
 CCollider::E_COLLIDER_TYPE CCollider::GetType()
 {
-	return E_COLLIDER_TYPE();
+	return m_type;
 }
 
 void CCollider::SetActive(bool active)
@@ -66,7 +73,7 @@ float CCollider::GetIgnore(E_IGNORE_AXIS index)
 	return m_ignore[index];
 }
 
-void CCollider::Init(E_COLLIDER_TYPE type, CTransform & transform, E_Y_START yStart, bool active)
+void CCollider::Init(E_COLLIDER_TYPE type, CTransform & transform, E_X_START xStart,  E_Y_START yStart, bool active)
 {
 	this->m_type = type;
 	calcAABB(transform);
@@ -131,29 +138,76 @@ bool CCollider::CollideWith(CCollider& other, const double dt)
 
 void CCollider::calcAABB(CTransform & transform)
 {
-	Vector3 pos = transform.GetTranslate();
 	Vector3 scale = transform.GetScale();
-	switch (m_yStart)
+
+	Vector3 centerPos;
+	centerPos.z = transform.GetTranslate().z;
+	// Determine center x pos
+	if (m_xStart == X_LEFT)
 	{
-	case Y_BOTTOM:
-		{
-			m_minBound.Set(pos.x - (scale.x * 0.5f), pos.y, pos.z - (scale.z * 0.5f));
-			m_maxBound.Set(pos.x + (scale.x * 0.5f), pos.y + scale.y, pos.z + (scale.z * 0.5f));
-		}
-		break;
-	case Y_MIDDLE:
-		{
-			m_minBound.Set(pos.x - (scale.x * 0.5f), pos.y - (scale.y * 0.5f), pos.z - (scale.z * 0.5f));
-			m_maxBound.Set(pos.x + (scale.x * 0.5f), pos.y + (scale.y * 0.5f), pos.z + (scale.z * 0.5f));
-		}
-		break;
+		centerPos.x = transform.GetTranslate().x + m_diameter.x * 0.5f;
 	}
+	else if (m_xStart == X_MIDDLE)
+	{
+		centerPos.x = transform.GetTranslate().x;
+	}
+	else if (m_xStart == X_RIGHT)
+	{
+		centerPos.x = transform.GetTranslate().x - m_diameter.x * 0.5f;
+	}
+
+	// Determine center y pos
+	if (m_yStart == Y_BOTTOM)
+	{
+		centerPos.y = transform.GetTranslate().y + m_diameter.y * 0.5f;
+	}
+	else if (m_yStart == Y_MIDDLE)
+	{
+		centerPos.y = transform.GetTranslate().y;
+	}
+	else if (m_yStart == Y_TOP)
+	{
+		centerPos.y = transform.GetTranslate().y - m_diameter.y * 0.5f;
+	}
+	Vector3 pos = centerPos;
+
+	m_minBound.Set(pos.x - (scale.x * 0.5f), pos.y - (scale.y * 0.5f), pos.z - (scale.z * 0.5f));
+	m_maxBound.Set(pos.x + (scale.x * 0.5f), pos.y + (scale.y * 0.5f), pos.z + (scale.z * 0.5f));
 }
 
 void CCollider::calcDist(CTransform & transform)
 {
 	m_diameter = transform.GetScale();
-	m_position = transform.GetTranslate();
+	Vector3 centerPos;
+	centerPos.z = transform.GetTranslate().z;
+	// Determine center x pos
+	if (m_xStart == X_LEFT)
+	{
+		centerPos.x = transform.GetTranslate().x + m_diameter.x * 0.5f;
+	}
+	else if (m_xStart == X_MIDDLE)
+	{
+		centerPos.x = transform.GetTranslate().x;
+	}
+	else if (m_xStart == X_RIGHT)
+	{
+		centerPos.x = transform.GetTranslate().x - m_diameter.x * 0.5f;
+	}
+
+	// Determine center y pos
+	if (m_yStart == Y_BOTTOM)
+	{
+		centerPos.y = transform.GetTranslate().y + m_diameter.y * 0.5f;
+	}
+	else if (m_yStart == Y_MIDDLE)
+	{
+		centerPos.y = transform.GetTranslate().y;
+	}
+	else if (m_yStart == Y_TOP)
+	{
+		centerPos.y = transform.GetTranslate().y - m_diameter.y * 0.5f;
+	}
+	m_position = centerPos;
 }
 
 bool CCollider::AABBCollision(CCollider & other, const double dt)

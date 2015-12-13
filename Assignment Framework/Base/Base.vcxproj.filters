@@ -19,18 +19,6 @@
     <Filter Include="Source Files\Camera">
       <UniqueIdentifier>{7ef54351-b2a5-48c6-9fb2-863cc75b953b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\CG Practical">
-      <UniqueIdentifier>{349868e4-cff2-48fd-b710-7ef881b613de}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\CG Practical">
-      <UniqueIdentifier>{0e739871-419f-4d6d-9287-809692215ac3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\ACG Practical">
-      <UniqueIdentifier>{03b66744-5390-4e2e-8842-a16da8f3d3f3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\ACG Practical">
-      <UniqueIdentifier>{eedd4931-87ad-4d76-a949-87752f129679}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Mesh related">
       <UniqueIdentifier>{30a609d6-9063-4d04-b38f-f4e33c32ec4c}</UniqueIdentifier>
     </Filter>
@@ -39,6 +27,15 @@
     </Filter>
     <Filter Include="Object">
       <UniqueIdentifier>{ffec95c5-a36e-4c5a-b5f2-f8e349644e52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameState">
+      <UniqueIdentifier>{7973c37e-db97-48da-bf6f-406dc9f0972c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{7b50d4ba-d55c-450c-9676-6cfbc710501c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameState\States">
+      <UniqueIdentifier>{a9a44366-c5af-4300-93bc-625cd16f776a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -81,9 +78,6 @@
     <ClCompile Include="Source\LoadOBJ.cpp">
       <Filter>Source Files\Mesh related</Filter>
     </ClCompile>
-    <ClCompile Include="Source\SceneTerrain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\LoadHmap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -97,9 +91,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Weapon.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\GDev_Assignment01.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Projectile.cpp">
@@ -125,6 +116,18 @@
     </ClCompile>
     <ClCompile Include="Source\Object\Transform.cpp">
       <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameStateManager\GameStateManager.cpp">
+      <Filter>GameState</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\State\GameState.cpp">
+      <Filter>GameState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\State\PlayState.cpp">
+      <Filter>GameState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\AGDev_Assign01.cpp">
+      <Filter>Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -164,9 +167,6 @@
     <ClInclude Include="Source\Camera2.h">
       <Filter>Header Files\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SceneSkyPlane.h">
-      <Filter>Header Files\ACG Practical</Filter>
-    </ClInclude>
     <ClInclude Include="Source\LoadOBJ.h">
       <Filter>Header Files\Mesh related</Filter>
     </ClInclude>
@@ -182,9 +182,6 @@
     <ClInclude Include="Source\Mesh.h">
       <Filter>Header Files\Mesh related</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SceneTerrain.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\LoadHmap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -198,9 +195,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Weapon.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\GDev_Assignment01.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Projectile.h">
@@ -226,6 +220,18 @@
     </ClInclude>
     <ClInclude Include="Source\Object\Transform.h">
       <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameStateManager\GameStateManager.h">
+      <Filter>GameState</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\State\GameState.h">
+      <Filter>GameState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\State\PlayState.h">
+      <Filter>GameState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\AGDev_Assign01.h">
+      <Filter>Scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

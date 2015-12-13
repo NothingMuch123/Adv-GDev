@@ -9,7 +9,9 @@
 #include <sstream>
 
 
-SceneBase::SceneBase(void)
+SceneBase::SceneBase(int width, int height)
+	: m_window_width(width)
+	, m_window_height(height)
 {
 }
 
@@ -25,10 +27,10 @@ void SceneBase::Init()
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 	// Accept fragment if it closer to the camera than the former one
-	glDepthFunc(GL_LESS); 
-	
+	glDepthFunc(GL_LESS);
+
 	glEnable(GL_CULL_FACE);
-	
+
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	glEnable(GL_BLEND);
@@ -37,8 +39,8 @@ void SceneBase::Init()
 	glGenVertexArrays(1, &m_vertexArrayID);
 	glBindVertexArray(m_vertexArrayID);
 
-	m_programID = LoadShaders( "Shader//fog.vertexshader", "Shader//fog.fragmentshader" );
-	
+	m_programID = LoadShaders("Shader//fog.vertexshader", "Shader//fog.fragmentshader");
+
 	// Get a handle for our uniform
 	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
 	//m_parameters[U_MODEL] = glGetUniformLocation(m_programID, "M");
@@ -81,7 +83,7 @@ void SceneBase::Init()
 	// Get a handle for our "textColor" uniform
 	m_parameters[U_TEXT_ENABLED] = glGetUniformLocation(m_programID, "textEnabled");
 	m_parameters[U_TEXT_COLOR] = glGetUniformLocation(m_programID, "textColor");
-	
+
 	// Fog
 	m_parameters[U_FOG_COLOR] = glGetUniformLocation(m_programID, "fog.color");
 	m_parameters[U_FOG_START] = glGetUniformLocation(m_programID, "fog.start");
@@ -89,7 +91,7 @@ void SceneBase::Init()
 	m_parameters[U_FOG_DENSITY] = glGetUniformLocation(m_programID, "fog.density");
 	m_parameters[U_FOG_TYPE] = glGetUniformLocation(m_programID, "fog.type");
 	m_parameters[U_FOG_ENABLE] = glGetUniformLocation(m_programID, "fog.enabled");
-	
+
 	// Use our shader
 	glUseProgram(m_programID);
 
@@ -116,7 +118,7 @@ void SceneBase::Init()
 	//lights[1].cosInner = cos(Math::DegreeToRadian(30));
 	//lights[1].exponent = 3.f;
 	//lights[1].spotDirection.Set(0.f, 1.f, 0.f);
-	
+
 	glUniform1i(m_parameters[U_NUMLIGHTS], 1);
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
 
@@ -129,7 +131,7 @@ void SceneBase::Init()
 	glUniform1f(m_parameters[U_LIGHT0_COSCUTOFF], lights[0].cosCutoff);
 	glUniform1f(m_parameters[U_LIGHT0_COSINNER], lights[0].cosInner);
 	glUniform1f(m_parameters[U_LIGHT0_EXPONENT], lights[0].exponent);
-	
+
 	glUniform1i(m_parameters[U_LIGHT1_TYPE], lights[1].type);
 	glUniform3fv(m_parameters[U_LIGHT1_COLOR], 1, &lights[1].color.r);
 	glUniform1f(m_parameters[U_LIGHT1_POWER], lights[1].power);
@@ -150,122 +152,28 @@ void SceneBase::Init()
 	glUniform1f(m_parameters[U_FOG_TYPE], 0);
 	glUniform1f(m_parameters[U_FOG_ENABLE], fogEnabled);
 
-	for(int i = 0; i < NUM_GEOMETRY; ++i)
-	{
-		meshList[i] = NULL;
-	}
-	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
-	meshList[GEO_CROSSHAIR] = MeshBuilder::GenerateQuad("Crosshair", Color(1,1,1), 1);
-	meshList[GEO_CROSSHAIR]->textureID[0] = LoadTGA("Image//crosshair.tga");
-	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1.f);
-	meshList[GEO_QUAD]->textureID[0] = LoadTGA("Image//calibri.tga");
-
-	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT]->textureID[0] = LoadTGA("Image//calibri.tga");
-	meshList[GEO_TEXT]->material.kAmbient.Set(1, 0, 0);
-
-	//meshList[GEO_OBJECT] = MeshBuilder::GenerateOBJ("OBJ1", "OBJ//chair.obj");//MeshBuilder::GenerateCube("cube", 1);
-	//meshList[GEO_OBJECT]->textureID[0] = LoadTGA("Image//chair.tga");
-
-	//meshList[GEO_RING] = MeshBuilder::GenerateRing("ring", Color(1, 0, 1), 36, 1, 0.5f);
-	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("lightball", Color(1, 1, 1), 18, 36, 1.f);
-
-	meshList[GEO_SPHERE] = MeshBuilder::GenerateSphere("sphere", Color(1, 0, 0), 18, 36, 0.5f);
-	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("Cube", Color (1,0,0), 1);
-
-	//meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", 1, 1, 1);
-	//meshList[GEO_TORUS] = MeshBuilder::GenerateCylinder("torus", 36, 36, 5, 1);
-	meshList[GEO_CONE] = MeshBuilder::GenerateCone("cone", Color(0.5f, 1, 0.3f), 36, 10.f, 10.f);
-	meshList[GEO_CONE]->material.kDiffuse.Set(0.99f, 0.99f, 0.99f);
-	meshList[GEO_CONE]->material.kSpecular.Set(0.f, 0.f, 0.f);
-	
-	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("LEFT", Color(1, 1, 1), 1.f);
-	meshList[GEO_LEFT]->textureID[0] = LoadTGA("Image//left.tga");
-	meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("RIGHT", Color(1, 1, 1), 1.f);
-	meshList[GEO_RIGHT]->textureID[0] = LoadTGA("Image//right.tga");
-	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("TOP", Color(1, 1, 1), 1.f);
-	meshList[GEO_TOP]->textureID[0] = LoadTGA("Image//top.tga");
-	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("BOTTOM", Color(1, 1, 1), 1.f);
-	meshList[GEO_BOTTOM]->textureID[0] = LoadTGA("Image//bottom.tga");
-	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("FRONT", Color(1, 1, 1), 1.f);
-	meshList[GEO_FRONT]->textureID[0] = LoadTGA("Image//front.tga");
-	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("BACK", Color(1, 1, 1), 1.f);
-	meshList[GEO_BACK]->textureID[0] = LoadTGA("Image//back.tga");
-
-	meshList[GEO_SKYPLANE] = MeshBuilder::GenerateSkyPlane("Skyplane", Color(1,1,1), 128, 200.f, 2000.f, 1.f, 1.f);
-	meshList[GEO_SKYPLANE]->textureID[0] = LoadTGA("Image//sky2.tga");
-
-	meshList[GEO_TERRAIN] = MeshBuilder::GenerateTerrain("Terrain", "Image//desert.raw", m_heightMap);
-	meshList[GEO_TERRAIN]->textureID[0] = LoadTGA("Image//rock.tga");
-	meshList[GEO_TERRAIN]->textureID[1] = LoadTGA("Image//sand.tga");
-
-	meshList[GEO_SEA] = MeshBuilder::GenerateQuad("Sea", Color(1,1,1), 1);
-	meshList[GEO_SEA]->textureID[0] = LoadTGA("Image//sea.tga");
-
-	// Weapons
-	meshList[GEO_ROCKET_LAUNCHER] = MeshBuilder::GenerateQuad("Rocket launcher", Color(1,1,1), 1);
-	meshList[GEO_ROCKET_LAUNCHER]->textureID[0] = LoadTGA("Image//rocket_launcher.tga");
-
-	meshList[GEO_PISTOL] = MeshBuilder::GenerateQuad("Pistol", Color(1,1,1), 1);
-	meshList[GEO_PISTOL]->textureID[0] = LoadTGA("Image//pistol.tga");
-
-	meshList[GEO_SNIPER] = MeshBuilder::GenerateQuad("Sniper", Color(1,1,1), 1);
-	meshList[GEO_SNIPER]->textureID[0] = LoadTGA("Image//sniper.tga");
-
-	meshList[GEO_SMG] = MeshBuilder::GenerateQuad("SMG", Color(1,1,1), 1);
-	meshList[GEO_SMG]->textureID[0] = LoadTGA("Image//smg.tga");
-	
-	meshList[GEO_SCOPE] = MeshBuilder::GenerateQuad("Sniper scope", Color(1,1,1), 1);
-	meshList[GEO_SCOPE]->textureID[0] = LoadTGA("Image//scope.tga");
-
-	meshList[GEO_PISTOL_BULLET] = MeshBuilder::GenerateQuad("pistol bullet", Color(1,1,1), 1);
-	meshList[GEO_PISTOL_BULLET]->textureID[0] = LoadTGA("Image//pistol_bullet.tga");
-
-	meshList[GEO_ROCKET_BULLET] = MeshBuilder::GenerateQuad("pistol bullet", Color(1,1,1), 1);
-	meshList[GEO_ROCKET_BULLET]->textureID[0] = LoadTGA("Image//rocket_bullet.tga");
-
-	meshList[GEO_SNIPER_BULLET] = MeshBuilder::GenerateQuad("pistol bullet", Color(1,1,1), 1);
-	meshList[GEO_SNIPER_BULLET]->textureID[0] = LoadTGA("Image//sniper_bullet.tga");
-
-	meshList[GEO_SMG_BULLET] = MeshBuilder::GenerateQuad("smg bullet", Color(1,1,1), 1);
-	meshList[GEO_SMG_BULLET]->textureID[0] = LoadTGA("Image//smg_bullet.tga");
-
-	meshList[GEO_AMMO_CRATE] = MeshBuilder::GenerateOBJ("Ammo crate", "OBJ//ammo_crate.obj");
-	meshList[GEO_AMMO_CRATE]->textureID[0] = LoadTGA("Image//ammo_crate.tga");
-
-	meshList[GEO_PLATFORM] = MeshBuilder::GenerateOBJ("Platform", "OBJ//platform.obj");
-	meshList[GEO_PLATFORM]->textureID[0] = LoadTGA("Image//platform.tga");
-
-	meshList[GEO_TARGET] = MeshBuilder::GenerateOBJ("Platform", "OBJ//target.obj");
-	meshList[GEO_TARGET]->textureID[0] = LoadTGA("Image//target.tga");
-
-	meshList[GEO_MINIMAP_AMMOCRATE] = MeshBuilder::GenerateQuad("Ammo crate icon on minimap", Color(1,1,1), 1);
-	meshList[GEO_MINIMAP_AMMOCRATE]->textureID[0] = LoadTGA("Image//ammo.tga");
-
-	meshList[GEO_MINIMAP_TARGET] = MeshBuilder::GenerateQuad("Target icon on minimap", Color(1,1,1), 1);
-	meshList[GEO_MINIMAP_TARGET]->textureID[0] = LoadTGA("Image//minimap_target.tga");
-
-	meshList[GEO_HEALTH] = MeshBuilder::GenerateQuad("Health", Color(1,1,1), 1);
-	meshList[GEO_HEALTH]->textureID[0] = LoadTGA("Image//health.tga");
-
-	meshList[GEO_UI_BORDER] = MeshBuilder::GenerateQuad("UI Border", Color(1,1,1), 1);
-	meshList[GEO_UI_BORDER]->textureID[0] = LoadTGA("Image//ui_border.tga");
-
-	terrainSize.Set(4000,350,4000);
-
-	camera.Init(Vector3(0, Camera3::TERRAIN_OFFSET + terrainSize.y * ReadHeightMap(m_heightMap, 0/terrainSize.x, 400/terrainSize.z), 400), 
-				Vector3(0, Camera3::TERRAIN_OFFSET + terrainSize.y * ReadHeightMap(m_heightMap, 0/terrainSize.x, 395/terrainSize.z), 395), 
-				Vector3(0, 1, 0));
-
-	fov = 45.f;
+	m_fov = 45.f;
 
 	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 1000 units
 	Mtx44 perspective;
-	perspective.SetToPerspective(fov, 4.0f / 3.0f, 0.1f, 10000.0f);
+	perspective.SetToPerspective(m_fov, 4.0f / 3.0f, 0.1f, 10000.0f);
 	//perspective.SetToOrtho(-80, 80, -60, 60, -1000, 1000);
 	projectionStack.LoadMatrix(perspective);
 
-	bLightEnabled = true;
+	// TODO: Delete temp camera when actual camera is made
+	m_camera = new Camera3();
+	m_camera->Init(Vector3(0, 0, 10), Vector3::ZERO_VECTOR, Vector3(0, 1, 0));
+
+	m_lightEnabled = true;
+}
+
+void SceneBase::Init(int width, int height)
+{
+	// Set screen width and height
+	m_window_width = width;
+	m_window_height = height;
+
+	Init();
 }
 
 void SceneBase::Update(double dt)
@@ -296,11 +204,11 @@ void SceneBase::Update(double dt)
 	}
 	else if(Application::IsKeyPressed('8'))
 	{
-		bLightEnabled = true;
+		m_lightEnabled = true;
 	}
 	else if(Application::IsKeyPressed('9'))
 	{
-		bLightEnabled = false;
+		m_lightEnabled = false;
 	}
 
 	if(Application::IsKeyPressed('I'))
@@ -326,16 +234,16 @@ void SceneBase::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	Mtx44 perspective;
-	perspective.SetToPerspective(fov, 4.0f / 3.0f, 0.1f, 10000.0f);
+	perspective.SetToPerspective(m_fov, 4.0f / 3.0f, 0.1f, 10000.0f);
 	//perspective.SetToOrtho(-80, 80, -60, 60, -1000, 1000);
 	projectionStack.LoadMatrix(perspective);
 	
 	// Camera matrix
 	viewStack.LoadIdentity();
 	viewStack.LookAt(
-						camera.position.x, camera.position.y, camera.position.z,
-						camera.target.x, camera.target.y, camera.target.z,
-						camera.up.x, camera.up.y, camera.up.z
+		m_camera->position.x, m_camera->position.y, m_camera->position.z,
+		m_camera->target.x, m_camera->target.y, m_camera->target.z,
+		m_camera->up.x, m_camera->up.y, m_camera->up.z
 					);
 	// Model matrix : an identity matrix (model will be at the origin)
 	modelStack.LoadIdentity();
@@ -380,12 +288,6 @@ void SceneBase::Render()
 
 void SceneBase::Exit()
 {
-	// Cleanup VBO
-	for(int i = 0; i < NUM_GEOMETRY; ++i)
-	{
-		if(meshList[i])
-			delete meshList[i];
-	}
 	glDeleteProgram(m_programID);
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 }
@@ -471,7 +373,7 @@ void SceneBase::RenderMesh(Mesh *mesh, bool enableLight)
 	modelView = viewStack.Top() * modelStack.Top();
 	glUniformMatrix4fv(m_parameters[U_MODELVIEW], 1, GL_FALSE, &modelView.a[0]);
 
-	if(enableLight && bLightEnabled)
+	if(enableLight && m_lightEnabled)
 	{
 		glUniform1i(m_parameters[U_LIGHTENABLED], 1);
 		/*modelView = viewStack.Top() * modelStack.Top();

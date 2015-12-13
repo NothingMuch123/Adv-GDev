@@ -112,7 +112,7 @@ private:
 
 	Light lights[2];
 
-	bool bLightEnabled;
+	bool m_lightEnabledbLightEnabled;
 
 	float fps;
 };

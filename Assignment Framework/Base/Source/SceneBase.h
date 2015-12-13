@@ -64,58 +64,12 @@ public:
 		U_FOG_ENABLE,
 		U_TOTAL,
 	};
-	enum GEOMETRY_TYPE
-	{
-		GEO_AXES,
-		GEO_CROSSHAIR,
-		GEO_SKYPLANE,
-		GEO_TERRAIN,
-		GEO_SEA,
-		GEO_SPRITE_ANIMATION,
-		GEO_LIGHTBALL,
-		GEO_SPHERE,
-		GEO_QUAD,
-		GEO_CUBE,
-		GEO_RING,
-		GEO_CONE,
-		GEO_LEFT,
-		GEO_RIGHT,
-		GEO_TOP,
-		GEO_BOTTOM,
-		GEO_FRONT,
-		GEO_BACK,
-		GEO_OBJECT,
-		GEO_TEXT,
 
-		GEO_PLATFORM,
-		GEO_TARGET,
-
-		// Weapons
-		GEO_ROCKET_LAUNCHER,
-		GEO_PISTOL,
-		GEO_SNIPER,
-		GEO_SMG,
-		GEO_SCOPE,
-
-		// Ammo
-		GEO_PISTOL_BULLET,
-		GEO_ROCKET_BULLET,
-		GEO_SNIPER_BULLET,
-		GEO_SMG_BULLET,
-		GEO_AMMO_CRATE,
-
-		GEO_MINIMAP_AMMOCRATE, // Ammo crate icon for minimap
-		GEO_MINIMAP_TARGET,
-		GEO_HEALTH,
-		GEO_UI_BORDER,
-
-		NUM_GEOMETRY,
-	};
-
-	SceneBase(void);
+	SceneBase(int width = 1280, int height = 720);
 	virtual ~SceneBase(void);
 
 	virtual void Init();
+	virtual void Init(int width, int height);
 	virtual void Update(double dt);
 	virtual void Render();
 	virtual void Exit();
@@ -128,31 +82,26 @@ public:
 
 protected:
 	unsigned m_vertexArrayID;
-	Mesh* meshList[NUM_GEOMETRY];
 	unsigned m_programID;
 	unsigned m_parameters[U_TOTAL];
 
-	Camera3 camera;
+	Camera3* m_camera; // Pointer to the current view
 
 	MS modelStack;
 	MS viewStack;
 	MS projectionStack;
 
-	Light lights[2];
+	static const int MAX_LIGHT = 2;
+	Light lights[MAX_LIGHT];
 
-	bool bLightEnabled;
+	bool m_lightEnabled;
 	bool fogEnabled;
 
-	float fps;
-	float fov;
+	float m_fps;
+	float m_fov; // Used for changing FOV
 
-	// Object
-	std::vector<CObj*> objList;
-	CObj *obj;
-	
-	// Terrain
-	std::vector<unsigned char> m_heightMap;
-	Vector3 terrainSize;
+	// Screen width and height
+	int m_window_width, m_window_height;
 };
 
 #endif
