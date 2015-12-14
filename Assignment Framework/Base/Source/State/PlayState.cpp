@@ -49,4 +49,5 @@ void CPlayState::Resume()
 void CPlayState::ProcessKeys(bool * keys)
 {
 	// TODO: Add codes to change to another state
+	scene->ProcessKeys(keys);
 }

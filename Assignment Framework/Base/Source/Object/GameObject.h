@@ -7,14 +7,14 @@
 
 class CGameObject : public CObject, public CCollider
 {
-private:
-	CTransform transform;
+protected:
+	CTransform m_transform;
 
 public:
 	CGameObject();
 	virtual ~CGameObject();
 
-	virtual void Init(Mesh* mesh, bool active, bool render);
+	virtual void Init(Mesh* mesh, CTransform* transform, bool active = true, bool render = true);
 	virtual void Update(const double dt);
 	virtual void Reset();
 

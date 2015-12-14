@@ -40,6 +40,9 @@
     <Filter Include="SceneGraph">
       <UniqueIdentifier>{9ceec25c-5d4d-454f-a508-719290e75e3c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Character">
+      <UniqueIdentifier>{1da13837-c2e3-4cbe-b71c-b2412ebf024d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
@@ -134,6 +137,12 @@
     </ClCompile>
     <ClCompile Include="Source\SceneGraph\SceneNode.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Character\FirstPerson.cpp">
+      <Filter>Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Character\ThirdPerson.cpp">
+      <Filter>Character</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -241,6 +250,12 @@
     </ClInclude>
     <ClInclude Include="Source\SceneGraph\SceneNode.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Character\FirstPerson.h">
+      <Filter>Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Character\ThirdPerson.h">
+      <Filter>Character</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

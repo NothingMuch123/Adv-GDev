@@ -25,16 +25,16 @@ public:
 	Camera3();
 	~Camera3();
 	virtual void Init(const Vector3& pos, const Vector3& target, const Vector3& up);
-	virtual void Update(double dt, std::vector<unsigned char> &heightMap, const Vector3 &terrainSize);
+	virtual void Update(double dt);
 	virtual void Reset();
 	virtual void UpdateStatus(unsigned char key);
 
-	virtual void SetCameraType(CAM_TYPE type);
-	virtual CAM_TYPE GetCameraType();
+	void SetCameraType(CAM_TYPE type);
+	CAM_TYPE GetCameraType();
 
-	virtual void MoveForward_Backward(double dt, bool dir, std::vector<unsigned char> &heightMap, const Vector3 &terrainSize);	// 0 - Forward	| 1 - Backwards
-	virtual void MoveLeft_Right(double dt, bool dir, std::vector<unsigned char> &heightMap, const Vector3 &terrainSize);		// 0 - Left		| 1 - Right
-	virtual void MoveUp_Down(double dt, bool dir, std::vector<unsigned char> &heightMap, const Vector3 &terrainSize);			// 0 - Up		| 1 - Down
+	virtual void MoveForward_Backward(double dt, bool dir);	// 0 - Forward	| 1 - Backwards
+	virtual void MoveLeft_Right(double dt, bool dir);		// 0 - Left		| 1 - Right
+	virtual void MoveUp_Down(double dt, bool dir);			// 0 - Up		| 1 - Down
 
 	// Basic methods
 	virtual void LookUp(const double dt);
@@ -43,21 +43,21 @@ public:
 	virtual void TurnRight(const double dt);
 	virtual void SpinClockwise(const double dt);
 	virtual void SpinCounterClockwise(const double dt);
-	virtual void Crouch(const double dt, std::vector<unsigned char> &heightMap, const Vector3 &terrainSize);
+	virtual void Crouch(const double dt);
 
 	// Applied methods
 	virtual void Pitch(const double dt);
 	virtual void Yaw(const double dt);
 	virtual void Roll(const double dt);
-	virtual void Walk(const double dt, std::vector<unsigned char> &heightMap, const Vector3 &terrainSize);
-	virtual void Strafe(const double dt, std::vector<unsigned char> &heightMap, const Vector3 &terrainSize);
+	virtual void Walk(const double dt);
+	virtual void Strafe(const double dt);
 	virtual void Jump(const double dt);
 
-	virtual void UpdateJump(const double dt, std::vector<unsigned char> &heightMap, const Vector3 &terrainSize);
+	virtual void UpdateJump(const double dt);
 
 private:
 	bool myKeys[255];
-	CAM_TYPE type;
+	/*CAM_TYPE type;
 
 	// Jump
 	bool m_bJumping;
@@ -67,7 +67,7 @@ private:
 
 	// Sprint
 	bool sprint;
-	bool crouch;
+	bool crouch;*/
 };
 
 #endif

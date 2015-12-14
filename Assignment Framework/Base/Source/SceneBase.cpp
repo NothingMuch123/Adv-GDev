@@ -23,7 +23,7 @@ void SceneBase::Init()
 {
 	srand(time(NULL));
 	// Black background
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 	// Accept fragment if it closer to the camera than the former one
@@ -164,7 +164,7 @@ void SceneBase::Init()
 	m_camera = new Camera3();
 	m_camera->Init(Vector3(0, 0, 10), Vector3::ZERO_VECTOR, Vector3(0, 1, 0));
 
-	m_lightEnabled = true;
+	m_lightEnabled = false;
 }
 
 void SceneBase::Init(int width, int height)
@@ -284,6 +284,26 @@ void SceneBase::Render()
 		Position lightPosition_cameraspace = viewStack.Top() * lights[1].position;
 		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
 	}
+
+	// Render everything in the queue before popping it out
+	while (m_renderList.size() > 0)
+	{
+		CGameObject* go = m_renderList.front();
+
+		if (go) // Check if gameobject is valid
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(go->GetTransform().GetTranslate().x, go->GetTransform().GetTranslate().y, go->GetTransform().GetTranslate().z);
+			modelStack.Rotate(go->GetTransform().GetRotate().x, 1, 0, 0);
+			modelStack.Rotate(go->GetTransform().GetRotate().y, 0, 1, 0);
+			modelStack.Rotate(go->GetTransform().GetRotate().z, 0, 0, 1);
+			modelStack.Scale(go->GetTransform().GetScale().x, go->GetTransform().GetScale().y, go->GetTransform().GetScale().z);
+			RenderMesh(go->GetMesh(), m_lightEnabled);
+			modelStack.PopMatrix();
+		}
+
+		m_renderList.pop();
+	}
 }
 
 void SceneBase::Exit()
@@ -293,6 +313,10 @@ void SceneBase::Exit()
 }
 
 void SceneBase::Reset()
+{
+}
+
+void SceneBase::ProcessKeys(bool* keys)
 {
 }
 

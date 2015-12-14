@@ -214,5 +214,21 @@ bool Application::GetMouseUpdate(double dt)
 
 bool Application::GetKeyBoardUpdate()
 {
+	if (IsKeyPressed('W'))
+	{
+		m_GSM->HandleEvents(CGameStateManager::KEY_MOVE_FORWARD);
+	}
+	if (IsKeyPressed('S'))
+	{
+		m_GSM->HandleEvents(CGameStateManager::KEY_MOVE_BACKWARD);
+	}
+	if (IsKeyPressed('A'))
+	{
+		m_GSM->HandleEvents(CGameStateManager::KEY_MOVE_LEFT);
+	}
+	if (IsKeyPressed('D'))
+	{
+		m_GSM->HandleEvents(CGameStateManager::KEY_MOVE_RIGHT);
+	}
 	return true;
 }

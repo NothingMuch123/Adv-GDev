@@ -9,8 +9,10 @@
 #include "MatrixStack.h"
 #include "Light.h"
 #include <vector>
-#include "LoadHmap.h"
-#include "Obj.h"
+#include <queue>
+#include "Object\GameObject.h"
+
+using std::queue;
 
 class SceneBase : public Scene
 {
@@ -74,6 +76,7 @@ public:
 	virtual void Render();
 	virtual void Exit();
 	virtual void Reset();
+	virtual void ProcessKeys(bool* keys);
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
@@ -102,6 +105,9 @@ protected:
 
 	// Screen width and height
 	int m_window_width, m_window_height;
+
+	// Render list
+	queue<CGameObject*> m_renderList;
 };
 
 #endif

@@ -2,7 +2,7 @@
 #include "Application.h"
 #include "Mtx44.h"
 
-float Camera3::TERRAIN_OFFSET = 30.f;
+float Camera3::TERRAIN_OFFSET = 0.f;
 float Camera3::CAMERA_SPEED = 100.f;
 float Camera3::CROUCH_SPEED = 50.f;
 float Camera3::CROUCH_OFFSET = 10.f;
@@ -21,13 +21,13 @@ Camera3::~Camera3()
 
 void Camera3::Init(const Vector3& pos, const Vector3& target, const Vector3& up)
 {
-	this->sprint = false;
+	/*this->sprint = false;
 	this->m_bJumping = false;
 	this->JumpVel = 0;
 	this->JUMPMAXSPEED = 30.f;
 	this->JUMPACCEL = 50.f;
 	this->GRAVITY = -20.f;
-	this->type = LAND_CAM;
+	this->type = LAND_CAM;*/
 	this->position = defaultPosition = pos;
 	this->target = defaultTarget = target;
 	Vector3 view = (target - position).Normalized();
@@ -38,61 +38,61 @@ void Camera3::Init(const Vector3& pos, const Vector3& target, const Vector3& up)
 	this->total_pitch = this->total_yaw = 0;
 }
 
-void Camera3::Update(double dt, std::vector<unsigned char> &heightMap, const Vector3 &terrainSize)
+void Camera3::Update(double dt)
 {
 	total_yaw -= Application::camera_yaw * CAMERA_SPEED * dt;
 	total_pitch -= Application::camera_pitch * CAMERA_SPEED * dt;
 
 	if (myKeys[1])	// Sprint
 	{
-		sprint = true;
+		//sprint = true;
 		CAMERA_SPEED = 200.f;
 		myKeys[1] = false;
 	}
 	else
 	{
-		sprint = false;
+		//sprint = false;
 		CAMERA_SPEED = 100.f;
 	}
 	if (myKeys[2])	// Crouch
 	{
-		crouch = true;
-		Crouch(dt, heightMap, terrainSize);
+		//crouch = true;
+		Crouch(dt);
 		myKeys[2] = false;
 	}
 	else
 	{
-		crouch = false;
-		Crouch(-dt, heightMap, terrainSize);
+		//crouch = false;
+		Crouch(-dt);
 	}
 	if(myKeys['a'])
 	{
-		Strafe(dt, heightMap, terrainSize);
+		Strafe(dt);
 		myKeys['a'] = false;
 	}
 	if(myKeys['d'])
 	{
-		Strafe(-dt, heightMap, terrainSize);
+		Strafe(-dt);
 		myKeys['d'] = false;
 	}
 	if(myKeys['w'])
 	{
-		Walk(dt, heightMap, terrainSize);
+		Walk(dt);
 		myKeys['w'] = false;
 	}
 	if(myKeys['s'])
 	{
-		Walk(-dt, heightMap, terrainSize);
+		Walk(-dt);
 		myKeys['s'] = false;
 	}
 	if (myKeys['q'])
 	{
-		MoveUp_Down(dt, 0, heightMap, terrainSize);
+		MoveUp_Down(dt, 0);
 		myKeys['q'] = false;
 	}
 	if (myKeys['e'])
 	{
-		MoveUp_Down(dt, 1, heightMap, terrainSize);
+		MoveUp_Down(dt, 1);
 		myKeys['e'] = false;
 	}
 	if (myKeys['z'])
@@ -110,7 +110,7 @@ void Camera3::Update(double dt, std::vector<unsigned char> &heightMap, const Vec
 		Jump(dt);
 		myKeys[' '] = false;
 	}
-	UpdateJump(dt, heightMap, terrainSize);
+	UpdateJump(dt);
 
 	//Update camera direction based on mouse movement
 	if (Application::camera_yaw != 0)
@@ -190,7 +190,7 @@ void Camera3::Reset()
 	this->total_pitch = this->total_yaw = 0;
 }
 
-void Camera3::SetCameraType(CAM_TYPE type)
+/*void Camera3::SetCameraType(CAM_TYPE type)
 {
 	this->type = type;
 }
@@ -198,9 +198,9 @@ void Camera3::SetCameraType(CAM_TYPE type)
 Camera3::CAM_TYPE Camera3::GetCameraType()
 {
 	return type;
-}
+}*/
 
-void Camera3::MoveForward_Backward(double dt, bool dir, std::vector<unsigned char> &heightMap, const Vector3 &terrainSize) // 0 - Forward, 1 - Backwards
+void Camera3::MoveForward_Backward(double dt, bool dir) // 0 - Forward, 1 - Backwards
 {
 	Vector3 positionYTarget = target;
 	positionYTarget.y = position.y;
@@ -215,7 +215,7 @@ void Camera3::MoveForward_Backward(double dt, bool dir, std::vector<unsigned cha
 	position += view * speed * (float)dt;
 	target += view * speed * (float)dt;
 
-	if (!m_bJumping)
+	/*if (!m_bJumping)
 	{
 		// Terrain y-axis
 		float yDifference = target.y - position.y;
@@ -228,10 +228,10 @@ void Camera3::MoveForward_Backward(double dt, bool dir, std::vector<unsigned cha
 			position.y = TERRAIN_OFFSET + terrainSize.y * ReadHeightMap(heightMap, position.x/terrainSize.x, position.z/terrainSize.z);
 		}
 		target.y = position.y + yDifference;
-	}
+	}*/
 }
 
-void Camera3::MoveLeft_Right(double dt, bool dir, std::vector<unsigned char> &heightMap, const Vector3 &terrainSize)		// 0 - Left, 1 - Right
+void Camera3::MoveLeft_Right(double dt, bool dir)		// 0 - Left, 1 - Right
 {
 	Vector3 positionYTarget = target;
 	positionYTarget.y = position.y;
@@ -250,7 +250,7 @@ void Camera3::MoveLeft_Right(double dt, bool dir, std::vector<unsigned char> &he
 	position += right * speed * (float)dt;
 	target += right * speed * (float)dt;
 
-	if (!m_bJumping)
+	/*if (!m_bJumping)
 	{
 		// Terrain y-axis
 		float yDifference = target.y - position.y;
@@ -263,10 +263,10 @@ void Camera3::MoveLeft_Right(double dt, bool dir, std::vector<unsigned char> &he
 			position.y = TERRAIN_OFFSET + terrainSize.y * ReadHeightMap(heightMap, position.x/terrainSize.x, position.z/terrainSize.z);
 		}
 		target.y = position.y + yDifference;
-	}
+	}*/
 }
 
-void Camera3::MoveUp_Down(double dt, bool dir, std::vector<unsigned char> &heightMap, const Vector3 &terrainSize)
+void Camera3::MoveUp_Down(double dt, bool dir)
 {
 	float speed = CAMERA_SPEED;
 
@@ -357,9 +357,9 @@ void Camera3::SpinCounterClockwise(const double dt)
 	up = rotate * up;
 }
 
-void Camera3::Crouch(const double dt, std::vector<unsigned char> &heightMap, const Vector3 &terrainSize)
+void Camera3::Crouch(const double dt)
 {
-	if (dt > 0)
+	/*if (dt > 0)
 	{
 		CAMERA_SPEED = 50.f;
 		float crouchY = ((TERRAIN_OFFSET + terrainSize.y * ReadHeightMap(heightMap, position.x/terrainSize.x, position.z/terrainSize.z)) - CROUCH_OFFSET);
@@ -393,7 +393,7 @@ void Camera3::Crouch(const double dt, std::vector<unsigned char> &heightMap, con
 				target.y = normalY + yDifference;
 			}
 		}
-	}
+	}*/
 }
 
 void Camera3::Pitch(const double dt)
@@ -425,33 +425,33 @@ void Camera3::Roll(const double dt)
 
 }
 
-void Camera3::Walk(const double dt, std::vector<unsigned char> &heightMap, const Vector3 &terrainSize)
+void Camera3::Walk(const double dt)
 {
 	if (dt > 0)
 	{
-		MoveForward_Backward(dt, false, heightMap, terrainSize);
+		MoveForward_Backward(dt, false);
 	}
 	else if (dt < 0)
 	{
-		MoveForward_Backward(abs(dt), true, heightMap, terrainSize);
+		MoveForward_Backward(abs(dt), true);
 	}
 }
 
-void Camera3::Strafe(const double dt, std::vector<unsigned char> &heightMap, const Vector3 &terrainSize)
+void Camera3::Strafe(const double dt)
 {
 	if (dt > 0)
 	{
-		MoveLeft_Right(dt, true, heightMap, terrainSize);
+		MoveLeft_Right(dt, true);
 	}
 	else if (dt < 0)
 	{
-		MoveLeft_Right(abs(dt), false, heightMap, terrainSize);
+		MoveLeft_Right(abs(dt), false);
 	}
 }
 
 void Camera3::Jump(const double dt)
 {
-	if (!m_bJumping)
+	/*if (!m_bJumping)
 	{
 		m_bJumping = true;
 
@@ -463,12 +463,12 @@ void Camera3::Jump(const double dt)
 		{
 			JumpVel = JUMPMAXSPEED;
 		}
-	}
+	}*/
 }
 
-void Camera3::UpdateJump(const double dt, std::vector<unsigned char> &heightMap, const Vector3 &terrainSize)
+void Camera3::UpdateJump(const double dt)
 {
-	if(m_bJumping)
+	/*if(m_bJumping)
 	{
 		// Factor in gravity
 		JumpVel += GRAVITY * dt;
@@ -487,5 +487,5 @@ void Camera3::UpdateJump(const double dt, std::vector<unsigned char> &heightMap,
 			JumpVel = 0.f;
 			m_bJumping = false;
 		}
-	}
+	}*/
 }

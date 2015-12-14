@@ -6,7 +6,7 @@
 
 class CTransform
 {
-private:
+public:
 	Vector3 m_translate, m_rotate, m_scale;
 	Mtx44 m_transformation;
 

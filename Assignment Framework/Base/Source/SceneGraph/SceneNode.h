@@ -3,8 +3,7 @@
 
 #include "..\Object\GameObject.h"
 
-class CSceneNode :
-	public CGameObject
+class CSceneNode : public CGameObject
 {
 public:
 	CSceneNode();
