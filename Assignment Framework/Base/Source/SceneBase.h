@@ -12,6 +12,7 @@
 #include <queue>
 #include "Object\GameObject.h"
 
+using std::ostringstream;
 using std::queue;
 
 class SceneBase : public Scene

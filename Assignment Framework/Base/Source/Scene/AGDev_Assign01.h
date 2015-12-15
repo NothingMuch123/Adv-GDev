@@ -11,7 +11,8 @@ class AGDev_Assign01 : public SceneBase
 public:
 	enum MESH_TYPE
 	{
-		MESH_CUBE = 0,
+		MESH_TEXT = 0,
+		MESH_CUBE,
 		MESH_CONE,
 		NUM_MESH,
 	};

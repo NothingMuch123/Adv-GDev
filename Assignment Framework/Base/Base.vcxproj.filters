@@ -136,7 +136,7 @@
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="Source\SceneGraph\SceneNode.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>SceneGraph</Filter>
     </ClCompile>
     <ClCompile Include="Source\Character\FirstPerson.cpp">
       <Filter>Character</Filter>
@@ -249,7 +249,7 @@
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="Source\SceneGraph\SceneNode.h">
-      <Filter>Header Files</Filter>
+      <Filter>SceneGraph</Filter>
     </ClInclude>
     <ClInclude Include="Source\Character\FirstPerson.h">
       <Filter>Character</Filter>

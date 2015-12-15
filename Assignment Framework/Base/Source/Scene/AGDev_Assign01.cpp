@@ -75,6 +75,13 @@ void AGDev_Assign01::Render()
 	// Render SceneBase
 	SceneBase::Render();
 
+
+	SetHUD(true);
+	ostringstream sFPS;
+	sFPS << "FPS: " << m_fps;
+	RenderTextOnScreen(m_meshList[MESH_TEXT], sFPS.str(), Color(0, 1, 0), 20, 0, 0);
+	SetHUD(false);
+
 	// Not supposed to have any other rendering codes here as Scenebase handles it
 	// Alternative solution is to render scenegraph here instead as render list does not take into account parent and child nodes
 }
@@ -144,6 +151,8 @@ void AGDev_Assign01::SetHUD(const bool m_bHUDmode) // Remember to call this in p
 
 void AGDev_Assign01::initMesh()
 {
+	m_meshList[MESH_TEXT] = MeshBuilder::GenerateText("Calibri font", 16, 16);
+	m_meshList[MESH_TEXT]->textureID[0] = LoadTGA("Image\\calibri.tga");
 	m_meshList[MESH_CUBE] = MeshBuilder::GenerateCube("Cube", Color(0, 1, 0), 1.f);
 	m_meshList[MESH_CONE] = MeshBuilder::GenerateCone("Cone", Color(1, 0, 0), 36, 0.5f, 1.f);
 }
