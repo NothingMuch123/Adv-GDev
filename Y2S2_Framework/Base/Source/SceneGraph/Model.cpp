@@ -66,8 +66,8 @@ void CModel::Draw(bool m_bLight)
 {
 	theArrayOfMeshes[m_iCurrentResolution]->Render();
 
-	//if (m_cModelMesh)
-		//m_cModelMesh->Render();
+	if (m_cModelMesh)
+		m_cModelMesh->Render();
 }
 
 void CModel::SetColor(const float red, const float green, const float blue)
