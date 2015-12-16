@@ -24,6 +24,9 @@
     <ClCompile Include="Source\LoadOBJ.cpp" />
     <ClCompile Include="Source\LoadTGA.cpp" />
     <ClCompile Include="Source\main.cpp" />
+    <ClCompile Include="Source\MenuManager\Menu.cpp" />
+    <ClCompile Include="Source\MenuManager\MenuManager.cpp" />
+    <ClCompile Include="Source\MenuManager\UIButton.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshBuilder.cpp" />
     <ClCompile Include="Source\Minimap.cpp" />
@@ -61,6 +64,9 @@
     <ClInclude Include="Source\LoadOBJ.h" />
     <ClInclude Include="Source\LoadTGA.h" />
     <ClInclude Include="Source\Material.h" />
+    <ClInclude Include="Source\MenuManager\Menu.h" />
+    <ClInclude Include="Source\MenuManager\MenuManager.h" />
+    <ClInclude Include="Source\MenuManager\UIButton.h" />
     <ClInclude Include="Source\Mesh.h" />
     <ClInclude Include="Source\MeshBuilder.h" />
     <ClInclude Include="Source\Minimap.h" />

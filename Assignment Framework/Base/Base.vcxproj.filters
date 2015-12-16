@@ -49,10 +49,10 @@
     <Filter Include="Projectile">
       <UniqueIdentifier>{9858a634-880c-4c64-93e5-cea65adc4ac6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Menu">
+    <Filter Include="MenuManager">
       <UniqueIdentifier>{f1b45ecb-10d8-4852-800c-7720af394189}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Menu\Menus">
+    <Filter Include="MenuManager\Menus">
       <UniqueIdentifier>{a830c8eb-4a51-4dfa-bb78-ffada7d6fa5f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -155,6 +155,15 @@
     </ClCompile>
     <ClCompile Include="Source\Projectile\Projectile.cpp">
       <Filter>Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MenuManager\MenuManager.cpp">
+      <Filter>MenuManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MenuManager\Menu.cpp">
+      <Filter>MenuManager\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MenuManager\UIButton.cpp">
+      <Filter>MenuManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -268,6 +277,15 @@
     </ClInclude>
     <ClInclude Include="Source\Projectile\Projectile.h">
       <Filter>Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MenuManager\MenuManager.h">
+      <Filter>MenuManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MenuManager\Menu.h">
+      <Filter>MenuManager\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MenuManager\UIButton.h">
+      <Filter>MenuManager</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
