@@ -6,6 +6,7 @@
 
 using std::vector;
 
+class CGrid;
 class AGDev_Assign01;
 
 class CSceneNode : public CGameObject
@@ -14,6 +15,7 @@ public:
 	enum E_NODE_TYPE
 	{
 		NODE_NONE = 0,
+		NODE_TEST,
 		NUM_NODE,
 	};
 
@@ -26,6 +28,9 @@ public:
 
 	// Setters and Getters
 	vector<CSceneNode*>& GetChildren();
+
+	void SetLocation(CGrid* grid);
+	CGrid* GetLocation();
 	
 	void SetType(E_NODE_TYPE type);
 	E_NODE_TYPE GetType();
@@ -37,6 +42,12 @@ public:
 
 	CSceneNode* Search(E_NODE_TYPE searchType);
 
+	// Check a position for collision with objects and its child
+	bool CheckForCollision(Vector3 pos);
+
+	// Check two positions for collision with objects in any of the grid
+	int CheckForCollision(Vector3 position_start, Vector3 position_end, Vector3 &Hit);
+
 private:
 	// Check where a line segment between two positions intersects a plane
 	int GetIntersection(float fDst1, float fDst2, Vector3 P1, Vector3 P2, Vector3 &Hit);
@@ -46,6 +57,7 @@ private:
 private:
 	vector<CSceneNode*> m_children;
 	E_NODE_TYPE m_type;
+	CGrid* m_location; // Grid that stores this gameobject
 };
 
 #endif

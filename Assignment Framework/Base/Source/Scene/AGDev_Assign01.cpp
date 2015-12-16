@@ -12,6 +12,10 @@
 AGDev_Assign01::AGDev_Assign01(int width, int height)
 	: SceneBase(width, height)
 	, test(NULL)
+	, nodeTest(NULL)
+	, m_char(NULL)
+	, m_spatialPartition(NULL)
+	, m_projList(NULL)
 {
 	for (int i = 0; i < NUM_MESH; ++i)
 	{
@@ -25,6 +29,21 @@ AGDev_Assign01::~AGDev_Assign01()
 	{
 		delete test;
 		test = NULL;
+	}
+	if (nodeTest)
+	{
+		delete nodeTest;
+		nodeTest = NULL;
+	}
+	if (m_spatialPartition)
+	{
+		delete m_spatialPartition;
+		m_spatialPartition = NULL;
+	}
+	if (m_char)
+	{
+		delete m_char;
+		m_char = NULL;
 	}
 }
 
@@ -47,17 +66,25 @@ void AGDev_Assign01::Init(int screenWidth, int screenHeight)
 	test->Init(m_meshList[MESH_CUBE], transform);
 	test->CCollider::Init(CCollider::CT_AABB, test->GetTransform(), CCollider::X_MIDDLE, CCollider::Y_MIDDLE, true);
 
+	nodeTest = new CSceneNode();
+	transform = new CTransform();
+	transform->Init(Vector3(0, 10, -20), Vector3(), Vector3(20,20,20));
+	nodeTest->Init(CSceneNode::NODE_TEST, m_meshList[MESH_CUBE], transform);
+
 	// Third person player
 	m_char = new CThirdPerson();
 	Camera3* view = new Camera3();
 	view->Init(Vector3(0, 10, CThirdPerson::S_OFFSET_TARGET), Vector3(0, 10, 0), Vector3(0, 1, 0));
 	transform = new CTransform();
-	transform->Init(Vector3(0, 10, 10), Vector3(), Vector3(20,20,20));
-	m_char->Init(view, m_meshList[MESH_CONE], transform);
+	transform->Init(Vector3(0, 10, CThirdPerson::S_OFFSET_TARGET), Vector3(), Vector3(20,20,20));
+	m_char->Init(CSceneNode::NODE_TEST, view, m_meshList[MESH_CONE], transform);
 
 	// Spatial partition
 	m_spatialPartition = new CSpatialPartition();
 	m_spatialPartition->Init(5, 5, 1000.f, 1000.f, m_meshList[MESH_CUBE]);
+
+	//m_spatialPartition->AddObject(m_char);
+	m_spatialPartition->AddObject(nodeTest);
 
 	m_camera = m_char->GetTPView();
 }
@@ -67,6 +94,20 @@ void AGDev_Assign01::Update(CGameStateManager* GSM, double dt)
 	// Update SceneBase
 	SceneBase::Update(dt);
 
+	for (vector<CProjectile*>::iterator it = m_projList.begin(); it != m_projList.end(); ++it)
+	{
+		CProjectile* proj = *it;
+		if (proj)
+		{
+			proj->Update(dt);
+			Vector3 projPos_Start = proj->GetTransform().m_translate;
+			if (m_spatialPartition->CheckForCollision(projPos_Start))
+			{
+				proj->Reset();
+			}
+		}
+	}
+
 	m_fps = (float)(1.f / dt);
 }
 
@@ -75,24 +116,34 @@ void AGDev_Assign01::Render()
 	// Render SceneBase
 	SceneBase::Render();
 
+	// Render target
 	CGameObject* target = new CGameObject();
 	CTransform* transform = new CTransform();
 	transform->Init(m_char->GetTPView()->target, Vector3(), Vector3(5, 5, 5));
 	target->Init(m_meshList[MESH_CUBE], transform);
 	RenderGameObject(target, m_lightEnabled);
 
+	RenderGameObject(nodeTest, m_lightEnabled);
+
 	RenderSkybox();
 	RenderGround();
 
 	RenderGameObject(test, m_lightEnabled);
 	RenderGameObject(m_char, m_lightEnabled);
+	//RenderGameObject(m_char->GetLocation(), m_lightEnabled);
+
+	// Render projectile
+	for (vector<CProjectile*>::iterator it = m_projList.begin(); it != m_projList.end(); ++it)
+	{
+		CProjectile* proj = *it;
+		RenderGameObject(proj, m_lightEnabled);
+	}
 
 	// Render spatial partition
 	/*vector<CGrid*> gridList = m_spatialPartition->GetGridList();
 	for (int i = 0; i < gridList.size(); ++i)
 	{
 		RenderGameObject(gridList[i], m_lightEnabled);
-		//m_renderList.push(gridList[i]);
 	}*/
 
 	//SetHUD(true);
@@ -137,6 +188,17 @@ void AGDev_Assign01::ProcessKeys(double dt, bool* keys)
 	{
 		m_char->MoveRight(dt);
 	}
+	m_spatialPartition->UpdateObject(m_char);
+
+	if (keys[CGameStateManager::KEY_SHOOT_1])
+	{
+		CProjectile* bullet = new CProjectile();
+		Vector3 dir = (m_char->GetTPView()->target - m_char->GetTPView()->position).Normalized();
+		CTransform* transform = new CTransform();
+		transform->Init(m_char->GetTPView()->position, Vector3(), Vector3(5, 5, 5));
+		bullet->Init(dir, 100.f, m_meshList[MESH_SPHERE], transform);
+		m_projList.push_back(bullet);
+	}
 }
 
 void AGDev_Assign01::ProcessMouse(double dt, float yaw, float pitch)
@@ -179,6 +241,7 @@ void AGDev_Assign01::initMesh()
 	m_meshList[MESH_TEXT]->textureID[0] = LoadTGA("Image\\calibri.tga");
 	m_meshList[MESH_CUBE] = MeshBuilder::GenerateCube("Cube", Color(0, 1, 0), 1.f);
 	m_meshList[MESH_CONE] = MeshBuilder::GenerateCone("Cone", Color(1, 0, 0), 36, 0.5f, 1.f);
+	m_meshList[MESH_SPHERE] = MeshBuilder::GenerateSphere("Sphere", Color(0, 0, 1), 18, 36, 0.5f);
 
 	// Skybox
 	m_meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("LEFT", Color(1, 1, 1), 1.f);

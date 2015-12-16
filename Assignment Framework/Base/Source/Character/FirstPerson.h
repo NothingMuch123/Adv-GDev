@@ -1,16 +1,16 @@
 #ifndef _FIRSTPESON_H_
 #define _FIRSTPESON_H_
 
-#include "..\Object\GameObject.h"
+#include "..\SceneGraph\SceneNode.h"
 #include "..\Camera3.h"
 
-class CFirstPerson : public CGameObject
+class CFirstPerson : public CSceneNode
 {
 public:
 	CFirstPerson();
 	virtual ~CFirstPerson();
 
-	virtual void Init(Camera3* view, Mesh* mesh, CTransform* transform, bool active = true, bool render = true);
+	virtual void Init(E_NODE_TYPE type, Camera3* view, Mesh* mesh, CTransform* transform, bool active = true, bool render = true);
 
 	void SetView(Camera3* view);
 	Camera3* GetView();

@@ -29,6 +29,20 @@ void CGrid::Reset()
 	m_nodeList.clear();
 }
 
+void CGrid::Remove(CSceneNode * object)
+{
+	for (vector<CSceneNode*>::iterator it = m_nodeList.begin(); it != m_nodeList.end(); ++it)
+	{
+		CSceneNode* node = *it;
+		if (node == object)
+		{
+			m_nodeList.erase(it);
+			object->SetLocation(NULL);
+			break;
+		}
+	}
+}
+
 vector<CSceneNode*>& CGrid::GetList()
 {
 	return m_nodeList;
@@ -40,5 +54,6 @@ void CGrid::AddToList(CSceneNode * node)
 	{
 		return;
 	}
+	node->SetLocation(this);
 	m_nodeList.push_back(node);
 }

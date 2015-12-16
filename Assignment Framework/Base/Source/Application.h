@@ -2,7 +2,6 @@
 #define APPLICATION_H
 
 #include "timer.h"
-#include "SceneTerrain.h"
 #include "Scene\AGDev_Assign01.h"
 #include "GameStateManager\GameStateManager.h"
 

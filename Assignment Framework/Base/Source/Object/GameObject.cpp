@@ -1,7 +1,7 @@
 #include "GameObject.h"
 #include "..\SpatialPartition\Grid.h"
 
-CGameObject::CGameObject() : CObject(), CCollider(), m_transform(), m_location(NULL)
+CGameObject::CGameObject() : CObject(), CCollider(), m_transform()
 {
 }
 
@@ -13,6 +13,7 @@ void CGameObject::Init(Mesh* mesh, CTransform* transform, bool active, bool rend
 {
 	CObject::Init(mesh, active, render);
 	m_transform = *transform;
+	CCollider::Init(CT_AABB, m_transform, X_MIDDLE, Y_BOTTOM, true);
 }
 
 void CGameObject::Update(const double dt)

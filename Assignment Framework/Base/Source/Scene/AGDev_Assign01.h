@@ -4,6 +4,7 @@
 #include "..\SceneBase.h"
 #include "..\Character\ThirdPerson.h"
 #include "..\SpatialPartition\SpatialPartition.h"
+#include "..\Projectile\Projectile.h"
 
 class CGameStateManager;
 
@@ -14,6 +15,7 @@ public:
 	{
 		MESH_TEXT = 0,
 		MESH_CUBE,
+		MESH_SPHERE,
 		MESH_CONE,
 
 		// Skybox
@@ -57,11 +59,15 @@ private:
 private:
 	Mesh* m_meshList[NUM_MESH];
 	CGameObject* test;
+	CSceneNode* nodeTest;
 
 	CThirdPerson* m_char;
 
 	// Spatial partition
 	CSpatialPartition* m_spatialPartition;
+
+	// Projectile
+	vector<CProjectile*> m_projList;
 
 	// Sound
 	irrklang::ISoundEngine *sound;

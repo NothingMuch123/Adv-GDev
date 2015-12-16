@@ -17,6 +17,9 @@ public:
 		KEY_MOVE_BACKWARD,
 		KEY_MOVE_LEFT,
 		KEY_MOVE_RIGHT,
+
+		KEY_SHOOT_1, // Left mouse shoot
+		KEY_SHOOT_2, // Right mouse shoot
 		NUM_KEY,
 	};
 	CGameStateManager();

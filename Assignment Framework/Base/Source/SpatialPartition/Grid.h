@@ -13,6 +13,8 @@ public:
 	virtual void Update(const double dt);
 	virtual void Reset();
 
+	void Remove(CSceneNode* object);
+
 	vector<CSceneNode*>& GetList();
 
 	void AddToList(CSceneNode* node);

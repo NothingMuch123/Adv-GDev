@@ -206,10 +206,11 @@ bool Application::GetMouseUpdate(double dt)
 
 	if(glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 	{
-
+		m_GSM->HandleEvents(CGameStateManager::KEY_SHOOT_1);
 	}
 	if(glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
 	{
+		m_GSM->HandleEvents(CGameStateManager::KEY_SHOOT_2);
 	}
 
 	return false;

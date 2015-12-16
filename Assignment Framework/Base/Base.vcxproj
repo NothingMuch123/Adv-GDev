@@ -16,7 +16,6 @@
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\Camera2.cpp" />
     <ClCompile Include="Source\Camera3.cpp" />
-    <ClCompile Include="Source\Character.cpp" />
     <ClCompile Include="Source\Character\FirstPerson.cpp" />
     <ClCompile Include="Source\Character\ThirdPerson.cpp" />
     <ClCompile Include="Source\Entity.cpp" />
@@ -33,7 +32,7 @@
     <ClCompile Include="Source\Object\GameObject.cpp" />
     <ClCompile Include="Source\Object\Object.cpp" />
     <ClCompile Include="Source\Object\Transform.cpp" />
-    <ClCompile Include="Source\Projectile.cpp" />
+    <ClCompile Include="Source\Projectile\Projectile.cpp" />
     <ClCompile Include="Source\SceneBase.cpp" />
     <ClCompile Include="Source\SceneGraph\SceneNode.cpp" />
     <ClCompile Include="Source\Scene\AGDev_Assign01.cpp" />
@@ -45,7 +44,6 @@
     <ClCompile Include="Source\State\PlayState.cpp" />
     <ClCompile Include="Source\Target.cpp" />
     <ClCompile Include="Source\Utility.cpp" />
-    <ClCompile Include="Source\Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\AmmoCrate.h" />
@@ -53,7 +51,6 @@
     <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\Camera2.h" />
     <ClInclude Include="Source\Camera3.h" />
-    <ClInclude Include="Source\Character.h" />
     <ClInclude Include="Source\Character\FirstPerson.h" />
     <ClInclude Include="Source\Character\ThirdPerson.h" />
     <ClInclude Include="Source\Entity.h" />
@@ -72,7 +69,7 @@
     <ClInclude Include="Source\Object\GameObject.h" />
     <ClInclude Include="Source\Object\Object.h" />
     <ClInclude Include="Source\Object\Transform.h" />
-    <ClInclude Include="Source\Projectile.h" />
+    <ClInclude Include="Source\Projectile\Projectile.h" />
     <ClInclude Include="Source\Scene.h" />
     <ClInclude Include="Source\SceneBase.h" />
     <ClInclude Include="Source\SceneGraph\SceneNode.h" />
@@ -86,7 +83,6 @@
     <ClInclude Include="Source\Target.h" />
     <ClInclude Include="Source\Utility.h" />
     <ClInclude Include="Source\Vertex.h" />
-    <ClInclude Include="Source\Weapon.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{9B172635-4E2B-46F1-A403-08F4194D00F5}</ProjectGuid>

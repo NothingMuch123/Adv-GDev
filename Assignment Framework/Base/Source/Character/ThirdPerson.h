@@ -11,7 +11,7 @@ public:
 	CThirdPerson();
 	virtual ~CThirdPerson();
 
-	virtual void Init(Camera3* view, Mesh* mesh, CTransform* transform, bool active = true, bool render = true);
+	virtual void Init(E_NODE_TYPE type, Camera3* view, Mesh* mesh, CTransform* transform, bool active = true, bool render = true);
 	
 	void Look(double dt, float yaw, float pitch);
 	void MoveForward(double dt);

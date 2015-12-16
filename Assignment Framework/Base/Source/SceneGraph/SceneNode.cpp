@@ -5,6 +5,7 @@
 CSceneNode::CSceneNode()
 	: m_children(NULL)
 	, m_type(NODE_NONE)
+	, m_location(NULL)
 {
 }
 
@@ -50,6 +51,16 @@ void CSceneNode::Reset()
 vector<CSceneNode*>& CSceneNode::GetChildren()
 {
 	return m_children;
+}
+
+void CSceneNode::SetLocation(CGrid * grid)
+{
+	m_location = grid;
+}
+
+CGrid * CSceneNode::GetLocation()
+{
+	return m_location;
 }
 
 void CSceneNode::SetType(E_NODE_TYPE type)
@@ -121,4 +132,82 @@ CSceneNode * CSceneNode::Search(E_NODE_TYPE searchType)
 			}
 		}
 	}
+}
+
+bool CSceneNode::CheckForCollision(Vector3 pos)
+{
+	Vector3 ObjMax = GetTransform().GetMtx() * Vector3(1, 1, 1);
+	Vector3 ObjMin = GetTransform().GetMtx() * Vector3(-1, -1, -1);
+
+	if (pos.x < ObjMin.x || pos.x > ObjMax.x || pos.y < ObjMin.y || pos.y > ObjMax.y || pos.z < ObjMin.z || pos.z > ObjMax.z)
+	{
+		return false;
+	}
+	return true;
+}
+
+int CSceneNode::CheckForCollision(Vector3 position_start, Vector3 position_end, Vector3 & Hit)
+{
+	Vector3 ObjMax = GetTransform().GetMtx() * Vector3(1, 1, 1);
+	Vector3 ObjMin = GetTransform().GetMtx() * Vector3(-1, -1, -1);
+
+	if (position_end.x < ObjMin.x && position_start.x < ObjMin.x)
+		return false;
+	if (position_end.x > ObjMax.x && position_start.x > ObjMax.x)
+		return false;
+	if (position_end.y < ObjMin.y && position_start.y < ObjMin.y)
+		return false;
+	if (position_end.y > ObjMax.y && position_start.y > ObjMax.y)
+		return false;
+	if (position_end.z < ObjMin.z && position_start.z < ObjMin.z)
+		return false;
+	if (position_end.z > ObjMax.z && position_start.z > ObjMax.z)
+		return false;
+	if (position_start.x > ObjMin.x && position_start.x < ObjMax.x &&
+		position_start.y > ObjMin.y && position_start.y < ObjMax.y &&
+		position_start.z > ObjMin.z && position_start.z < ObjMax.z)
+	{
+		Hit = position_start;
+		return true;
+	}
+	if ((GetIntersection(position_start.x - ObjMin.x, position_end.x - ObjMin.x, position_start, position_end, Hit) && InBox(Hit, ObjMin, ObjMax, 1))
+		|| (GetIntersection(position_start.y - ObjMin.y, position_end.y - ObjMin.y, position_start, position_end, Hit) && InBox(Hit, ObjMin, ObjMax, 2))
+		|| (GetIntersection(position_start.z - ObjMin.z, position_end.z - ObjMin.z, position_start, position_end, Hit) && InBox(Hit, ObjMin, ObjMax, 3))
+		|| (GetIntersection(position_start.x - ObjMax.x, position_end.x - ObjMax.x, position_start, position_end, Hit) && InBox(Hit, ObjMin, ObjMax, 1))
+		|| (GetIntersection(position_start.y - ObjMax.y, position_end.y - ObjMax.y, position_start, position_end, Hit) && InBox(Hit, ObjMin, ObjMax, 2))
+		|| (GetIntersection(position_start.z - ObjMax.z, position_end.z - ObjMax.z, position_start, position_end, Hit) && InBox(Hit, ObjMin, ObjMax, 3)))
+		return true;
+
+	return false;
+}
+
+int CSceneNode::GetIntersection(float fDst1, float fDst2, Vector3 P1, Vector3 P2, Vector3 & Hit)
+{
+	if ((fDst1 * fDst2) >= 0.f)
+	{
+		return 0;
+	}
+	if (fDst1 == fDst2)
+	{
+		return 0;
+	}
+	Hit = P1 + (P2 - P1) * (-fDst1 / (fDst2 - fDst1));
+	return 1;
+}
+
+int CSceneNode::InBox(Vector3 Hit, Vector3 B1, Vector3 B2, const int Axis)
+{
+	if (Axis == 1 && Hit.z > B1.z && Hit.z < B2.z && Hit.y > B1.y && Hit.y < B2.y)
+	{
+		return 1;
+	}
+	if (Axis == 2 && Hit.z > B1.z && Hit.z < B2.z && Hit.x > B1.x && Hit.x < B2.x)
+	{
+		return 1;
+	}
+	if (Axis == 3 && Hit.x > B1.x && Hit.x < B2.x && Hit.y > B1.y && Hit.y < B2.y)
+	{
+		return 1;
+	}
+	return 0;
 }

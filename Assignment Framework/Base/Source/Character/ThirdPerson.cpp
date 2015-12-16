@@ -20,9 +20,9 @@ CThirdPerson::~CThirdPerson()
 	}
 }
 
-void CThirdPerson::Init(Camera3 * view, Mesh * mesh, CTransform * transform, bool active, bool render)
+void CThirdPerson::Init(E_NODE_TYPE type, Camera3 * view, Mesh * mesh, CTransform * transform, bool active, bool render)
 {
-	CFirstPerson::Init(view, mesh, transform, active, render);
+	CFirstPerson::Init(type, view, mesh, transform, active, render);
 	
 	// Generate third person cam
 	m_TPview = new Camera3();

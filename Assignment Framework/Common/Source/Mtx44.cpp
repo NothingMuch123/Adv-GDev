@@ -138,59 +138,59 @@ Return a new matrix that is an inverse
 /******************************************************************************/
 Mtx44 Mtx44::GetInverse() const throw( DivideByZero ) {
 	float a0 = a[ 0]*a[ 5] - a[ 1]*a[ 4];
-    float a1 = a[ 0]*a[ 6] - a[ 2]*a[ 4];
-    float a2 = a[ 0]*a[ 7] - a[ 3]*a[ 4];
-    float a3 = a[ 1]*a[ 6] - a[ 2]*a[ 5];
-    float a4 = a[ 1]*a[ 7] - a[ 3]*a[ 5];
-    float a5 = a[ 2]*a[ 7] - a[ 3]*a[ 6];
-    float b0 = a[ 8]*a[13] - a[ 9]*a[12];
-    float b1 = a[ 8]*a[14] - a[10]*a[12];
-    float b2 = a[ 8]*a[15] - a[11]*a[12];
-    float b3 = a[ 9]*a[14] - a[10]*a[13];
-    float b4 = a[ 9]*a[15] - a[11]*a[13];
-    float b5 = a[10]*a[15] - a[11]*a[14];
+	float a1 = a[ 0]*a[ 6] - a[ 2]*a[ 4];
+	float a2 = a[ 0]*a[ 7] - a[ 3]*a[ 4];
+	float a3 = a[ 1]*a[ 6] - a[ 2]*a[ 5];
+	float a4 = a[ 1]*a[ 7] - a[ 3]*a[ 5];
+	float a5 = a[ 2]*a[ 7] - a[ 3]*a[ 6];
+	float b0 = a[ 8]*a[13] - a[ 9]*a[12];
+	float b1 = a[ 8]*a[14] - a[10]*a[12];
+	float b2 = a[ 8]*a[15] - a[11]*a[12];
+	float b3 = a[ 9]*a[14] - a[10]*a[13];
+	float b4 = a[ 9]*a[15] - a[11]*a[13];
+	float b5 = a[10]*a[15] - a[11]*a[14];
 
-    float det = a0*b5 - a1*b4 + a2*b3 + a3*b2 - a4*b1 + a5*b0;
+	float det = a0*b5 - a1*b4 + a2*b3 + a3*b2 - a4*b1 + a5*b0;
 	if(abs(det) < Math::EPSILON)
 		throw DivideByZero();
-    Mtx44 inverse;
+	Mtx44 inverse;
 	if (Math::FAbs(det) > Math::EPSILON)
-    {
-        inverse.a[ 0] = + a[ 5]*b5 - a[ 6]*b4 + a[ 7]*b3;
-        inverse.a[ 4] = - a[ 4]*b5 + a[ 6]*b2 - a[ 7]*b1;
-        inverse.a[ 8] = + a[ 4]*b4 - a[ 5]*b2 + a[ 7]*b0;
-        inverse.a[12] = - a[ 4]*b3 + a[ 5]*b1 - a[ 6]*b0;
-        inverse.a[ 1] = - a[ 1]*b5 + a[ 2]*b4 - a[ 3]*b3;
-        inverse.a[ 5] = + a[ 0]*b5 - a[ 2]*b2 + a[ 3]*b1;
-        inverse.a[ 9] = - a[ 0]*b4 + a[ 1]*b2 - a[ 3]*b0;
-        inverse.a[13] = + a[ 0]*b3 - a[ 1]*b1 + a[ 2]*b0;
-        inverse.a[ 2] = + a[13]*a5 - a[14]*a4 + a[15]*a3;
-        inverse.a[ 6] = - a[12]*a5 + a[14]*a2 - a[15]*a1;
-        inverse.a[10] = + a[12]*a4 - a[13]*a2 + a[15]*a0;
-        inverse.a[14] = - a[12]*a3 + a[13]*a1 - a[14]*a0;
-        inverse.a[ 3] = - a[ 9]*a5 + a[10]*a4 - a[11]*a3;
-        inverse.a[ 7] = + a[ 8]*a5 - a[10]*a2 + a[11]*a1;
-        inverse.a[11] = - a[ 8]*a4 + a[ 9]*a2 - a[11]*a0;
-        inverse.a[15] = + a[ 8]*a3 - a[ 9]*a1 + a[10]*a0;
+	{
+		inverse.a[ 0] = + a[ 5]*b5 - a[ 6]*b4 + a[ 7]*b3;
+		inverse.a[ 4] = - a[ 4]*b5 + a[ 6]*b2 - a[ 7]*b1;
+		inverse.a[ 8] = + a[ 4]*b4 - a[ 5]*b2 + a[ 7]*b0;
+		inverse.a[12] = - a[ 4]*b3 + a[ 5]*b1 - a[ 6]*b0;
+		inverse.a[ 1] = - a[ 1]*b5 + a[ 2]*b4 - a[ 3]*b3;
+		inverse.a[ 5] = + a[ 0]*b5 - a[ 2]*b2 + a[ 3]*b1;
+		inverse.a[ 9] = - a[ 0]*b4 + a[ 1]*b2 - a[ 3]*b0;
+		inverse.a[13] = + a[ 0]*b3 - a[ 1]*b1 + a[ 2]*b0;
+		inverse.a[ 2] = + a[13]*a5 - a[14]*a4 + a[15]*a3;
+		inverse.a[ 6] = - a[12]*a5 + a[14]*a2 - a[15]*a1;
+		inverse.a[10] = + a[12]*a4 - a[13]*a2 + a[15]*a0;
+		inverse.a[14] = - a[12]*a3 + a[13]*a1 - a[14]*a0;
+		inverse.a[ 3] = - a[ 9]*a5 + a[10]*a4 - a[11]*a3;
+		inverse.a[ 7] = + a[ 8]*a5 - a[10]*a2 + a[11]*a1;
+		inverse.a[11] = - a[ 8]*a4 + a[ 9]*a2 - a[11]*a0;
+		inverse.a[15] = + a[ 8]*a3 - a[ 9]*a1 + a[10]*a0;
 
-        float invDet = ((float)1)/det;
-        inverse.a[ 0] *= invDet;
-        inverse.a[ 1] *= invDet;
-        inverse.a[ 2] *= invDet;
-        inverse.a[ 3] *= invDet;
-        inverse.a[ 4] *= invDet;
-        inverse.a[ 5] *= invDet;
-        inverse.a[ 6] *= invDet;
-        inverse.a[ 7] *= invDet;
-        inverse.a[ 8] *= invDet;
-        inverse.a[ 9] *= invDet;
-        inverse.a[10] *= invDet;
-        inverse.a[11] *= invDet;
-        inverse.a[12] *= invDet;
-        inverse.a[13] *= invDet;
-        inverse.a[14] *= invDet;
-        inverse.a[15] *= invDet;
-    }
+		float invDet = ((float)1)/det;
+		inverse.a[ 0] *= invDet;
+		inverse.a[ 1] *= invDet;
+		inverse.a[ 2] *= invDet;
+		inverse.a[ 3] *= invDet;
+		inverse.a[ 4] *= invDet;
+		inverse.a[ 5] *= invDet;
+		inverse.a[ 6] *= invDet;
+		inverse.a[ 7] *= invDet;
+		inverse.a[ 8] *= invDet;
+		inverse.a[ 9] *= invDet;
+		inverse.a[10] *= invDet;
+		inverse.a[11] *= invDet;
+		inverse.a[12] *= invDet;
+		inverse.a[13] *= invDet;
+		inverse.a[14] *= invDet;
+		inverse.a[15] *= invDet;
+	}
 	return inverse;
 }
 

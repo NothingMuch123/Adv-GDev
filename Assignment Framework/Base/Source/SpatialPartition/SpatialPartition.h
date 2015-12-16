@@ -13,8 +13,14 @@ public:
 	void Update(const double dt);
 
 	void AddObject(CSceneNode* object);
+	void UpdateObject(CSceneNode* object);
 
+	CGrid* GetGrid(int col, int row);
 	vector<CGrid*>& GetGridList();
+
+	// Collision
+	bool CheckForCollision(Vector3 pos);
+	bool CheckForCollision(Vector3 pos_start, Vector3 pos_End);
 
 private:
 	vector<CGrid*> m_gridList;

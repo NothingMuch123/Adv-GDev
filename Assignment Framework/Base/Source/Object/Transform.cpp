@@ -105,13 +105,15 @@ Mtx44 & CTransform::GetMtx()
 	m_transformation.SetToIdentity();
 
 	Mtx44 tempMtx;
-	// Scale
-	tempMtx.SetToScale(m_scale.x, m_scale.y, m_scale.z);
-	m_transformation = m_transformation * tempMtx;
 
 	// Translate
 	tempMtx.SetToIdentity();
 	tempMtx.SetToTranslation(m_translate.x, m_translate.y, m_translate.z);
+	m_transformation = m_transformation * tempMtx;
+
+	// Scale
+	static const float S_OFFSET = 0.5f;
+	tempMtx.SetToScale(m_scale.x * S_OFFSET, m_scale.y * S_OFFSET, m_scale.z * S_OFFSET);
 	m_transformation = m_transformation * tempMtx;
 
 	return m_transformation;
