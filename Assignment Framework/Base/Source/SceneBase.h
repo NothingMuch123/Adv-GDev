@@ -11,7 +11,10 @@
 #include <vector>
 #include <queue>
 #include "Object\GameObject.h"
+#include <iostream>
 
+using std::cout;
+using std::endl;
 using std::ostringstream;
 using std::queue;
 
@@ -77,12 +80,14 @@ public:
 	virtual void Render();
 	virtual void Exit();
 	virtual void Reset();
-	virtual void ProcessKeys(bool* keys);
+	virtual void ProcessKeys(double dt, bool* keys);
+	virtual void ProcessMouse(double dt, float yaw, float pitch);
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMesh(Mesh *mesh, bool enableLight);
 	void RenderMeshIn2D(Mesh *mesh, bool enableLight, float size = 1.0f, float x = 0.0f, float y = 0.0f, float rotate = 0.f);
+	void RenderGameObject(CGameObject* go, bool enableLight);
 
 protected:
 	unsigned m_vertexArrayID;

@@ -43,6 +43,9 @@
     <Filter Include="Character">
       <UniqueIdentifier>{1da13837-c2e3-4cbe-b71c-b2412ebf024d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Spatial Partition">
+      <UniqueIdentifier>{6d1c8309-149c-4a14-ac6c-c898f745cdec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
@@ -143,6 +146,12 @@
     </ClCompile>
     <ClCompile Include="Source\Character\ThirdPerson.cpp">
       <Filter>Character</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SpatialPartition\Grid.cpp">
+      <Filter>Spatial Partition</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SpatialPartition\SpatialPartition.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -256,6 +265,12 @@
     </ClInclude>
     <ClInclude Include="Source\Character\ThirdPerson.h">
       <Filter>Character</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SpatialPartition\Grid.h">
+      <Filter>Spatial Partition</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SpatialPartition\SpatialPartition.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

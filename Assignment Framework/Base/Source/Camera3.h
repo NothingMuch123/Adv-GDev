@@ -37,17 +37,17 @@ public:
 	virtual void MoveUp_Down(double dt, bool dir);			// 0 - Up		| 1 - Down
 
 	// Basic methods
-	virtual void LookUp(const double dt);
-	virtual void LookDown(const double dt);
-	virtual void TurnLeft(const double dt);
-	virtual void TurnRight(const double dt);
+	virtual void LookUp(const double dt, float camera_pitch);
+	virtual void LookDown(const double dt, float camera_pitch);
+	virtual void TurnLeft(const double dt, float camera_yaw);
+	virtual void TurnRight(const double dt, float camera_yaw);
 	virtual void SpinClockwise(const double dt);
 	virtual void SpinCounterClockwise(const double dt);
 	virtual void Crouch(const double dt);
 
 	// Applied methods
-	virtual void Pitch(const double dt);
-	virtual void Yaw(const double dt);
+	virtual void Pitch(const double dt, float camera_pitch);
+	virtual void Yaw(const double dt, float camera_yaw);
 	virtual void Roll(const double dt);
 	virtual void Walk(const double dt);
 	virtual void Strafe(const double dt);

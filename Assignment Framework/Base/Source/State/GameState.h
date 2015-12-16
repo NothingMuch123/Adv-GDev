@@ -18,7 +18,7 @@ public:
 	virtual void Pause();
 	virtual void Resume();
 
-	virtual void ProcessKeys(bool* keys) = 0;
+	virtual void ProcessKeys(double dt, bool* keys) = 0;
 
 protected:
 	bool m_pause;

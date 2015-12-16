@@ -1,6 +1,7 @@
 #include "GameObject.h"
+#include "..\SpatialPartition\Grid.h"
 
-CGameObject::CGameObject() : CObject(), CCollider(), m_transform()
+CGameObject::CGameObject() : CObject(), CCollider(), m_transform(), m_location(NULL)
 {
 }
 

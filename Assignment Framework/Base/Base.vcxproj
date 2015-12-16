@@ -38,6 +38,8 @@
     <ClCompile Include="Source\SceneGraph\SceneNode.cpp" />
     <ClCompile Include="Source\Scene\AGDev_Assign01.cpp" />
     <ClCompile Include="Source\shader.cpp" />
+    <ClCompile Include="Source\SpatialPartition\Grid.cpp" />
+    <ClCompile Include="Source\SpatialPartition\SpatialPartition.cpp" />
     <ClCompile Include="Source\SpriteAnimation.cpp" />
     <ClCompile Include="Source\State\GameState.cpp" />
     <ClCompile Include="Source\State\PlayState.cpp" />
@@ -76,6 +78,8 @@
     <ClInclude Include="Source\SceneGraph\SceneNode.h" />
     <ClInclude Include="Source\Scene\AGDev_Assign01.h" />
     <ClInclude Include="Source\shader.hpp" />
+    <ClInclude Include="Source\SpatialPartition\Grid.h" />
+    <ClInclude Include="Source\SpatialPartition\SpatialPartition.h" />
     <ClInclude Include="Source\SpriteAnimation.h" />
     <ClInclude Include="Source\State\GameState.h" />
     <ClInclude Include="Source\State\PlayState.h" />

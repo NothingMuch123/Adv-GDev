@@ -5,7 +5,7 @@
 
 class CObject
 {
-private:
+protected:
 	Mesh* m_mesh;
 	bool m_render, m_active;
 

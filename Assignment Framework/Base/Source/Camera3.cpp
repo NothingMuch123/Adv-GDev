@@ -1,6 +1,7 @@
 #include "Camera3.h"
 #include "Application.h"
 #include "Mtx44.h"
+#include "Character\ThirdPerson.h"
 
 float Camera3::TERRAIN_OFFSET = 0.f;
 float Camera3::CAMERA_SPEED = 100.f;
@@ -115,11 +116,11 @@ void Camera3::Update(double dt)
 	//Update camera direction based on mouse movement
 	if (Application::camera_yaw != 0)
 	{
-		Yaw(dt);
+		//Yaw(dt);
 	}
 	if (Application::camera_pitch != 0)
 	{
-		Pitch(dt);
+		//Pitch(dt);
 	}
 
 	/*if(Application::IsKeyPressed(VK_LEFT))
@@ -285,9 +286,9 @@ void Camera3::UpdateStatus(unsigned char key)
 	myKeys[key] = true;
 }
 
-void Camera3::LookUp(const double dt)
+void Camera3::LookUp(const double dt, float camera_pitch)
 {
-	float pitch = (float)(-CAMERA_SPEED * Application::camera_pitch * (float)dt);
+	float pitch = (float)(-CAMERA_SPEED * camera_pitch * (float)dt);
 	Vector3 view = (target - position).Normalized();
 	Vector3 right = view.Cross(up);
 	right.y = 0;
@@ -296,12 +297,13 @@ void Camera3::LookUp(const double dt)
 	Mtx44 rotation;
 	rotation.SetToRotation(pitch, right.x, right.y, right.z);
 	view = rotation * view;
-	target = position + view;
+	target = position + (view * CThirdPerson::S_OFFSET_TARGET);
+	up = right.Cross(view).Normalized();
 }
 
-void Camera3::LookDown(const double dt)
+void Camera3::LookDown(const double dt, float camera_pitch)
 {
-	float pitch = (float)(-CAMERA_SPEED * Application::camera_pitch * (float)dt);
+	float pitch = (float)(-CAMERA_SPEED * camera_pitch * (float)dt);
 	Vector3 view = (target - position).Normalized();
 	Vector3 right = view.Cross(up);
 	right.y = 0;
@@ -310,35 +312,36 @@ void Camera3::LookDown(const double dt)
 	Mtx44 rotation;
 	rotation.SetToRotation(pitch, right.x, right.y, right.z);
 	view = rotation * view;
-	target = position + view;
-}
-
-void Camera3::TurnLeft(const double dt)
-{
-	Vector3 view = (target - position).Normalized();
-	float yaw = (float)(-CAMERA_SPEED * Application::camera_yaw * (float)dt);
-	Mtx44 rotation;
-	rotation.SetToRotation(yaw, 0,1,0);
-	view = rotation * view;
-	target = position + view;
-	Vector3 right = view.Cross(up);
-	right.y = 0;
-	right.Normalize();
+	target = position + (view * CThirdPerson::S_OFFSET_TARGET);
 	up = right.Cross(view).Normalized();
 }
 
-void Camera3::TurnRight(const double dt)
+void Camera3::TurnLeft(const double dt, float camera_yaw)
 {
 	Vector3 view = (target - position).Normalized();
-	float yaw = (float)(-CAMERA_SPEED * Application::camera_yaw * (float)dt);
+	float yaw = (float)(-CAMERA_SPEED * camera_yaw * (float)dt);
 	Mtx44 rotation;
 	rotation.SetToRotation(yaw, 0,1,0);
 	view = rotation * view;
-	target = position + view;
+	up = rotation * up;
+	target = position + (view * CThirdPerson::S_OFFSET_TARGET);
 	Vector3 right = view.Cross(up);
 	right.y = 0;
 	right.Normalize();
-	up = right.Cross(view).Normalized();
+}
+
+void Camera3::TurnRight(const double dt, float camera_yaw)
+{
+	Vector3 view = (target - position).Normalized();
+	float yaw = (float)(-CAMERA_SPEED * camera_yaw * (float)dt);
+	Mtx44 rotation;
+	rotation.SetToRotation(yaw, 0,1,0);
+	view = rotation * view;
+	up = rotation * up;
+	target = position + (view * CThirdPerson::S_OFFSET_TARGET);
+	Vector3 right = view.Cross(up);
+	right.y = 0;
+	right.Normalize();
 }
 
 void Camera3::SpinClockwise(const double dt)
@@ -396,27 +399,27 @@ void Camera3::Crouch(const double dt)
 	}*/
 }
 
-void Camera3::Pitch(const double dt)
+void Camera3::Pitch(const double dt, float camera_pitch)
 {
-	if (Application::camera_pitch > 0.0)
+	if (camera_pitch < 0.0)
 	{
-		LookUp(dt);
+		LookUp(dt, camera_pitch);
 	}
-	else if (Application::camera_pitch < 0.0)
+	else if (camera_pitch > 0.0)
 	{
-		LookDown(dt);
+		LookDown(dt, camera_pitch);
 	}
 }
 
-void Camera3::Yaw(const double dt)
+void Camera3::Yaw(const double dt, float camera_yaw)
 {
-	if (Application::camera_yaw > 0.0)
+	if (camera_yaw > 0.0)
 	{
-		TurnRight(dt);
+		TurnRight(dt, camera_yaw);
 	}
-	else if (Application::camera_yaw < 0.0)
+	else if (camera_yaw < 0.0)
 	{
-		TurnLeft(dt);
+		TurnLeft(dt, camera_yaw);
 	}
 }
 

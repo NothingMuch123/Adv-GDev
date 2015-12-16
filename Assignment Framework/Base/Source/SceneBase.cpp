@@ -286,24 +286,17 @@ void SceneBase::Render()
 	}
 
 	// Render everything in the queue before popping it out
-	while (m_renderList.size() > 0)
+	/*while (m_renderList.size() > 0)
 	{
 		CGameObject* go = m_renderList.front();
 
 		if (go) // Check if gameobject is valid
 		{
-			modelStack.PushMatrix();
-			modelStack.Translate(go->GetTransform().GetTranslate().x, go->GetTransform().GetTranslate().y, go->GetTransform().GetTranslate().z);
-			modelStack.Rotate(go->GetTransform().GetRotate().x, 1, 0, 0);
-			modelStack.Rotate(go->GetTransform().GetRotate().y, 0, 1, 0);
-			modelStack.Rotate(go->GetTransform().GetRotate().z, 0, 0, 1);
-			modelStack.Scale(go->GetTransform().GetScale().x, go->GetTransform().GetScale().y, go->GetTransform().GetScale().z);
-			RenderMesh(go->GetMesh(), m_lightEnabled);
-			modelStack.PopMatrix();
+			
 		}
 
 		m_renderList.pop();
-	}
+	}*/
 }
 
 void SceneBase::Exit()
@@ -316,7 +309,11 @@ void SceneBase::Reset()
 {
 }
 
-void SceneBase::ProcessKeys(bool* keys)
+void SceneBase::ProcessKeys(double dt, bool* keys)
+{
+}
+
+void SceneBase::ProcessMouse(double dt, float yaw, float pitch)
 {
 }
 
@@ -352,11 +349,12 @@ void SceneBase::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, fl
 	if(!mesh || mesh->textureID[0] <= 0)
 		return;
 	
-	/*glDisable(GL_DEPTH_TEST);
+	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
-	ortho.SetToOrtho(0, 80, 0, 60, -10, 10);
+	ortho.SetToOrtho(0, m_window_width, 0, m_window_height, -10, 10);
 	projectionStack.PushMatrix();
-	projectionStack.LoadMatrix(ortho);*/
+	projectionStack.LoadMatrix(ortho);
+
 	viewStack.PushMatrix();
 	viewStack.LoadIdentity();
 	modelStack.PushMatrix();
@@ -381,10 +379,10 @@ void SceneBase::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, fl
 	}
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
-	//projectionStack.PopMatrix();
+	projectionStack.PopMatrix();
 	viewStack.PopMatrix();
 	modelStack.PopMatrix();
-	//glEnable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST);
 }
 
 void SceneBase::RenderMesh(Mesh *mesh, bool enableLight)
@@ -484,4 +482,19 @@ void SceneBase::RenderMeshIn2D(Mesh *mesh, bool enableLight, float size, float x
 			modelStack.PopMatrix();
 		viewStack.PopMatrix();
 	projectionStack.PopMatrix();
+}
+
+void SceneBase::RenderGameObject(CGameObject * go, bool enableLight)
+{
+	if (go)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(go->GetTransform().GetTranslate().x, go->GetTransform().GetTranslate().y, go->GetTransform().GetTranslate().z);
+		modelStack.Rotate(go->GetTransform().GetRotate().x, 1, 0, 0);
+		modelStack.Rotate(go->GetTransform().GetRotate().y, 0, 1, 0);
+		modelStack.Rotate(go->GetTransform().GetRotate().z, 0, 0, 1);
+		modelStack.Scale(go->GetTransform().GetScale().x, go->GetTransform().GetScale().y, go->GetTransform().GetScale().z);
+		RenderMesh(go->GetMesh(), m_lightEnabled);
+		modelStack.PopMatrix();
+	}
 }

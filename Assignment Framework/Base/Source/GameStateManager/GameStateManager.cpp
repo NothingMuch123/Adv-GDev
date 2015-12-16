@@ -92,7 +92,7 @@ void CGameStateManager::Update(const double dt)
 {
 	if (!m_states.empty())
 	{
-		m_states.back()->ProcessKeys(m_keys);
+		m_states.back()->ProcessKeys(dt, m_keys);
 		resetKeys();
 		m_states.back()->Update(dt);
 	}

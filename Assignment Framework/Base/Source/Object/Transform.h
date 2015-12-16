@@ -35,6 +35,8 @@ public:
 	void SetScaleY(float y);
 	void SetScaleZ(float z);
 	Vector3& GetScale();
+
+	Mtx44& GetMtx();
 };
 
 #endif

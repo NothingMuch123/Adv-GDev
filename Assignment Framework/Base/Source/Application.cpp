@@ -202,8 +202,11 @@ bool Application::GetMouseUpdate(double dt)
 	mouse_last_x = mouse_current_x;
 	mouse_last_y = mouse_current_y;
 
+	m_GSM->HandleEvents(camera_yaw, camera_pitch);
+
 	if(glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 	{
+
 	}
 	if(glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
 	{

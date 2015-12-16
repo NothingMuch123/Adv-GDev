@@ -20,7 +20,7 @@ public:
 	virtual void Pause();
 	virtual void Resume();
 
-	virtual void ProcessKeys(bool* keys);
+	virtual void ProcessKeys(double dt, bool* keys);
 
 private:
 	AGDev_Assign01* scene;

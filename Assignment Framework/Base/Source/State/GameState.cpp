@@ -43,6 +43,6 @@ void CGameState::Resume()
 	m_pause = false;
 }
 
-void CGameState::ProcessKeys(bool* keys)
+void CGameState::ProcessKeys(double dt, bool* keys)
 {
 }

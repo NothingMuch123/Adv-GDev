@@ -4,6 +4,7 @@
 
 CTransform::CTransform(Vector3 translate, Vector3 rotate, Vector3 scale) : m_translate(translate), m_rotate(rotate), m_scale(scale)
 {
+	m_transformation.SetToIdentity();
 }
 
 CTransform::~CTransform()
@@ -21,6 +22,7 @@ void CTransform::Reset()
 {
 	m_translate = m_rotate = Vector3::ZERO_VECTOR;
 	m_scale = Vector3(1.f, 1.f, 1.f);
+	m_transformation.SetToIdentity();
 }
 
 void CTransform::SetTranslate(Vector3 translate)
@@ -96,4 +98,21 @@ void CTransform::SetScaleZ(float z)
 Vector3 & CTransform::GetScale()
 {
 	return m_scale;
+}
+
+Mtx44 & CTransform::GetMtx()
+{
+	m_transformation.SetToIdentity();
+
+	Mtx44 tempMtx;
+	// Scale
+	tempMtx.SetToScale(m_scale.x, m_scale.y, m_scale.z);
+	m_transformation = m_transformation * tempMtx;
+
+	// Translate
+	tempMtx.SetToIdentity();
+	tempMtx.SetToTranslation(m_translate.x, m_translate.y, m_translate.z);
+	m_transformation = m_transformation * tempMtx;
+
+	return m_transformation;
 }

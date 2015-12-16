@@ -46,8 +46,19 @@ void CPlayState::Resume()
 {
 }
 
-void CPlayState::ProcessKeys(bool * keys)
+void CPlayState::ProcessKeys(double dt, bool * keys)
 {
 	// TODO: Add codes to change to another state
-	scene->ProcessKeys(keys);
+	scene->ProcessKeys(dt, keys);
+
+	float yaw = m_GSM->GetPendingYaw();
+	float pitch = m_GSM->GetPendingPitch();
+	if (yaw != 0.f || pitch != 0.f)
+	{
+		scene->ProcessMouse(dt, yaw, pitch);
+	}
+
+	// Reset yaw and pitch after process
+	m_GSM->SetPendingYaw(0.f);
+	m_GSM->SetPendingPitch(0.f);
 }
