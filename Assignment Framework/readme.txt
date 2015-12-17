@@ -5,18 +5,12 @@ IJKLOP - light movement
 3,4 - toggle wireframe mode
 5,6,7 - toggle point, directional, spotlight
 
-Z - Switch prev weapon
-C - Switch next weapon
-Spacebar - Jump
-Shift - Sprint
-LMB - Fire
-RMB - Scope
-R - Reload
-T - Reset
+Mouse to navigate menus
 
-Features:
-- Multiple weapons and swap between them
-- Sound
-- Minimap with entities
-- Shooting range gameplay
-- Terrain collision
+In game:
+Up arrow to show spatial partition feedback for character
+Down arrow to hide spatial partition feedback for character
+P - Return to main menu
+
+Objective: Find the trophy to win
+

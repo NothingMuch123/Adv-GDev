@@ -74,10 +74,6 @@ void SceneOptions::Render()
 
 	RenderGameObject(m_menu->GetCurrentMenu()->GetBackground(), m_lightEnabled, true);
 
-	ostringstream sFPS;
-	sFPS << "FPS: " << m_fps;
-	RenderTextOnScreen(m_meshList[MESH_TEXT], sFPS.str(), Color(1, 0, 0), 50, 0, 0);
-
 	// Not supposed to have any other rendering codes here as Scenebase handles it
 	// Alternative solution is to render scenegraph here instead as render list does not take into account parent and child nodes
 }
