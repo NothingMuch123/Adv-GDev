@@ -8,6 +8,8 @@
 #include "LoadTGA.h"
 #include <sstream>
 
+#include "GameStateManager\GameStateManager.h"
+
 
 SceneBase::SceneBase(int width, int height)
 	: m_window_width(width)
@@ -161,8 +163,8 @@ void SceneBase::Init()
 	projectionStack.LoadMatrix(perspective);
 
 	// TODO: Delete temp camera when actual camera is made
-	m_camera = new Camera3();
-	m_camera->Init(Vector3(0, 0, 10), Vector3::ZERO_VECTOR, Vector3(0, 1, 0));
+	//m_camera = new Camera3();
+	//m_camera->Init(Vector3(0, 0, 10), Vector3::ZERO_VECTOR, Vector3(0, 1, 0));
 
 	m_lightEnabled = false;
 }
@@ -176,7 +178,7 @@ void SceneBase::Init(int width, int height)
 	Init();
 }
 
-void SceneBase::Update(double dt)
+void SceneBase::Update(CGameStateManager* GSM, double dt)
 {
 	if(Application::IsKeyPressed('1'))
 		glEnable(GL_CULL_FACE);
@@ -228,6 +230,8 @@ void SceneBase::Update(double dt)
 	{
 		Reset();
 	}
+
+	m_fps = (float)(1.f / dt);
 }
 
 void SceneBase::Render()
@@ -309,11 +313,11 @@ void SceneBase::Reset()
 {
 }
 
-void SceneBase::ProcessKeys(double dt, bool* keys)
+void SceneBase::ProcessKeys(CGameStateManager* GSM, double dt, bool* keys, Vector2 mousePos)
 {
 }
 
-void SceneBase::ProcessMouse(double dt, float yaw, float pitch)
+void SceneBase::ProcessMouse(CGameStateManager* GSM, double dt, float yaw, float pitch, Vector2 mousePos)
 {
 }
 
@@ -440,16 +444,17 @@ void SceneBase::RenderMesh(Mesh *mesh, bool enableLight)
 void SceneBase::RenderMeshIn2D(Mesh *mesh, bool enableLight, float size, float x, float y, float rotate)
 {
 	Mtx44 ortho;
-	ortho.SetToOrtho(-80, 80, -60, 60, -10, 10);
+	//ortho.SetToOrtho(-m_window_width * 0.5f, m_window_width * 0.5f, -m_window_height * 0.5f, m_window_height * 0.5f, -10, 10);
+	ortho.SetToOrtho(0, m_window_width, 0, m_window_height, -10, 10);
 	projectionStack.PushMatrix();
 		projectionStack.LoadMatrix(ortho);
 		viewStack.PushMatrix();
 			viewStack.LoadIdentity();
-			modelStack.PushMatrix();
+			/*modelStack.PushMatrix();
 				modelStack.LoadIdentity();
 				modelStack.Translate(x,y,0);
 				modelStack.Rotate(rotate, 0, 0, 1);
-				modelStack.Scale(size, size, size);
+				modelStack.Scale(size, size, size);*/
 
 				Mtx44 MVP, modelView, modelView_inverse_transpose;
 
@@ -479,12 +484,12 @@ void SceneBase::RenderMeshIn2D(Mesh *mesh, bool enableLight, float size, float x
 					}
 				}
 
-			modelStack.PopMatrix();
+			//modelStack.PopMatrix();
 		viewStack.PopMatrix();
 	projectionStack.PopMatrix();
 }
 
-void SceneBase::RenderGameObject(CGameObject * go, bool enableLight)
+void SceneBase::RenderGameObject(CGameObject * go, bool enableLight, bool in2D)
 {
 	if (go && go->GetMesh())
 	{
@@ -494,7 +499,14 @@ void SceneBase::RenderGameObject(CGameObject * go, bool enableLight)
 		modelStack.Rotate(go->GetTransform().GetRotate().y, 0, 1, 0);
 		modelStack.Rotate(go->GetTransform().GetRotate().z, 0, 0, 1);
 		modelStack.Scale(go->GetTransform().GetScale().x, go->GetTransform().GetScale().y, go->GetTransform().GetScale().z);
-		RenderMesh(go->GetMesh(), m_lightEnabled);
+		if (in2D)
+		{
+			RenderMeshIn2D(go->GetMesh(), m_lightEnabled);
+		}
+		else
+		{
+			RenderMesh(go->GetMesh(), m_lightEnabled);
+		}
 		modelStack.PopMatrix();
 	}
 }

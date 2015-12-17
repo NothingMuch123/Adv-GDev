@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+bool Application::m_hideMouse = false;
+
 GLFWwindow* m_window;
 const unsigned char FPS = 120; // FPS of this game
 const unsigned int frameTime = 1000 / FPS; // time for each frame
@@ -105,14 +107,14 @@ void Application::Init()
 	}
 
 	// Hide cursor
-	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+	HideMouse(true);
 
 	// Variables
 	m_dElapsedTime = m_dAccumulatedTime_ThreadOne = m_dAccumulatedTime_ThreadTwo = 0.0;
 
 	m_GSM = new CGameStateManager();
 	m_GSM->Init(m_window_width, m_window_height);
-	m_GSM->ChangeState(new CPlayState());
+	m_GSM->ChangeState(new CMainMenuState());
 }
 
 void Application::Run()
@@ -122,7 +124,7 @@ void Application::Run()
 	//scene->Init();
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
-	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE))
+	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE) && m_GSM->isRunning())
 	{
 		// Get elapsed time
 		m_dElapsedTime = m_timer.getElapsedTime();
@@ -169,7 +171,7 @@ bool Application::GetMouseUpdate(double dt)
 	glfwGetCursorPos(m_window, &mouse_current_x, &mouse_current_y);
 
 	// Set mouse pos to GSM
-	// m_GSM->SetMousePos(mouse_current_x, mouse_current_y);
+	 m_GSM->SetMousePos(mouse_current_x, m_window_height - mouse_current_y);
 
 	// Calculate the difference in positions
 	mouse_diff_x = mouse_current_x - mouse_last_x;
@@ -187,21 +189,25 @@ bool Application::GetMouseUpdate(double dt)
 	camera_pitch = mouse_diff_y * 0.174555555555556f;		// 3.142f / 180.0f
 
 	// Do a wraparound if the mouse cursor has gone out of the deadzone
-	if ((mouse_current_x < m_window_deadzone) || (mouse_current_x > m_window_width - m_window_deadzone))
+	if (m_hideMouse)
 	{
-		mouse_current_x = m_window_width >> 1;
-		glfwSetCursorPos(m_window, mouse_current_x, mouse_current_y);
-	}
-	if ((mouse_current_y < m_window_deadzone) || (mouse_current_y > m_window_height - m_window_deadzone))
-	{
-		mouse_current_y = m_window_height >> 1;
-		glfwSetCursorPos(m_window, mouse_current_x, mouse_current_y);
+		if ((mouse_current_x < m_window_deadzone) || (mouse_current_x > m_window_width - m_window_deadzone))
+		{
+			mouse_current_x = m_window_width >> 1;
+			glfwSetCursorPos(m_window, mouse_current_x, mouse_current_y);
+		}
+		if ((mouse_current_y < m_window_deadzone) || (mouse_current_y > m_window_height - m_window_deadzone))
+		{
+			mouse_current_y = m_window_height >> 1;
+			glfwSetCursorPos(m_window, mouse_current_x, mouse_current_y);
+		}
 	}
 
 	// Store the current position as the last position
 	mouse_last_x = mouse_current_x;
 	mouse_last_y = mouse_current_y;
 
+	
 	m_GSM->HandleEvents(camera_yaw, camera_pitch);
 
 	if(glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
@@ -234,5 +240,47 @@ bool Application::GetKeyBoardUpdate()
 	{
 		m_GSM->HandleEvents(CGameStateManager::KEY_MOVE_RIGHT);
 	}
+	if (IsKeyPressed('Q'))
+	{
+		m_GSM->HandleEvents(CGameStateManager::KEY_MOVE_UP);
+	}
+	if (IsKeyPressed('E'))
+	{
+		m_GSM->HandleEvents(CGameStateManager::KEY_MOVE_DOWN);
+	}
+	if (IsKeyPressed('P'))
+	{
+		m_GSM->HandleEvents(CGameStateManager::KEY_P);
+	}
+	if (IsKeyPressed(VK_SHIFT))
+	{
+		m_GSM->HandleEvents(CGameStateManager::KEY_SPRINT);
+	}
+	if (IsKeyPressed(VK_UP))
+	{
+		m_GSM->HandleEvents(CGameStateManager::KEY_UP);
+	}
+	if (IsKeyPressed(VK_DOWN))
+	{
+		m_GSM->HandleEvents(CGameStateManager::KEY_DOWN);
+	}
+	if (IsKeyPressed(VK_RETURN))
+	{
+		m_GSM->HandleEvents(CGameStateManager::KEY_ENTER);
+	}
 	return true;
+}
+
+void Application::HideMouse(bool hide)
+{
+	if (hide)
+	{
+		m_hideMouse = true;
+		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+	}
+	else
+	{
+		m_hideMouse = false;
+		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	}
 }

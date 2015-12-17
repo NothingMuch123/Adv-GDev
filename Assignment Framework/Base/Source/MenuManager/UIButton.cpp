@@ -123,11 +123,14 @@ void UIButton::InitMeshLists(vector<Mesh*> meshList)
 	}
 }
 
-UIButton::UIButton(E_BUTTON_TYPE type, Mesh* _mesh, Vector3 pos, Vector3 scale) : m_type(type), m_state(UP_STATE), m_levelID(-1)
+UIButton::UIButton(E_BUTTON_TYPE type, Mesh* upMesh, Mesh* hoverMesh, Vector3 pos, Vector3 scale) : m_type(type), m_state(UP_STATE), m_levelID(-1)
 {
-	m_mesh = _mesh;
-	m_transform.m_translate = pos;
-	m_transform.m_scale = scale;
+	m_upMesh = upMesh;
+	m_hoverMesh = hoverMesh;
+	CTransform* transform = new CTransform();
+	transform->Init(pos, Vector3(), scale);
+	CGameObject::Init(upMesh, transform);
+	CCollider::Init(CT_AABB, m_transform, X_LEFT, Y_BOTTOM, true);
 }
 
 UIButton::~UIButton()
@@ -179,11 +182,11 @@ void UIButton::SetState(E_BUTTON_STATE_TYPE type)
 		this->m_state = type;
 		if (type == HOVER_STATE) // Set new mesh
 		{
-			m_mesh = s_m_onMeshList[m_type];
+			m_mesh = m_hoverMesh;
 		}
 		else
 		{
-			m_mesh = s_m_offMeshList[m_type];
+			m_mesh = m_upMesh;
 		}
 	}
 }

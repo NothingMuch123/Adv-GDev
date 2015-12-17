@@ -78,6 +78,7 @@ void CCollider::Init(E_COLLIDER_TYPE type, CTransform & transform, E_X_START xSt
 	this->m_type = type;
 	calcAABB(transform);
 	calcDist(transform);
+	this->m_xStart = xStart;
 	this->m_yStart = yStart;
 	this->m_active = active;
 }

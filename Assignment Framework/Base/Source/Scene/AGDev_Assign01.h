@@ -6,7 +6,9 @@
 #include "..\SpatialPartition\SpatialPartition.h"
 #include "..\Projectile\Projectile.h"
 
-class CGameStateManager;
+#include <fstream>
+
+class GameStateManager;
 
 class AGDev_Assign01 : public SceneBase
 {
@@ -18,6 +20,9 @@ public:
 		MESH_SPHERE,
 		MESH_CONE,
 
+		// Object
+		MESH_CHARACTER,
+
 		// Skybox
 		GEO_LEFT,
 		GEO_RIGHT,
@@ -27,6 +32,9 @@ public:
 		GEO_BACK,
 		GEO_GRASS_DARKGREEN,
 		GEO_GRASS_LIGHTGREEN,
+
+		//Skybox
+		MESH_FLOOR,
 
 		NUM_MESH,
 	};
@@ -39,8 +47,8 @@ public:
 	virtual void Render();
 	virtual void Exit();
 	virtual void Reset();
-	virtual void ProcessKeys(double dt, bool* keys);
-	virtual void ProcessMouse(double dt, float yaw, float pitch);
+	virtual void ProcessKeys(CGameStateManager* GSM, double dt, bool* keys, Vector2 mousePos);
+	virtual void ProcessMouse(CGameStateManager* GSM, double dt, float yaw, float pitch, Vector2 mousePos);
 
 	virtual void UpdateCameraStatus(unsigned char key);
 	virtual void UpdateWeaponStatus(unsigned char key, double dt = 0.0);
@@ -54,7 +62,8 @@ public:
 	void PostRendering();
 
 private:
-	void initMesh();
+	void InitMesh();
+	void InitMap();
 
 private:
 	Mesh* m_meshList[NUM_MESH];

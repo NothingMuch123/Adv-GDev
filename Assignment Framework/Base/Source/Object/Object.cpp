@@ -6,11 +6,11 @@ CObject::CObject() : m_mesh(NULL), m_active(false), m_render(false)
 
 CObject::~CObject()
 {
-	if (m_mesh)
+	/*if (m_mesh)
 	{
 		delete m_mesh;
 		m_mesh = NULL;
-	}
+	}*/
 }
 
 void CObject::Init(Mesh* mesh, bool active, bool render)

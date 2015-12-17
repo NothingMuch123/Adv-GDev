@@ -32,9 +32,9 @@ public:
 	void SetCameraType(CAM_TYPE type);
 	CAM_TYPE GetCameraType();
 
-	virtual void MoveForward_Backward(double dt, bool dir);	// 0 - Forward	| 1 - Backwards
-	virtual void MoveLeft_Right(double dt, bool dir);		// 0 - Left		| 1 - Right
-	virtual void MoveUp_Down(double dt, bool dir);			// 0 - Up		| 1 - Down
+	virtual void MoveForward_Backward(double dt, bool dir, float speed = CAMERA_SPEED);	// 0 - Forward	| 1 - Backwards
+	virtual void MoveLeft_Right(double dt, bool dir, float speed = CAMERA_SPEED);		// 0 - Left		| 1 - Right
+	virtual void MoveUp_Down(double dt, bool dir, float speed = CAMERA_SPEED);			// 0 - Up		| 1 - Down
 
 	// Basic methods
 	virtual void LookUp(const double dt, float camera_pitch);

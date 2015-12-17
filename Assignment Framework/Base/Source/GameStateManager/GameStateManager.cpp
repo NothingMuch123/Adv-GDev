@@ -1,12 +1,14 @@
 #include "GameStateManager.h"
 
+bool CGameStateManager::S_MUSIC = true;
 
 CGameStateManager::CGameStateManager()
 	: m_states(NULL)
-	, m_running(false)
+	, m_running(true)
 	, m_window_width(800)
 	, m_window_height(600)
 	, m_mousePos()
+	, m_shouldRun(true)
 {
 	resetKeys();
 }
@@ -46,6 +48,7 @@ void CGameStateManager::ChangeState(CGameState * newState)
 	m_states.push_back(newState);
 	m_states.back()->Init(this, m_window_width, m_window_height);
 	resetInputData();
+	m_shouldRun = false;
 }
 
 void CGameStateManager::PushState(CGameState * newState)
@@ -54,9 +57,11 @@ void CGameStateManager::PushState(CGameState * newState)
 	{
 		m_states.back()->Pause();
 	}
+	m_states.back()->Exit();
 	m_states.push_back(newState);
 	m_states.back()->Init(this, m_window_width, m_window_height);
 	resetInputData();
+	m_shouldRun = false;
 }
 
 void CGameStateManager::PopState()
@@ -66,15 +71,18 @@ void CGameStateManager::PopState()
 		m_states.back()->Exit();
 		m_states.pop_back();
 	}
+	resetInputData();
 
 	if (!m_states.empty()) // Resume any state that is paused
 	{
-		m_states.back()->Resume();
+		//m_states.back()->Resume();
+		m_states.back()->Init(this, m_window_width, m_window_height);
 	}
 	else
 	{
 		Quit();
 	}
+	m_shouldRun = false;
 }
 
 void CGameStateManager::HandleEvents(const KEYS key, const bool status)
@@ -90,17 +98,21 @@ void CGameStateManager::HandleEvents(const double yaw, const double pitch)
 
 void CGameStateManager::Update(const double dt)
 {
+	m_shouldRun = true;
 	if (!m_states.empty())
 	{
 		m_states.back()->ProcessKeys(dt, m_keys);
-		resetKeys();
-		m_states.back()->Update(dt);
+		if (m_shouldRun)
+		{
+			resetKeys();
+			m_states.back()->Update(dt);
+		}
 	}
 }
 
 void CGameStateManager::Draw()
 {
-	if (!m_states.empty())
+	if (!m_states.empty() && m_shouldRun)
 	{
 		m_states.back()->Render();
 	}
@@ -134,6 +146,16 @@ void CGameStateManager::SetPendingPitch(float pending_pitch)
 float CGameStateManager::GetPendingPitch()
 {
 	return m_pending_pitch;
+}
+
+void CGameStateManager::SetShouldRun(bool shouldRun)
+{
+	m_shouldRun = shouldRun;
+}
+
+bool CGameStateManager::GetShouldRun()
+{
+	return m_shouldRun;
 }
 
 void CGameStateManager::SetMousePos(float x, float y)

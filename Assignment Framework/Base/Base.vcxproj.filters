@@ -159,11 +159,53 @@
     <ClCompile Include="Source\MenuManager\MenuManager.cpp">
       <Filter>MenuManager</Filter>
     </ClCompile>
-    <ClCompile Include="Source\MenuManager\Menu.cpp">
-      <Filter>MenuManager\Menus</Filter>
-    </ClCompile>
     <ClCompile Include="Source\MenuManager\UIButton.cpp">
       <Filter>MenuManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\Template_Scene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\SceneMainMenu.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\State\TemplateState.cpp">
+      <Filter>GameState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\State\MainMenuState.cpp">
+      <Filter>GameState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MenuManager\Menu.cpp">
+      <Filter>MenuManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MenuManager\MainMenu.cpp">
+      <Filter>MenuManager\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\State\CreditsState.cpp">
+      <Filter>GameState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\State\InstructionsState.cpp">
+      <Filter>GameState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MenuManager\Credits.cpp">
+      <Filter>MenuManager\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MenuManager\Instructions.cpp">
+      <Filter>MenuManager\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\SceneCredits.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\SceneInstructions.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene\SceneOptions.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MenuManager\Options.cpp">
+      <Filter>MenuManager\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\State\OptionsState.cpp">
+      <Filter>GameState\States</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -281,11 +323,53 @@
     <ClInclude Include="Source\MenuManager\MenuManager.h">
       <Filter>MenuManager</Filter>
     </ClInclude>
-    <ClInclude Include="Source\MenuManager\Menu.h">
-      <Filter>MenuManager\Menus</Filter>
-    </ClInclude>
     <ClInclude Include="Source\MenuManager\UIButton.h">
       <Filter>MenuManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\Template_Scene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\SceneMainMenu.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\State\TemplateState.h">
+      <Filter>GameState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\State\MainMenuState.h">
+      <Filter>GameState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MenuManager\Menu.h">
+      <Filter>MenuManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MenuManager\MainMenu.h">
+      <Filter>MenuManager\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\State\CreditsState.h">
+      <Filter>GameState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\State\InstructionsState.h">
+      <Filter>GameState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MenuManager\Credits.h">
+      <Filter>MenuManager\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MenuManager\Instructions.h">
+      <Filter>MenuManager\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\SceneCredits.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\SceneInstructions.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene\SceneOptions.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MenuManager\Options.h">
+      <Filter>MenuManager\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\State\OptionsState.h">
+      <Filter>GameState\States</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

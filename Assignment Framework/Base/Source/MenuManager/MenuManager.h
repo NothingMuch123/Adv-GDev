@@ -3,18 +3,15 @@
 
 #include "Menu.h"
 
+class CGameStateManager;
+
 class MenuManager
 {
 public:
 	enum E_RETURN_STATE
 	{
-		RS_MENU = 0,
-		RS_NEW_GAME,
-		RS_EXIT,
-		RS_CURRENT_LEVEL,
-		RS_NEXT_LEVEL,
-		RS_RESUME,
-		RS_LEVEL,
+		RS_NONE = 0,
+		RS_CHANGE,
 		NUM_RS,
 	};
 
@@ -40,9 +37,9 @@ public:
 	void AssignCurrent(Menu::E_MENU_TYPE menuType, UIButton::E_BUTTON_TYPE buttonType = static_cast<UIButton::E_BUTTON_TYPE>(-1));
 
 	// Response on click or enter
-	E_RETURN_STATE OnClick(int mouseX, int mouseY); // Mouse
-	E_RETURN_STATE OnEnter(); // Controller
-	virtual E_RETURN_STATE Response(UIButton::E_BUTTON_TYPE type) = 0;
+	E_RETURN_STATE OnClick(CGameStateManager* GSM, int mouseX, int mouseY); // Mouse
+	E_RETURN_STATE OnEnter(CGameStateManager* GSM); // Controller
+	virtual E_RETURN_STATE Response(UIButton::E_BUTTON_TYPE type, CGameStateManager* GSM) = 0;
 
 	/*
 	 * Getters

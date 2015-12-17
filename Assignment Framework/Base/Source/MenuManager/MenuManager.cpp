@@ -1,4 +1,5 @@
 #include "MenuManager.h"
+#include "..\GameStateManager\GameStateManager.h"
 
 MenuManager::MenuManager(void) : m_menuList(NULL), m__currentButton(NULL), m__currentMenu(NULL), m_currentButton(-1)
 {
@@ -135,17 +136,17 @@ void MenuManager::AssignCurrent(Menu::E_MENU_TYPE menuType, UIButton::E_BUTTON_T
 	}
 }
 
-MenuManager::E_RETURN_STATE MenuManager::OnClick(int mouseX, int mouseY)
+MenuManager::E_RETURN_STATE MenuManager::OnClick(CGameStateManager* GSM, int mouseX, int mouseY)
 {
 	if (onMouseCollision(mouseX, mouseY, m__currentButton))
 	{
-		return Response(m__currentButton->GetType());
+		return Response(m__currentButton->GetType(), GSM);
 	}
 }
 
-MenuManager::E_RETURN_STATE MenuManager::OnEnter()
+MenuManager::E_RETURN_STATE MenuManager::OnEnter(CGameStateManager* GSM)
 {
-	return Response(m__currentButton->GetType());
+	return Response(m__currentButton->GetType(), GSM);
 }
 
 vector<Menu*>& MenuManager::GetMenuList()

@@ -132,7 +132,11 @@ bool CSpatialPartition::CheckForCollision(Vector3 pos)
 		Vector3 ObjectTopLeft, ObjectBottomRight;
 		for (int i = 0; i<(int)theListOfObjects.size(); i++)
 		{
-			return theListOfObjects[i]->CheckForCollision(pos);
+			bool result = theListOfObjects[i]->CheckForCollision(pos);
+			if (result)
+			{
+				return result;
+			}
 		}
 	}
 

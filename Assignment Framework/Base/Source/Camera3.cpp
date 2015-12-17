@@ -201,11 +201,10 @@ Camera3::CAM_TYPE Camera3::GetCameraType()
 	return type;
 }*/
 
-void Camera3::MoveForward_Backward(double dt, bool dir) // 0 - Forward, 1 - Backwards
+void Camera3::MoveForward_Backward(double dt, bool dir, float speed) // 0 - Forward, 1 - Backwards
 {
 	Vector3 positionYTarget = target;
 	positionYTarget.y = position.y;
-	float speed = CAMERA_SPEED;
 	
 	if (dir)
 	{
@@ -232,11 +231,10 @@ void Camera3::MoveForward_Backward(double dt, bool dir) // 0 - Forward, 1 - Back
 	}*/
 }
 
-void Camera3::MoveLeft_Right(double dt, bool dir)		// 0 - Left, 1 - Right
+void Camera3::MoveLeft_Right(double dt, bool dir, float speed)		// 0 - Left, 1 - Right
 {
 	Vector3 positionYTarget = target;
 	positionYTarget.y = position.y;
-	float speed = CAMERA_SPEED;
 
 	if (dir)
 	{
@@ -267,10 +265,8 @@ void Camera3::MoveLeft_Right(double dt, bool dir)		// 0 - Left, 1 - Right
 	}*/
 }
 
-void Camera3::MoveUp_Down(double dt, bool dir)
+void Camera3::MoveUp_Down(double dt, bool dir, float speed)
 {
-	float speed = CAMERA_SPEED;
-
 	if (dir)
 	{
 		speed = -speed;

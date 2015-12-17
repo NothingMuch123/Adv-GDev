@@ -136,8 +136,8 @@ CSceneNode * CSceneNode::Search(E_NODE_TYPE searchType)
 
 bool CSceneNode::CheckForCollision(Vector3 pos)
 {
-	Vector3 ObjMax = GetTransform().GetMtx() * Vector3(1, 1, 1);
-	Vector3 ObjMin = GetTransform().GetMtx() * Vector3(-1, -1, -1);
+	Vector3 ObjMax = GetMaxBound();//GetTransform().GetMtx() * Vector3(1, 1, 1);
+	Vector3 ObjMin = GetMinBound();//GetTransform().GetMtx() * Vector3(-1, -1, -1);
 
 	if (pos.x < ObjMin.x || pos.x > ObjMax.x || pos.y < ObjMin.y || pos.y > ObjMax.y || pos.z < ObjMin.z || pos.z > ObjMax.z)
 	{

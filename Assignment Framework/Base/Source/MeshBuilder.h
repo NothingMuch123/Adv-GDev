@@ -30,7 +30,8 @@ public:
 	static SpriteAnimation* GenerateSpriteAnimation(const std::string & meshName, unsigned numRow, unsigned numCol);
 	static Mesh* GenerateMinimap(const std::string &meshName, Color color, float length = 1.f);
 	static Mesh* GenerateMinimapBorder(const std::string &meshName, Color color, float length = 1.f);
-	static Mesh* GenerateMinimapAvatar(const std::string &meshName, Color color, float length = 1.f); 
+	static Mesh* GenerateMinimapAvatar(const std::string &meshName, Color color, float length = 1.f);
+	static Mesh* MeshBuilder::Generate2DMesh(const std::string &meshName, Color color, int pos_x, int pos_y, int width, int height);
 };
 
 #endif

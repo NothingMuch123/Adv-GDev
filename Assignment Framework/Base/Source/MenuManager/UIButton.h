@@ -27,6 +27,7 @@ class UIButton : public CGameObject
 			BUTTON_CONTINUE, // Continue game
 			BUTTON_LEVEL_SELECT,
 			BUTTON_INSTRUCTIONS,
+			BUTTON_OPTIONS,
 			BUTTON_CREDITS,
 			BUTTON_EXIT,
 
@@ -43,6 +44,9 @@ class UIButton : public CGameObject
 			// Pause
 			BUTTON_RESUME,
 
+			// Options
+			BUTTON_TOGGLE_MUSIC,
+
 			NUM_BUTTONS,
 		};
 		static Mesh* s_m_offMeshList[NUM_BUTTONS];	// Not hover
@@ -52,9 +56,11 @@ class UIButton : public CGameObject
 		E_BUTTON_STATE_TYPE m_state;
 		E_BUTTON_TYPE m_type;
 		int m_levelID;
+		Mesh* m_upMesh;
+		Mesh* m_hoverMesh;
 
 	public:
-		UIButton(E_BUTTON_TYPE type = BUTTON_NONE, Mesh* _mesh = NULL, Vector3 pos = Vector3::ZERO_VECTOR, Vector3 scale = Vector3(1,1,1));
+		UIButton(E_BUTTON_TYPE type = BUTTON_NONE, Mesh* upMesh = NULL, Mesh* hoverMesh = NULL, Vector3 pos = Vector3::ZERO_VECTOR, Vector3 scale = Vector3(1,1,1));
 		~UIButton();
 
 		static void InitMeshLists(vector<Mesh*> meshList);

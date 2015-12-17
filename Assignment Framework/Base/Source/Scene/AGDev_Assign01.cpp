@@ -7,6 +7,7 @@
 #include "..\LoadTGA.h"
 #include <sstream>
 
+#include "..\Application.h"
 #include "..\GameStateManager\GameStateManager.h"
 
 AGDev_Assign01::AGDev_Assign01(int width, int height)
@@ -25,30 +26,13 @@ AGDev_Assign01::AGDev_Assign01(int width, int height)
 
 AGDev_Assign01::~AGDev_Assign01()
 {
-	if (test)
-	{
-		delete test;
-		test = NULL;
-	}
-	if (nodeTest)
-	{
-		delete nodeTest;
-		nodeTest = NULL;
-	}
-	if (m_spatialPartition)
-	{
-		delete m_spatialPartition;
-		m_spatialPartition = NULL;
-	}
-	if (m_char)
-	{
-		delete m_char;
-		m_char = NULL;
-	}
+	Exit();
 }
 
 void AGDev_Assign01::Init(int screenWidth, int screenHeight)
 {
+	Application::HideMouse(true);
+
 	// Initialise SceneBase
 	SceneBase::Init(screenWidth, screenHeight);
 
@@ -59,7 +43,7 @@ void AGDev_Assign01::Init(int screenWidth, int screenHeight)
 		std::cout << "Could not start sound engine" << std::endl;
 	}
 
-	initMesh();
+	InitMesh();
 
 	test = new CGameObject();
 	CTransform* transform = new CTransform();
@@ -76,14 +60,14 @@ void AGDev_Assign01::Init(int screenWidth, int screenHeight)
 	Camera3* view = new Camera3();
 	view->Init(Vector3(0, 10, CThirdPerson::S_OFFSET_TARGET), Vector3(0, 10, 0), Vector3(0, 1, 0));
 	transform = new CTransform();
-	transform->Init(Vector3(0, 10, CThirdPerson::S_OFFSET_TARGET), Vector3(), Vector3(20,20,20));
-	m_char->Init(CSceneNode::NODE_TEST, view, m_meshList[MESH_CONE], transform);
+	transform->Init(Vector3(0, 10, CThirdPerson::S_OFFSET_TARGET), Vector3(), Vector3(10,10,10));
+	m_char->Init(CSceneNode::NODE_TEST, view, m_meshList[MESH_CHARACTER], transform);
 
 	// Spatial partition
 	m_spatialPartition = new CSpatialPartition();
 	m_spatialPartition->Init(5, 5, 1000.f, 1000.f, m_meshList[MESH_CUBE]);
 
-	//m_spatialPartition->AddObject(m_char);
+	m_spatialPartition->AddObject(m_char);
 	m_spatialPartition->AddObject(nodeTest);
 
 	m_camera = m_char->GetTPView();
@@ -92,7 +76,7 @@ void AGDev_Assign01::Init(int screenWidth, int screenHeight)
 void AGDev_Assign01::Update(CGameStateManager* GSM, double dt)
 {
 	// Update SceneBase
-	SceneBase::Update(dt);
+	SceneBase::Update(GSM, dt);
 
 	for (vector<CProjectile*>::iterator it = m_projList.begin(); it != m_projList.end(); ++it)
 	{
@@ -123,14 +107,15 @@ void AGDev_Assign01::Render()
 	target->Init(m_meshList[MESH_CUBE], transform);
 	RenderGameObject(target, m_lightEnabled);
 
-	RenderGameObject(nodeTest, m_lightEnabled);
+	//RenderGameObject(nodeTest, m_lightEnabled);
+	nodeTest->Draw(this);
 
 	RenderSkybox();
 	RenderGround();
 
 	RenderGameObject(test, m_lightEnabled);
 	RenderGameObject(m_char, m_lightEnabled);
-	//RenderGameObject(m_char->GetLocation(), m_lightEnabled);
+	RenderGameObject(m_char->GetLocation(), m_lightEnabled);
 
 	// Render projectile
 	for (vector<CProjectile*>::iterator it = m_projList.begin(); it != m_projList.end(); ++it)
@@ -161,6 +146,42 @@ void AGDev_Assign01::Exit()
 	// Exit SceneBase
 	SceneBase::Exit();
 
+	if (test)
+	{
+		delete test;
+		test = NULL;
+	}
+	if (nodeTest)
+	{
+		delete nodeTest;
+		nodeTest = NULL;
+	}
+	if (m_spatialPartition)
+	{
+		delete m_spatialPartition;
+		m_spatialPartition = NULL;
+	}
+	if (m_char)
+	{
+		delete m_char;
+		m_char = NULL;
+	}
+	if (m_spatialPartition)
+	{
+		delete m_spatialPartition;
+		m_spatialPartition = NULL;
+	}
+
+	for (int i = 0; i < m_projList.size(); ++i)
+	{
+		CProjectile* proj = m_projList[i];
+		if (proj)
+		{
+			delete proj;
+			proj = NULL;
+		}
+	}
+
 	// Delete sound
 	sound->drop();
 }
@@ -170,23 +191,55 @@ void AGDev_Assign01::Reset()
 	SceneBase::Reset();
 }
 
-void AGDev_Assign01::ProcessKeys(double dt, bool* keys)
+void AGDev_Assign01::ProcessKeys(CGameStateManager* GSM, double dt, bool* keys, Vector2 mousePos)
 {
+	if (keys[CGameStateManager::KEY_P])
+	{
+		GSM->PopState();
+		return;
+	}
+	bool charMovement = false;
 	if (keys[CGameStateManager::KEY_MOVE_FORWARD])
 	{
 		m_char->MoveForward(dt);
+		charMovement = true;
 	}
 	if (keys[CGameStateManager::KEY_MOVE_BACKWARD])
 	{
 		m_char->MoveBackward(dt);
+		charMovement = true;
 	}
 	if (keys[CGameStateManager::KEY_MOVE_LEFT])
 	{
 		m_char->MoveLeft(dt);
+		charMovement = true;
 	}
 	if (keys[CGameStateManager::KEY_MOVE_RIGHT])
 	{
 		m_char->MoveRight(dt);
+		charMovement = true;
+	}
+	if (keys[CGameStateManager::KEY_MOVE_UP])
+	{
+		m_char->MoveUp(dt);
+		charMovement = true;
+	}
+	if (keys[CGameStateManager::KEY_MOVE_DOWN])
+	{
+		m_char->MoveDown(dt);
+		charMovement = true;
+	}
+	if (keys[CGameStateManager::KEY_SPRINT])
+	{
+		m_char->Sprint(true);
+	}
+	else
+	{
+		m_char->Sprint(false);
+	}
+	if (!charMovement)
+	{
+		m_char->changeTargetOffset(dt, false);
 	}
 	m_spatialPartition->UpdateObject(m_char);
 
@@ -201,7 +254,7 @@ void AGDev_Assign01::ProcessKeys(double dt, bool* keys)
 	}
 }
 
-void AGDev_Assign01::ProcessMouse(double dt, float yaw, float pitch)
+void AGDev_Assign01::ProcessMouse(CGameStateManager* GSM, double dt, float yaw, float pitch, Vector2 mousePos)
 {
 	m_char->Look(dt, yaw, pitch);
 }
@@ -235,13 +288,16 @@ void AGDev_Assign01::SetHUD(const bool m_bHUDmode) // Remember to call this in p
 	}
 }
 
-void AGDev_Assign01::initMesh()
+void AGDev_Assign01::InitMesh()
 {
 	m_meshList[MESH_TEXT] = MeshBuilder::GenerateText("Calibri font", 16, 16);
 	m_meshList[MESH_TEXT]->textureID[0] = LoadTGA("Image\\calibri.tga");
 	m_meshList[MESH_CUBE] = MeshBuilder::GenerateCube("Cube", Color(0, 1, 0), 1.f);
 	m_meshList[MESH_CONE] = MeshBuilder::GenerateCone("Cone", Color(1, 0, 0), 36, 0.5f, 1.f);
 	m_meshList[MESH_SPHERE] = MeshBuilder::GenerateSphere("Sphere", Color(0, 0, 1), 18, 36, 0.5f);
+
+	m_meshList[MESH_CHARACTER] = MeshBuilder::GenerateOBJ("Character", "OBJ\\Object\\Monster.obj");
+	m_meshList[MESH_CHARACTER]->textureID[0] = LoadTGA("Image\\Object\\Monster.tga");
 
 	// Skybox
 	m_meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("LEFT", Color(1, 1, 1), 1.f);
@@ -260,6 +316,9 @@ void AGDev_Assign01::initMesh()
 	m_meshList[GEO_GRASS_DARKGREEN]->textureID[0] = LoadTGA("Image//grass_darkgreen.tga");
 	m_meshList[GEO_GRASS_LIGHTGREEN] = MeshBuilder::GenerateQuad("GEO_GRASS_LIGHTGREEN", Color(1, 1, 1), 1.f);
 	m_meshList[GEO_GRASS_LIGHTGREEN]->textureID[0] = LoadTGA("Image//grass_lightgreen.tga");
+
+	m_meshList[MESH_FLOOR] = MeshBuilder::GenerateQuad("Floor", Color(1,1,1), 1.f);
+	m_meshList[MESH_FLOOR]->textureID[0] = LoadTGA("Image//Object//Floor.tga");
 }
 
 
@@ -367,4 +426,83 @@ void AGDev_Assign01::PostRendering()
 {
 	glBindTexture(GL_TEXTURE_2D, 0);
 	modelStack.PopMatrix();
+}
+
+void AGDev_Assign01::InitMap()
+{
+	/*std::vector<std::string> map;
+	std::string data;
+	std::ifstream fMap;
+	fMap.open("map.txt");
+	while (!fMap.eof())
+	{
+		fMap >> data;
+		map.push_back(data);
+	}
+	map.pop_back();
+	skyboxSize.Set(map[0].length() * 100, 60, map.size() * 100);
+	skyboxOffset = 5;
+
+	meshList[GEO_WALL] = MeshBuilder::GenerateOBJ("Wall", "OBJ\\wall.obj");
+	meshList[GEO_WALL]->textureID = LoadTGA("Image\\MazeWall.tga");
+	meshList[GEO_WALL]->material.kAmbient.Set(0.2f, 0.2f, 0.2f);
+	meshList[GEO_WALL]->material.kDiffuse.Set(0.1f, 0.1f, 0.1f);
+	meshList[GEO_WALL]->material.kSpecular.Set(0.1f, 0.1f, 0.1f);
+	meshList[GEO_WALL]->material.kShininess = 1.f;
+
+	meshList[GEO_MONSTER] = MeshBuilder::GenerateOBJ("Monster", "OBJ\\Monster.obj");
+	meshList[GEO_MONSTER]->textureID = LoadTGA("Image\\Monster.tga");
+	meshList[GEO_MONSTER]->material.kAmbient.Set(0.2f, 0.2f, 0.2f);
+	meshList[GEO_MONSTER]->material.kDiffuse.Set(0.5f, 0.5f, 0.5f);
+	meshList[GEO_MONSTER]->material.kSpecular.Set(0.1f, 0.1f, 0.1f);
+	meshList[GEO_MONSTER]->material.kShininess = 1.f;
+
+	meshList[GEO_CHEST] = MeshBuilder::GenerateOBJ("Chest", "OBJ\\Chest.obj");
+	meshList[GEO_CHEST]->textureID = LoadTGA("Image\\Chest.tga");
+	meshList[GEO_CHEST]->material.kAmbient.Set(0.2f, 0.2f, 0.2f);
+	meshList[GEO_CHEST]->material.kDiffuse.Set(0.5f, 0.5f, 0.5f);
+	meshList[GEO_CHEST]->material.kSpecular.Set(0.1f, 0.1f, 0.1f);
+	meshList[GEO_CHEST]->material.kShininess = 1.f;
+
+	meshList[GEO_TROPHY] = MeshBuilder::GenerateOBJ("Trophy", "OBJ\\Trophy.obj");
+	meshList[GEO_TROPHY]->textureID = LoadTGA("Image\\Trophy.tga");
+	meshList[GEO_TROPHY]->material.kAmbient.Set(0.2f, 0.2f, 0.2f);
+	meshList[GEO_TROPHY]->material.kDiffuse.Set(0.5f, 0.5f, 0.5f);
+	meshList[GEO_TROPHY]->material.kSpecular.Set(0.1f, 0.1f, 0.1f);
+	meshList[GEO_TROPHY]->material.kShininess = 1.f;
+
+	float startX = -(skyboxSize.x / 2) + 50, startZ = -(skyboxSize.z / 2) + 50; // X starts from left and Z starts from top
+	for (int row = 0; row < map.size(); row++)
+	{
+		for (int col = 0; col < map[0].length(); col++)
+		{
+			if (map[row][col] == '#') // Only change translate X & Z
+			{
+				InitObj(meshList[GEO_WALL], startX + (col * 100), 0, startZ + (row * 100), 0, 0, 0, 100, skyboxSize.y, 100, CObj::SHAPES::S_CUBE);
+			}
+			else if (map[row][col] == 'M')
+			{
+				InitObj(meshList[GEO_MONSTER], startX + (col * 100), (-7.5 * 2.5) - 22, startZ + (row * 100), 0, 180, 0, 2.5, 2.5, 2.5, CObj::SHAPES::S_MONSTER);
+			}
+			else if (map[row][col] == 'C')
+			{
+				InitObj(meshList[GEO_CHEST], startX + (col * 100), -skyboxSize.y / 2, startZ + (row * 100), 0, 180, 0, 20, 20, 20, CObj::SHAPES::S_CHEST);
+			}
+			else if (map[row][col] == 'S')
+			{
+				modelPosition.Set(startX + (col * 100), 10, startZ + (row * 100));
+				modelTarget.Set(modelPosition.x - 1, modelPosition.y, modelPosition.z);
+				modelUp.Set(0, 1, 0);
+				modelView = (modelTarget - modelPosition).Normalized();
+				startMaxBound.Set(startX + (col * 100) + 50, 30, startZ + (row * 100) + 50);
+				startMinBound.Set(startX + (col * 100) - 50, -30, startZ + (row * 100) - 50);
+			}
+			else if (map[row][col] == 'E')
+			{
+				InitObj(meshList[GEO_TROPHY], startX + (col * 100), -skyboxSize.y / 2, startZ + (row * 100), 0, 0, 0, 1, 1, 1, CObj::SHAPES::S_TROPHY);
+				endMaxBound.Set(startX + (col * 100) + 50, 30, startZ + (row * 100) + 50);
+				endMinBound.Set(startX + (col * 100) - 50, -30, startZ + (row * 100) - 50);
+			}
+		}
+	}*/
 }

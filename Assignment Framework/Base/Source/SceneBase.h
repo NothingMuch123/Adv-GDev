@@ -12,11 +12,14 @@
 #include <queue>
 #include "Object\GameObject.h"
 #include <iostream>
+#include "Vector2.h"
 
 using std::cout;
 using std::endl;
 using std::ostringstream;
 using std::queue;
+
+class CGameStateManager;
 
 class SceneBase : public Scene
 {
@@ -76,18 +79,18 @@ public:
 
 	virtual void Init();
 	virtual void Init(int width, int height);
-	virtual void Update(double dt);
+	virtual void Update(CGameStateManager* GSM, double dt);
 	virtual void Render();
 	virtual void Exit();
 	virtual void Reset();
-	virtual void ProcessKeys(double dt, bool* keys);
-	virtual void ProcessMouse(double dt, float yaw, float pitch);
+	virtual void ProcessKeys(CGameStateManager* GSM, double dt, bool* keys, Vector2 mousePos);
+	virtual void ProcessMouse(CGameStateManager* GSM, double dt, float yaw, float pitch, Vector2 mousePos);
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMesh(Mesh *mesh, bool enableLight);
 	void RenderMeshIn2D(Mesh *mesh, bool enableLight, float size = 1.0f, float x = 0.0f, float y = 0.0f, float rotate = 0.f);
-	void RenderGameObject(CGameObject* go, bool enableLight);
+	void RenderGameObject(CGameObject* go, bool enableLight, bool in2D = false);
 
 protected:
 	unsigned m_vertexArrayID;
