@@ -1,6 +1,7 @@
 #include "GameStateManager.h"
 
 bool CGameStateManager::S_MUSIC = true;
+float CGameStateManager::S_HIGHSCORE = 0.f;
 
 CGameStateManager::CGameStateManager()
 	: m_states(NULL)

@@ -139,10 +139,64 @@ CSceneNode * CSceneNode::Search(E_NODE_TYPE searchType)
 	}
 }
 
+/*
+CSceneNode* CSceneNode::CheckForCollision(Vector3 position)
+{
+	if (!active)
+	{
+		return nullptr;
+	}
+
+	for (auto node = theChildren.begin(); node != theChildren.end(); ++node)
+	{
+		CSceneNode* sNode = dynamic_cast<CSceneNode*>(*node);
+
+		if (sNode)
+		{
+			// Calculate the relative position of the "position"
+			Vector3 relativePos = theTransform->GetTransform().GetInverse() * position;
+
+			if (CSceneNode* node = sNode->CheckForCollision(relativePos))
+			{
+				return node;
+			}
+		}
+	}
+
+	Vector3 ObjectTopLeft = GetTopLeft();
+	Vector3 ObjectBottomRight = GetBottomRight();
+
+	if (((ObjectTopLeft.x > position.x) && (ObjectTopLeft.y > position.y) && (ObjectTopLeft.z > position.z)) &&
+		((ObjectBottomRight.x < position.x) && (ObjectBottomRight.y < position.y) && (ObjectBottomRight.z < position.z)))
+	{
+		return this;
+	}
+	return nullptr;
+}
+*/
+
 bool CSceneNode::CheckForCollision(Vector3 pos)
 {
-	Vector3 ObjMax = GetMaxBound();//GetTransform().GetMtx() * Vector3(1, 1, 1);
-	Vector3 ObjMin = GetMinBound();//GetTransform().GetMtx() * Vector3(-1, -1, -1);
+	if (!CObject::m_active)
+	{
+		return false;
+	}
+
+	/*for (vector<CSceneNode*>::iterator it = m_children.begin(); it != m_children.end(); ++it)
+	{
+		CSceneNode* node = *it;
+		if (node)
+		{
+			Vector3 relativePos = GetTransform().GetMtx().GetInverse() * pos;
+			if (node->CheckForCollision(relativePos))
+			{
+				return true;
+			}
+		}
+	}*/
+
+	Vector3 ObjMax = GetTransform().GetMtx() * Vector3(1, 1, 1);
+	Vector3 ObjMin = GetTransform().GetMtx() * Vector3(-1, -1, -1);
 
 	if (pos.x < ObjMin.x || pos.x > ObjMax.x || pos.y < ObjMin.y || pos.y > ObjMax.y || pos.z < ObjMin.z || pos.z > ObjMax.z)
 	{
@@ -153,6 +207,10 @@ bool CSceneNode::CheckForCollision(Vector3 pos)
 
 int CSceneNode::CheckForCollision(Vector3 position_start, Vector3 position_end, Vector3 & Hit)
 {
+	if (!CObject::m_active)
+	{
+		return false;
+	}
 	Vector3 ObjMax = GetTransform().GetMtx() * Vector3(1, 1, 1);
 	Vector3 ObjMin = GetTransform().GetMtx() * Vector3(-1, -1, -1);
 

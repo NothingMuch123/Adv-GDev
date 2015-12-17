@@ -16,9 +16,13 @@ public:
 	void SetDir(Vector3 dir);
 	Vector3& GetDir();
 
+	void SetLength(float length);
+	float GetLength();
+
 private:
 	Vector3 m_dir;
 	float m_speed;
+	float m_length;
 };
 
 #endif

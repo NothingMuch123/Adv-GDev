@@ -17,6 +17,8 @@ public:
 		NODE_NONE = 0,
 		NODE_TEST,
 		NODE_WALL,
+		NODE_END,
+		NODE_ENEMY,
 		NUM_NODE,
 	};
 

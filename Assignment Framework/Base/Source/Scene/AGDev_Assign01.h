@@ -8,7 +8,7 @@
 
 #include <fstream>
 
-class GameStateManager;
+class CGameStateManager;
 
 class AGDev_Assign01 : public SceneBase
 {
@@ -18,6 +18,7 @@ public:
 		MESH_TEXT = 0,
 		MESH_CUBE,
 		MESH_SPHERE,
+		MESH_RAY,
 		MESH_CONE,
 
 		// Object
@@ -83,13 +84,18 @@ private:
 	// Projectile
 	vector<CProjectile*> m_projList;
 	float m_shootTimer;
+	float m_rayLength;
 	static const float S_SHOOT_COUNTDOWN;
 
 	// Map
 	vector<CSceneNode*> m_wallList;
+	CSceneNode* m_end;
 
 	// Enemy
-	//vector<CEnemy*> m_enemyList;
+	vector<CSceneNode*> m_enemyList;
+
+	// Score
+	float m_score;
 
 	// Sound
 	irrklang::ISoundEngine *sound;

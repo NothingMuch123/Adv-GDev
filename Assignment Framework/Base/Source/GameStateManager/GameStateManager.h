@@ -70,6 +70,7 @@ public:
 	Vector2 GetMousePos();
 
 	static bool S_MUSIC;
+	static float S_HIGHSCORE;
 
 private:
 	void resetKeys();

@@ -104,7 +104,7 @@ void CCollider::Reset()
 
 bool CCollider::CollideWith(CCollider& other, const double dt)
 {
-	if (!this->m_active || other.GetActive()) // If one of the collider does not collide, no collision will occur, hence false
+	if (!this->m_active || !other.GetActive()) // If one of the collider does not collide, no collision will occur, hence false
 	{
 		return false;
 	}

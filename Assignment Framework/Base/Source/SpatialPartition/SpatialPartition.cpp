@@ -144,6 +144,10 @@ bool CSpatialPartition::CheckForCollision(Vector3 pos)
 			bool result = theListOfObjects[i]->CheckForCollision(pos);
 			if (result)
 			{
+				if (theListOfObjects[i]->GetType() == CSceneNode::NODE_ENEMY)
+				{
+					theListOfObjects[i]->Reset();
+				}
 				return result;
 			}
 		}
@@ -174,7 +178,15 @@ bool CSpatialPartition::CheckForCollision(Vector3 pos_start, Vector3 pos_End)
 		for (int i = 0; i<(int)theListOfObjects.size(); i++)
 		{
 			Vector3 hits = Vector3(0, 0, 0);
-			return theListOfObjects[i]->CheckForCollision(pos_start, pos_End, hits);
+			bool result = theListOfObjects[i]->CheckForCollision(pos_start, pos_End, hits);
+			if (result)
+			{
+				if (theListOfObjects[i]->GetType() == CSceneNode::NODE_ENEMY)
+				{
+					theListOfObjects[i]->Reset();
+				}
+				return result;
+			}
 		}
 	}
 

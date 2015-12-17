@@ -5,6 +5,7 @@
 CProjectile::CProjectile()
 	: m_dir(0,0,1)
 	, m_speed(0.f)
+	, m_length(0.f)
 {
 }
 
@@ -36,6 +37,7 @@ void CProjectile::Reset()
 	CGameObject::Reset();
 	m_dir.Set(0, 0, 1);
 	m_speed = 0.f;
+	m_length = 0.f;
 }
 
 void CProjectile::SetDir(Vector3 dir)
@@ -46,4 +48,14 @@ void CProjectile::SetDir(Vector3 dir)
 Vector3 & CProjectile::GetDir()
 {
 	return m_dir;
+}
+
+void CProjectile::SetLength(float length)
+{
+	m_length = length;
+}
+
+float CProjectile::GetLength()
+{
+	return m_length;
 }

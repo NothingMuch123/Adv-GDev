@@ -19,6 +19,9 @@ AGDev_Assign01::AGDev_Assign01(int width, int height)
 	, m_projList(NULL)
 	, m_toggleSPgrid(false)
 	, m_shootTimer(S_SHOOT_COUNTDOWN)
+	, m_score(0.f)
+	, m_rayLength(5.f)
+	, m_enemyList(NULL)
 {
 	for (int i = 0; i < NUM_MESH; ++i)
 	{
@@ -49,8 +52,6 @@ void AGDev_Assign01::Init(int screenWidth, int screenHeight)
 	initProjList();
 	InitMap();
 
-	m_spatialPartition->AddObject(m_char);
-
 	m_camera = m_char->GetTPView();
 }
 
@@ -58,6 +59,17 @@ void AGDev_Assign01::Update(CGameStateManager* GSM, double dt)
 {
 	// Update SceneBase
 	SceneBase::Update(GSM, dt);
+	m_score += dt;
+
+	if (m_end->CollideWith(*m_char, dt))
+	{
+		GSM->PopState();
+		if (m_score < CGameStateManager::S_HIGHSCORE)
+		{
+			CGameStateManager::S_HIGHSCORE = m_score;
+		}
+		return;
+	}
 
 	if (m_shootTimer > 0.f)
 	{
@@ -70,9 +82,20 @@ void AGDev_Assign01::Update(CGameStateManager* GSM, double dt)
 		{
 			proj->Update(dt);
 			Vector3 projPos_Start = proj->GetTransform().m_translate;
-			if (m_spatialPartition->CheckForCollision(projPos_Start) || proj->GetTransform().m_translate.y > 100.f || proj->GetTransform().m_translate.y < 0.f)
+			if (proj->GetLength() <= 0)
 			{
-				proj->Reset();
+				if (proj->CObject::GetActive() && m_spatialPartition->CheckForCollision(projPos_Start) || proj->GetTransform().m_translate.y > 100.f || proj->GetTransform().m_translate.y < 0.f)
+				{
+					proj->Reset();
+				}
+			}
+			else
+			{
+				Vector3 projPos_End = projPos_Start + (proj->GetDir() * proj->GetLength());
+				if (m_spatialPartition->CheckForCollision(projPos_Start, projPos_End) || proj->GetTransform().m_translate.y > 100.f || proj->GetTransform().m_translate.y < 0.f)
+				{
+					proj->Reset();
+				}
 			}
 		}
 	}
@@ -86,13 +109,13 @@ void AGDev_Assign01::Render()
 	SceneBase::Render();
 
 	// Render target
-	CGameObject* target = new CGameObject();
+	/*CGameObject* target = new CGameObject();
 	CTransform* transform = new CTransform();
 	transform->Init(m_char->GetTPView()->target, Vector3(), Vector3(5, 5, 5));
 	target->Init(m_meshList[MESH_CUBE], transform);
-	RenderGameObject(target, m_lightEnabled);
+	RenderGameObject(target, m_lightEnabled);*/
 
-	//RenderGameObject(nodeTest, m_lightEnabled);
+	RenderGameObject(m_end, m_lightEnabled);
 
 	//RenderSkybox();
 	RenderGround();
@@ -113,7 +136,23 @@ void AGDev_Assign01::Render()
 	for (vector<CProjectile*>::iterator it = m_projList.begin(); it != m_projList.end(); ++it)
 	{
 		CProjectile* proj = *it;
-		RenderGameObject(proj, m_lightEnabled);
+		if (proj->GetLength() == 0) // Discrete
+		{
+			RenderGameObject(proj, m_lightEnabled);
+		}
+		else
+		{
+			glLineWidth(5.f);
+			RenderGameObject(proj, m_lightEnabled);
+			glLineWidth(1.f);
+		}
+	}
+	
+	// Render enemies
+	for (vector<CSceneNode*>::iterator it = m_enemyList.begin(); it != m_enemyList.end(); ++it)
+	{
+		CSceneNode* enemy = *it;
+		RenderGameObject(enemy, m_lightEnabled);
 	}
 
 	// Render walls
@@ -130,9 +169,9 @@ void AGDev_Assign01::Render()
 		RenderGameObject(gridList[i], m_lightEnabled);
 	}*/
 
-	ostringstream sFPS;
-	sFPS << "FPS: " << m_fps;
-	RenderTextOnScreen(m_meshList[MESH_TEXT], sFPS.str(), Color(1, 0, 0), 50, 0, 0);
+	ostringstream sTime;
+	sTime << "Time: " << m_score;
+	RenderTextOnScreen(m_meshList[MESH_TEXT], sTime.str(), Color(1, 0, 0), 40, 0, 0);
 
 	// Not supposed to have any other rendering codes here as Scenebase handles it
 	// Alternative solution is to render scenegraph here instead as render list does not take into account parent and child nodes
@@ -153,6 +192,11 @@ void AGDev_Assign01::Exit()
 		delete m_char;
 		m_char = NULL;
 	}
+	if (m_end)
+	{
+		delete m_end;
+		m_end = NULL;
+	}
 	if (m_spatialPartition)
 	{
 		delete m_spatialPartition;
@@ -166,6 +210,15 @@ void AGDev_Assign01::Exit()
 		{
 			delete proj;
 			proj = NULL;
+		}
+	}
+	for (vector<CSceneNode*>::iterator it = m_enemyList.begin(); it != m_enemyList.end(); ++it)
+	{
+		CSceneNode* enemy = *it;
+		if (enemy)
+		{
+			delete enemy;
+			enemy = NULL;
 		}
 	}
 
@@ -248,6 +301,21 @@ void AGDev_Assign01::ProcessKeys(CGameStateManager* GSM, double dt, bool* keys, 
 		}
 	}
 
+	if (keys[CGameStateManager::KEY_SHOOT_2] && m_shootTimer < 0.f)
+	{
+		CProjectile* bullet = fetchProj();
+		if (bullet)
+		{
+			Vector3 dir = (m_char->GetTPView()->target - m_char->GetTPView()->position).Normalized();
+			CTransform* transform = new CTransform();
+			transform->Init(m_char->GetTPView()->position, m_char->GetTransform().m_rotate, Vector3(1, 1, 1));
+			bullet->Init(dir, 500.f, m_meshList[MESH_RAY], transform);
+			bullet->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_MIDDLE, true);
+			bullet->SetLength(m_rayLength);
+			m_shootTimer = S_SHOOT_COUNTDOWN;
+		}
+	}
+
 	if (keys[CGameStateManager::KEY_UP])
 	{
 		m_toggleSPgrid = true;
@@ -297,8 +365,9 @@ void AGDev_Assign01::InitMesh()
 	m_meshList[MESH_TEXT] = MeshBuilder::GenerateText("Calibri font", 16, 16);
 	m_meshList[MESH_TEXT]->textureID[0] = LoadTGA("Image\\calibri.tga");
 	m_meshList[MESH_CUBE] = MeshBuilder::GenerateCube("Cube", Color(0, 1, 0), 1.f);
-	m_meshList[MESH_CONE] = MeshBuilder::GenerateCone("Cone", Color(1, 0, 0), 36, 0.5f, 1.f);
 	m_meshList[MESH_SPHERE] = MeshBuilder::GenerateSphere("Sphere", Color(0, 0, 1), 18, 36, 0.5f);
+	m_meshList[MESH_RAY] = MeshBuilder::GenerateRay("Ray", m_rayLength);
+	m_meshList[MESH_CONE] = MeshBuilder::GenerateCone("Cone", Color(1, 0, 0), 36, 0.5f, 1.f);
 
 	m_meshList[MESH_CHARACTER] = MeshBuilder::GenerateOBJ("Character", "OBJ\\Object\\Monster.obj");
 	m_meshList[MESH_CHARACTER]->textureID[0] = LoadTGA("Image\\Object\\Monster.tga");
@@ -472,6 +541,13 @@ void AGDev_Assign01::InitMap()
 			}
 			else if (map[row][col] == 'M') // Enemy (Monster)
 			{
+				node = new CSceneNode();
+				transform = new CTransform();
+				transform->Init(startPos + Vector3(0, SIZE.y * 0.25f, 0), Vector3(), SIZE * 0.5f);
+				node->Init(CSceneNode::NODE_ENEMY, m_meshList[MESH_CUBE], transform);
+				node->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_MIDDLE, true);
+				m_enemyList.push_back(node);
+				m_spatialPartition->AddObject(node);
 			}
 			else if (map[row][col] == 'C') // Chest
 			{
@@ -486,9 +562,16 @@ void AGDev_Assign01::InitMap()
 				transform->Init(startPos, Vector3(), Vector3(10, 10, 10));
 				m_char->Init(CSceneNode::NODE_TEST, view, m_meshList[MESH_CHARACTER], transform);
 				m_char->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
+				m_spatialPartition->AddObject(m_char);
 			}
 			else if (map[row][col] == 'E') // End
 			{
+				m_end = new CSceneNode();
+				transform = new CTransform();
+				transform->Init(startPos, Vector3(), Vector3(50, 50, 50));
+				m_end->Init(CSceneNode::NODE_WALL, m_meshList[MESH_END], transform);
+				m_end->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
+				m_spatialPartition->AddObject(m_end);
 			}
 		}
 	}

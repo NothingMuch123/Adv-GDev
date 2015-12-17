@@ -255,7 +255,7 @@ Mesh* MeshBuilder::GenerateCube(const std::string &meshName, Color color, float 
 	index_buffer_data.push_back(5);
 	
 	Mesh *mesh = new Mesh(meshName);
-	
+
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
@@ -299,7 +299,7 @@ Mesh* MeshBuilder::GenerateRing(const std::string &meshName, Color color, unsign
 	}
 
 	Mesh *mesh = new Mesh(meshName);
-	
+
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
@@ -363,7 +363,7 @@ Mesh* MeshBuilder::GenerateSphere(const std::string &meshName, Color color, unsi
 	Mesh *mesh = new Mesh(meshName);
 
 	mesh->mode = Mesh::DRAW_TRIANGLE_STRIP;
-	
+
 	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
@@ -884,6 +884,35 @@ Mesh* MeshBuilder::Generate2DMesh(const std::string &meshName, Color color, int 
 
 	mesh->indexSize = index_buffer_data.size();
 	mesh->mode = Mesh::DRAW_TRIANGLES;
+
+	return mesh;
+}
+
+Mesh * MeshBuilder::GenerateRay(const std::string & meshName, const float length)
+{
+	Vertex v;
+	std::vector<Vertex> vertex_buffer_data;
+	std::vector<GLuint> index_buffer_data;
+
+	v.pos.Set(0, 0, 0);
+	v.color.Set(1, 0, 0);
+	vertex_buffer_data.push_back(v);
+	v.pos.Set(0, 0, length);
+	v.color.Set(1, 0, 0);
+	vertex_buffer_data.push_back(v);
+
+	index_buffer_data.push_back(0);
+	index_buffer_data.push_back(1);
+
+	Mesh *mesh = new Mesh(meshName);
+
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, vertex_buffer_data.size() * sizeof(Vertex), &vertex_buffer_data[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_buffer_data.size() * sizeof(GLuint), &index_buffer_data[0], GL_STATIC_DRAW);
+
+	mesh->indexSize = index_buffer_data.size();
+	mesh->mode = Mesh::DRAW_LINES;
 
 	return mesh;
 }
