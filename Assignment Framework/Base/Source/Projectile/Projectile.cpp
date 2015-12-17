@@ -27,6 +27,7 @@ void CProjectile::Update(const double dt)
 	if (!m_dir.IsZero())
 	{
 		m_transform.m_translate += m_dir * (m_speed * dt);
+		CCollider::Update(m_transform);
 	}
 }
 

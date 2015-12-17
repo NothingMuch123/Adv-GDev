@@ -60,41 +60,50 @@ void CSpatialPartition::Update(const double dt)
 
 void CSpatialPartition::AddObject(CSceneNode * object)
 {
-	Vector3 objPos = object->GetTransform().m_translate;
-	float gridSizeWidth = m_totalWidth / m_numCol;
-	float gridSizeHeight = m_totalHeight / m_numRow;
+	Vector3 min = object->GetMinBound();
+	Vector3 max = object->GetMaxBound();
 
-	int grid_index_row = Math::FAbs((objPos.z + m_totalHeight * 0.5f) / gridSizeHeight);
-	int grid_index_col = Math::FAbs((objPos.x - m_totalWidth * 0.5f) / gridSizeWidth);
+	Vector3 topLeft(min);
+	Vector3 topRight(max.x, 0.f, min.z);
+	Vector3 bottomLeft(min.x, 0.f, max.z);
+	Vector3 bottomRight(max);
 
-	if (grid_index_row * m_numCol + grid_index_col < m_gridList.size())
+	vector<Vector3> gridIndexList;
+	gridIndexList.push_back(GetGridIndex(topLeft));
+	gridIndexList.push_back(GetGridIndex(topRight));
+	gridIndexList.push_back(GetGridIndex(bottomLeft));
+	gridIndexList.push_back(GetGridIndex(bottomRight));
+
+	for (int i = 0; i < gridIndexList.size(); ++i)
 	{
-		m_gridList[grid_index_row * m_numRow + grid_index_col]->AddToList(object);
+		Vector3 gridIndex = gridIndexList[i];
+		int index = gridIndex.z * m_numCol + gridIndex.x;
+		if (index < m_gridList.size())
+		{
+			m_gridList[index]->AddToList(object);
+		}
 	}
 }
 
 void CSpatialPartition::UpdateObject(CSceneNode * object)
 {
-	if (!object->GetLocation())
+	if (object->GetLocations().size() <= 0)
 	{
 		return;
 	}
-	Vector3 objPos = object->GetTransform().m_translate;
+	object->ClearLocations();
+	AddObject(object);
+}
+
+Vector3 CSpatialPartition::GetGridIndex(Vector3 pos)
+{
 	float gridSizeWidth = m_totalWidth / m_numCol;
 	float gridSizeHeight = m_totalHeight / m_numRow;
 
-	int grid_index_row = Math::FAbs((objPos.z + m_totalHeight * 0.5f) / gridSizeHeight);
-	int grid_index_col = Math::FAbs((objPos.x + m_totalWidth * 0.5f) / gridSizeWidth);
+	int grid_index_row = Math::FAbs((pos.z + m_totalHeight * 0.5f) / gridSizeHeight);
+	int grid_index_col = Math::FAbs((pos.x + m_totalWidth * 0.5f) / gridSizeWidth);
 
-	CGrid* grid = GetGrid(grid_index_col, grid_index_row);
-	if (grid && object->GetLocation() != grid)
-	{
-		object->GetLocation()->Remove(object); // Remove from grid
-		if (grid_index_row * m_numCol + grid_index_col < m_gridList.size())
-		{
-			m_gridList[grid_index_row * m_numRow + grid_index_col]->AddToList(object);
-		}
-	}
+	return Vector3(grid_index_col, 0, grid_index_row);
 }
 
 CGrid * CSpatialPartition::GetGrid(int col, int row)
@@ -170,4 +179,14 @@ bool CSpatialPartition::CheckForCollision(Vector3 pos_start, Vector3 pos_End)
 	}
 
 	return false;
+}
+
+float CSpatialPartition::GetTotalWidth()
+{
+	return m_totalWidth;
+}
+
+float CSpatialPartition::GetTotalHeight()
+{
+	return m_totalHeight;
 }

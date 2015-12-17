@@ -76,11 +76,11 @@ float CCollider::GetIgnore(E_IGNORE_AXIS index)
 void CCollider::Init(E_COLLIDER_TYPE type, CTransform & transform, E_X_START xStart,  E_Y_START yStart, bool active)
 {
 	this->m_type = type;
-	calcAABB(transform);
-	calcDist(transform);
 	this->m_xStart = xStart;
 	this->m_yStart = yStart;
 	this->m_active = active;
+	calcAABB(transform);
+	calcDist(transform);
 }
 
 void CCollider::Update(CTransform & transform)
@@ -146,7 +146,7 @@ void CCollider::calcAABB(CTransform & transform)
 	// Determine center x pos
 	if (m_xStart == X_LEFT)
 	{
-		centerPos.x = transform.GetTranslate().x + m_diameter.x * 0.5f;
+		centerPos.x = transform.GetTranslate().x + scale.x * 0.5f;
 	}
 	else if (m_xStart == X_MIDDLE)
 	{
@@ -154,13 +154,13 @@ void CCollider::calcAABB(CTransform & transform)
 	}
 	else if (m_xStart == X_RIGHT)
 	{
-		centerPos.x = transform.GetTranslate().x - m_diameter.x * 0.5f;
+		centerPos.x = transform.GetTranslate().x - scale.x * 0.5f;
 	}
 
 	// Determine center y pos
 	if (m_yStart == Y_BOTTOM)
 	{
-		centerPos.y = transform.GetTranslate().y + m_diameter.y * 0.5f;
+		centerPos.y = transform.GetTranslate().y + scale.y * 0.5f;
 	}
 	else if (m_yStart == Y_MIDDLE)
 	{
@@ -168,7 +168,7 @@ void CCollider::calcAABB(CTransform & transform)
 	}
 	else if (m_yStart == Y_TOP)
 	{
-		centerPos.y = transform.GetTranslate().y - m_diameter.y * 0.5f;
+		centerPos.y = transform.GetTranslate().y - scale.y * 0.5f;
 	}
 	Vector3 pos = centerPos;
 

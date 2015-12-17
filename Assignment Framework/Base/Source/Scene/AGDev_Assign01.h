@@ -36,6 +36,10 @@ public:
 		//Skybox
 		MESH_FLOOR,
 
+		// Map
+		MESH_WALL,
+		MESH_END, // End point mesh
+
 		NUM_MESH,
 	};
 	AGDev_Assign01(int width = 1280, int height = 720);
@@ -64,19 +68,28 @@ public:
 private:
 	void InitMesh();
 	void InitMap();
+	void initProjList();
+	CProjectile* fetchProj();
 
 private:
 	Mesh* m_meshList[NUM_MESH];
-	CGameObject* test;
-	CSceneNode* nodeTest;
 
 	CThirdPerson* m_char;
+	bool m_toggleSPgrid;
 
 	// Spatial partition
 	CSpatialPartition* m_spatialPartition;
 
 	// Projectile
 	vector<CProjectile*> m_projList;
+	float m_shootTimer;
+	static const float S_SHOOT_COUNTDOWN;
+
+	// Map
+	vector<CSceneNode*> m_wallList;
+
+	// Enemy
+	//vector<CEnemy*> m_enemyList;
 
 	// Sound
 	irrklang::ISoundEngine *sound;

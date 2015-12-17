@@ -37,7 +37,6 @@ void CGrid::Remove(CSceneNode * object)
 		if (node == object)
 		{
 			m_nodeList.erase(it);
-			object->SetLocation(NULL);
 			break;
 		}
 	}
@@ -54,6 +53,6 @@ void CGrid::AddToList(CSceneNode * node)
 	{
 		return;
 	}
-	node->SetLocation(this);
+	node->AddLocation(this);
 	m_nodeList.push_back(node);
 }

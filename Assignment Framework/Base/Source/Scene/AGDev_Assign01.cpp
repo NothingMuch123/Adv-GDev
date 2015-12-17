@@ -10,13 +10,15 @@
 #include "..\Application.h"
 #include "..\GameStateManager\GameStateManager.h"
 
+const float AGDev_Assign01::S_SHOOT_COUNTDOWN = 1.f;
+
 AGDev_Assign01::AGDev_Assign01(int width, int height)
 	: SceneBase(width, height)
-	, test(NULL)
-	, nodeTest(NULL)
 	, m_char(NULL)
 	, m_spatialPartition(NULL)
 	, m_projList(NULL)
+	, m_toggleSPgrid(false)
+	, m_shootTimer(S_SHOOT_COUNTDOWN)
 {
 	for (int i = 0; i < NUM_MESH; ++i)
 	{
@@ -44,31 +46,10 @@ void AGDev_Assign01::Init(int screenWidth, int screenHeight)
 	}
 
 	InitMesh();
-
-	test = new CGameObject();
-	CTransform* transform = new CTransform();
-	test->Init(m_meshList[MESH_CUBE], transform);
-	test->CCollider::Init(CCollider::CT_AABB, test->GetTransform(), CCollider::X_MIDDLE, CCollider::Y_MIDDLE, true);
-
-	nodeTest = new CSceneNode();
-	transform = new CTransform();
-	transform->Init(Vector3(0, 10, -20), Vector3(), Vector3(20,20,20));
-	nodeTest->Init(CSceneNode::NODE_TEST, m_meshList[MESH_CUBE], transform);
-
-	// Third person player
-	m_char = new CThirdPerson();
-	Camera3* view = new Camera3();
-	view->Init(Vector3(0, 10, CThirdPerson::S_OFFSET_TARGET), Vector3(0, 10, 0), Vector3(0, 1, 0));
-	transform = new CTransform();
-	transform->Init(Vector3(0, 10, CThirdPerson::S_OFFSET_TARGET), Vector3(), Vector3(10,10,10));
-	m_char->Init(CSceneNode::NODE_TEST, view, m_meshList[MESH_CHARACTER], transform);
-
-	// Spatial partition
-	m_spatialPartition = new CSpatialPartition();
-	m_spatialPartition->Init(5, 5, 1000.f, 1000.f, m_meshList[MESH_CUBE]);
+	initProjList();
+	InitMap();
 
 	m_spatialPartition->AddObject(m_char);
-	m_spatialPartition->AddObject(nodeTest);
 
 	m_camera = m_char->GetTPView();
 }
@@ -78,6 +59,10 @@ void AGDev_Assign01::Update(CGameStateManager* GSM, double dt)
 	// Update SceneBase
 	SceneBase::Update(GSM, dt);
 
+	if (m_shootTimer > 0.f)
+	{
+		m_shootTimer -= dt;
+	}
 	for (vector<CProjectile*>::iterator it = m_projList.begin(); it != m_projList.end(); ++it)
 	{
 		CProjectile* proj = *it;
@@ -85,7 +70,7 @@ void AGDev_Assign01::Update(CGameStateManager* GSM, double dt)
 		{
 			proj->Update(dt);
 			Vector3 projPos_Start = proj->GetTransform().m_translate;
-			if (m_spatialPartition->CheckForCollision(projPos_Start))
+			if (m_spatialPartition->CheckForCollision(projPos_Start) || proj->GetTransform().m_translate.y > 100.f || proj->GetTransform().m_translate.y < 0.f)
 			{
 				proj->Reset();
 			}
@@ -108,20 +93,34 @@ void AGDev_Assign01::Render()
 	RenderGameObject(target, m_lightEnabled);
 
 	//RenderGameObject(nodeTest, m_lightEnabled);
-	nodeTest->Draw(this);
 
-	RenderSkybox();
+	//RenderSkybox();
 	RenderGround();
 
-	RenderGameObject(test, m_lightEnabled);
 	RenderGameObject(m_char, m_lightEnabled);
-	RenderGameObject(m_char->GetLocation(), m_lightEnabled);
+
+	if (m_toggleSPgrid)
+	{
+		vector<CGrid*> locations = m_char->GetLocations();
+		for (vector<CGrid*>::iterator it = locations.begin(); it != locations.end(); ++it)
+		{
+			CGrid* grid = *it;
+			RenderGameObject(grid, m_lightEnabled);
+		}
+	}
 
 	// Render projectile
 	for (vector<CProjectile*>::iterator it = m_projList.begin(); it != m_projList.end(); ++it)
 	{
 		CProjectile* proj = *it;
 		RenderGameObject(proj, m_lightEnabled);
+	}
+
+	// Render walls
+	for (vector<CSceneNode*>::iterator it = m_wallList.begin(); it != m_wallList.end(); ++it)
+	{
+		CSceneNode* wall = *it;
+		RenderGameObject(wall, m_lightEnabled);
 	}
 
 	// Render spatial partition
@@ -131,11 +130,9 @@ void AGDev_Assign01::Render()
 		RenderGameObject(gridList[i], m_lightEnabled);
 	}*/
 
-	//SetHUD(true);
 	ostringstream sFPS;
 	sFPS << "FPS: " << m_fps;
 	RenderTextOnScreen(m_meshList[MESH_TEXT], sFPS.str(), Color(1, 0, 0), 50, 0, 0);
-	//SetHUD(false);
 
 	// Not supposed to have any other rendering codes here as Scenebase handles it
 	// Alternative solution is to render scenegraph here instead as render list does not take into account parent and child nodes
@@ -146,16 +143,6 @@ void AGDev_Assign01::Exit()
 	// Exit SceneBase
 	SceneBase::Exit();
 
-	if (test)
-	{
-		delete test;
-		test = NULL;
-	}
-	if (nodeTest)
-	{
-		delete nodeTest;
-		nodeTest = NULL;
-	}
 	if (m_spatialPartition)
 	{
 		delete m_spatialPartition;
@@ -241,16 +228,33 @@ void AGDev_Assign01::ProcessKeys(CGameStateManager* GSM, double dt, bool* keys, 
 	{
 		m_char->changeTargetOffset(dt, false);
 	}
-	m_spatialPartition->UpdateObject(m_char);
-
-	if (keys[CGameStateManager::KEY_SHOOT_1])
+	else
 	{
-		CProjectile* bullet = new CProjectile();
-		Vector3 dir = (m_char->GetTPView()->target - m_char->GetTPView()->position).Normalized();
-		CTransform* transform = new CTransform();
-		transform->Init(m_char->GetTPView()->position, Vector3(), Vector3(5, 5, 5));
-		bullet->Init(dir, 100.f, m_meshList[MESH_SPHERE], transform);
-		m_projList.push_back(bullet);
+		m_char->CCollider::Update(m_char->GetTransform());
+		m_spatialPartition->UpdateObject(m_char);
+	}
+
+	if (keys[CGameStateManager::KEY_SHOOT_1] && m_shootTimer < 0.f)
+	{
+		CProjectile* bullet = fetchProj();
+		if (bullet)
+		{
+			Vector3 dir = (m_char->GetTPView()->target - m_char->GetTPView()->position).Normalized();
+			CTransform* transform = new CTransform();
+			transform->Init(m_char->GetTPView()->position, Vector3(), Vector3(1, 1, 1));
+			bullet->Init(dir, 500.f, m_meshList[MESH_SPHERE], transform);
+			bullet->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_MIDDLE, true);
+			m_shootTimer = S_SHOOT_COUNTDOWN;
+		}
+	}
+
+	if (keys[CGameStateManager::KEY_UP])
+	{
+		m_toggleSPgrid = true;
+	}
+	if (keys[CGameStateManager::KEY_DOWN])
+	{
+		m_toggleSPgrid = false;
 	}
 }
 
@@ -298,6 +302,12 @@ void AGDev_Assign01::InitMesh()
 
 	m_meshList[MESH_CHARACTER] = MeshBuilder::GenerateOBJ("Character", "OBJ\\Object\\Monster.obj");
 	m_meshList[MESH_CHARACTER]->textureID[0] = LoadTGA("Image\\Object\\Monster.tga");
+
+	m_meshList[MESH_WALL] = MeshBuilder::GenerateOBJ("Wall", "OBJ\\Object\\Wall.obj");
+	m_meshList[MESH_WALL]->textureID[0] = LoadTGA("Image\\Object\\MazeWall.tga");
+
+	m_meshList[MESH_END] = MeshBuilder::GenerateOBJ("Wall", "OBJ\\Object\\Trophy.obj");
+	m_meshList[MESH_END]->textureID[0] = LoadTGA("Image\\Object\\Trophy.tga");
 
 	// Skybox
 	m_meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("LEFT", Color(1, 1, 1), 1.f);
@@ -375,23 +385,9 @@ void AGDev_Assign01::RenderGround()
 {
 	modelStack.PushMatrix();
 	modelStack.Rotate(-90, 1, 0, 0);
-	modelStack.Translate(0, 0, -10);
-	modelStack.Rotate(-90, 0, 0, 1);
-	modelStack.Scale(100.0f, 100.0f, 100.0f);
-
-	for (int x = 0; x<10; x++)
-	{
-		for (int z = 0; z<10; z++)
-		{
-			modelStack.PushMatrix();
-			modelStack.Translate(x - 5.0f, z - 5.0f, 0.0f);
-			if (((x * 9 + z) % 2) == 0)
-				RenderMesh(m_meshList[GEO_GRASS_DARKGREEN], false);
-			else
-				RenderMesh(m_meshList[GEO_GRASS_LIGHTGREEN], false);
-			modelStack.PopMatrix();
-		}
-	}
+	modelStack.Translate(0, 0, 0);
+	modelStack.Scale(m_spatialPartition->GetTotalWidth(), m_spatialPartition->GetTotalHeight(), 1.0f);
+	RenderMesh(m_meshList[MESH_FLOOR], m_lightEnabled);
 	modelStack.PopMatrix();
 }
 
@@ -430,7 +426,7 @@ void AGDev_Assign01::PostRendering()
 
 void AGDev_Assign01::InitMap()
 {
-	/*std::vector<std::string> map;
+	std::vector<std::string> map;
 	std::string data;
 	std::ifstream fMap;
 	fMap.open("map.txt");
@@ -440,69 +436,81 @@ void AGDev_Assign01::InitMap()
 		map.push_back(data);
 	}
 	map.pop_back();
-	skyboxSize.Set(map[0].length() * 100, 60, map.size() * 100);
-	skyboxOffset = 5;
 
-	meshList[GEO_WALL] = MeshBuilder::GenerateOBJ("Wall", "OBJ\\wall.obj");
-	meshList[GEO_WALL]->textureID = LoadTGA("Image\\MazeWall.tga");
-	meshList[GEO_WALL]->material.kAmbient.Set(0.2f, 0.2f, 0.2f);
-	meshList[GEO_WALL]->material.kDiffuse.Set(0.1f, 0.1f, 0.1f);
-	meshList[GEO_WALL]->material.kSpecular.Set(0.1f, 0.1f, 0.1f);
-	meshList[GEO_WALL]->material.kShininess = 1.f;
+	const Vector3 SIZE(100.f, 100.f, 100.f);
+	float rowLength = map.front().length() * SIZE.x; // X-axis length
+	float colLength = map.size() * SIZE.z; // Z-axis length
+	Vector3 defaultStart = Vector3(-rowLength * 0.5f, 0.f, -colLength * 0.5f);
+	defaultStart = defaultStart + SIZE * 0.5f;
+	Vector3 startPos;
+	CSceneNode* node;
+	CTransform* transform;
 
-	meshList[GEO_MONSTER] = MeshBuilder::GenerateOBJ("Monster", "OBJ\\Monster.obj");
-	meshList[GEO_MONSTER]->textureID = LoadTGA("Image\\Monster.tga");
-	meshList[GEO_MONSTER]->material.kAmbient.Set(0.2f, 0.2f, 0.2f);
-	meshList[GEO_MONSTER]->material.kDiffuse.Set(0.5f, 0.5f, 0.5f);
-	meshList[GEO_MONSTER]->material.kSpecular.Set(0.1f, 0.1f, 0.1f);
-	meshList[GEO_MONSTER]->material.kShininess = 1.f;
+	// Spatial partition
+	m_spatialPartition = new CSpatialPartition();
+	m_spatialPartition->Init(5, 5, rowLength, colLength, m_meshList[MESH_CUBE]);
 
-	meshList[GEO_CHEST] = MeshBuilder::GenerateOBJ("Chest", "OBJ\\Chest.obj");
-	meshList[GEO_CHEST]->textureID = LoadTGA("Image\\Chest.tga");
-	meshList[GEO_CHEST]->material.kAmbient.Set(0.2f, 0.2f, 0.2f);
-	meshList[GEO_CHEST]->material.kDiffuse.Set(0.5f, 0.5f, 0.5f);
-	meshList[GEO_CHEST]->material.kSpecular.Set(0.1f, 0.1f, 0.1f);
-	meshList[GEO_CHEST]->material.kShininess = 1.f;
 
-	meshList[GEO_TROPHY] = MeshBuilder::GenerateOBJ("Trophy", "OBJ\\Trophy.obj");
-	meshList[GEO_TROPHY]->textureID = LoadTGA("Image\\Trophy.tga");
-	meshList[GEO_TROPHY]->material.kAmbient.Set(0.2f, 0.2f, 0.2f);
-	meshList[GEO_TROPHY]->material.kDiffuse.Set(0.5f, 0.5f, 0.5f);
-	meshList[GEO_TROPHY]->material.kSpecular.Set(0.1f, 0.1f, 0.1f);
-	meshList[GEO_TROPHY]->material.kShininess = 1.f;
-
-	float startX = -(skyboxSize.x / 2) + 50, startZ = -(skyboxSize.z / 2) + 50; // X starts from left and Z starts from top
 	for (int row = 0; row < map.size(); row++)
 	{
 		for (int col = 0; col < map[0].length(); col++)
 		{
-			if (map[row][col] == '#') // Only change translate X & Z
+			// Set start pos
+			startPos.x = defaultStart.x + (col * SIZE.x);
+			startPos.y = 0.f;
+			startPos.z = defaultStart.z + (row * SIZE.z);
+			
+			if (map[row][col] == '#') // Wall
 			{
-				InitObj(meshList[GEO_WALL], startX + (col * 100), 0, startZ + (row * 100), 0, 0, 0, 100, skyboxSize.y, 100, CObj::SHAPES::S_CUBE);
+				node = new CSceneNode();
+				transform = new CTransform();
+				transform->Init(startPos, Vector3(), SIZE);
+				node->Init(CSceneNode::NODE_WALL, m_meshList[MESH_WALL], transform);
+				node->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
+				m_wallList.push_back(node);
+				m_spatialPartition->AddObject(node);
 			}
-			else if (map[row][col] == 'M')
+			else if (map[row][col] == 'M') // Enemy (Monster)
 			{
-				InitObj(meshList[GEO_MONSTER], startX + (col * 100), (-7.5 * 2.5) - 22, startZ + (row * 100), 0, 180, 0, 2.5, 2.5, 2.5, CObj::SHAPES::S_MONSTER);
 			}
-			else if (map[row][col] == 'C')
+			else if (map[row][col] == 'C') // Chest
 			{
-				InitObj(meshList[GEO_CHEST], startX + (col * 100), -skyboxSize.y / 2, startZ + (row * 100), 0, 180, 0, 20, 20, 20, CObj::SHAPES::S_CHEST);
 			}
-			else if (map[row][col] == 'S')
+			else if (map[row][col] == 'S') // Start
 			{
-				modelPosition.Set(startX + (col * 100), 10, startZ + (row * 100));
-				modelTarget.Set(modelPosition.x - 1, modelPosition.y, modelPosition.z);
-				modelUp.Set(0, 1, 0);
-				modelView = (modelTarget - modelPosition).Normalized();
-				startMaxBound.Set(startX + (col * 100) + 50, 30, startZ + (row * 100) + 50);
-				startMinBound.Set(startX + (col * 100) - 50, -30, startZ + (row * 100) - 50);
+				// Third person player
+				m_char = new CThirdPerson();
+				Camera3* view = new Camera3();
+				view->Init(startPos, startPos - Vector3(0, 0, CThirdPerson::S_OFFSET_TARGET), Vector3(0, 1, 0));
+				transform = new CTransform();
+				transform->Init(startPos, Vector3(), Vector3(10, 10, 10));
+				m_char->Init(CSceneNode::NODE_TEST, view, m_meshList[MESH_CHARACTER], transform);
+				m_char->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
 			}
-			else if (map[row][col] == 'E')
+			else if (map[row][col] == 'E') // End
 			{
-				InitObj(meshList[GEO_TROPHY], startX + (col * 100), -skyboxSize.y / 2, startZ + (row * 100), 0, 0, 0, 1, 1, 1, CObj::SHAPES::S_TROPHY);
-				endMaxBound.Set(startX + (col * 100) + 50, 30, startZ + (row * 100) + 50);
-				endMinBound.Set(startX + (col * 100) - 50, -30, startZ + (row * 100) - 50);
 			}
 		}
-	}*/
+	}
+}
+
+void AGDev_Assign01::initProjList()
+{
+	for (int i = 0; i < 50; ++i)
+	{
+		m_projList.push_back(new CProjectile());
+	}
+}
+
+CProjectile * AGDev_Assign01::fetchProj()
+{
+	for (vector<CProjectile*>::iterator it = m_projList.begin(); it != m_projList.end(); ++it)
+	{
+		CProjectile* proj = *it;
+		if (!proj->GetRender())
+		{
+			return proj;
+		}
+	}
+	return NULL;
 }

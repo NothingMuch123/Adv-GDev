@@ -16,6 +16,7 @@ public:
 	{
 		NODE_NONE = 0,
 		NODE_TEST,
+		NODE_WALL,
 		NUM_NODE,
 	};
 
@@ -29,8 +30,9 @@ public:
 	// Setters and Getters
 	vector<CSceneNode*>& GetChildren();
 
-	void SetLocation(CGrid* grid);
-	CGrid* GetLocation();
+	void AddLocation(CGrid* grid);
+	vector<CGrid*>& GetLocations();
+	void ClearLocations();
 	
 	void SetType(E_NODE_TYPE type);
 	E_NODE_TYPE GetType();
@@ -57,7 +59,7 @@ private:
 private:
 	vector<CSceneNode*> m_children;
 	E_NODE_TYPE m_type;
-	CGrid* m_location; // Grid that stores this gameobject
+	vector<CGrid*> m_locations; // Grid that stores this gameobject
 };
 
 #endif

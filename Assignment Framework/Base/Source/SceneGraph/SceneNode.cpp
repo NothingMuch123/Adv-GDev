@@ -5,7 +5,7 @@
 CSceneNode::CSceneNode()
 	: m_children(NULL)
 	, m_type(NODE_NONE)
-	, m_location(NULL)
+	, m_locations(NULL)
 {
 }
 
@@ -53,14 +53,19 @@ vector<CSceneNode*>& CSceneNode::GetChildren()
 	return m_children;
 }
 
-void CSceneNode::SetLocation(CGrid * grid)
+void CSceneNode::AddLocation(CGrid * grid)
 {
-	m_location = grid;
+	m_locations.push_back(grid);
 }
 
-CGrid * CSceneNode::GetLocation()
+vector<CGrid*> & CSceneNode::GetLocations()
 {
-	return m_location;
+	return m_locations;
+}
+
+void CSceneNode::ClearLocations()
+{
+	m_locations.clear();
 }
 
 void CSceneNode::SetType(E_NODE_TYPE type)

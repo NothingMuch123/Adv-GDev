@@ -491,7 +491,7 @@ void SceneBase::RenderMeshIn2D(Mesh *mesh, bool enableLight, float size, float x
 
 void SceneBase::RenderGameObject(CGameObject * go, bool enableLight, bool in2D)
 {
-	if (go && go->GetMesh())
+	if (go && go->GetMesh() && go->GetRender())
 	{
 		modelStack.PushMatrix();
 		modelStack.Translate(go->GetTransform().GetTranslate().x, go->GetTransform().GetTranslate().y, go->GetTransform().GetTranslate().z);

@@ -15,12 +15,17 @@ public:
 	void AddObject(CSceneNode* object);
 	void UpdateObject(CSceneNode* object);
 
+	Vector3 GetGridIndex(Vector3 pos);
+
 	CGrid* GetGrid(int col, int row);
 	vector<CGrid*>& GetGridList();
 
 	// Collision
 	bool CheckForCollision(Vector3 pos);
 	bool CheckForCollision(Vector3 pos_start, Vector3 pos_End);
+
+	float GetTotalWidth();
+	float GetTotalHeight();
 
 private:
 	vector<CGrid*> m_gridList;
