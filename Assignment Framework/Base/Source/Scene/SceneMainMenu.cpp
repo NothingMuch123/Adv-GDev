@@ -59,6 +59,10 @@ void SceneMainMenu::Render()
 	// Render SceneBase
 	SceneBase::Render();
 
+	glDisable(GL_DEPTH_TEST);
+
+	RenderGameObject(m_menu->GetCurrentMenu()->GetBackground(), m_lightEnabled, true);
+
 	vector<Menu*> m_menuList = m_menu->GetMenuList();
 	for (vector<Menu*>::iterator it = m_menuList.begin(); it != m_menuList.end(); ++it)
 	{
@@ -71,11 +75,26 @@ void SceneMainMenu::Render()
 		}
 	}
 
-	ostringstream sFPS;
-	sFPS << "FPS: " << m_fps;
-	RenderTextOnScreen(m_meshList[MESH_TEXT], sFPS.str(), Color(1, 0, 0), 50, 0, 0);
+	
+	modelStack.PushMatrix();
+	modelStack.Translate(m_window_width * 0.1f, m_window_height * 0.1f, 0);
+	modelStack.Scale(500,500,1);
+	RenderMeshIn2D(m_meshList[MESH_HIGHSCORE], m_lightEnabled);
+	modelStack.PopMatrix();
 
-	RenderGameObject(m_menu->GetCurrentMenu()->GetBackground(), m_lightEnabled, true);
+	ostringstream sHighscore;
+	if (CGameStateManager::S_HIGHSCORE == 0.f)
+	{
+		sHighscore << "None";
+		RenderTextOnScreen(m_meshList[MESH_TEXT], sHighscore.str(), Color(1, 0, 0), 60, m_window_width * 0.225f, m_window_height * 0.25f);
+	}
+	else
+	{
+		sHighscore << (int)CGameStateManager::S_HIGHSCORE;
+		RenderTextOnScreen(m_meshList[MESH_TEXT], sHighscore.str(), Color(1, 0, 0), 60, m_window_width * 0.275f, m_window_height * 0.25f);
+	}
+
+	glEnable(GL_DEPTH_TEST);
 
 	// Not supposed to have any other rendering codes here as Scenebase handles it
 	// Alternative solution is to render scenegraph here instead as render list does not take into account parent and child nodes
@@ -200,6 +219,9 @@ void SceneMainMenu::InitMesh()
 
 	m_meshList[MESH_EXIT_OFF] = MeshBuilder::Generate2DMesh("Exit off", Color(1, 1, 1), 0, 0, 1, 1);
 	m_meshList[MESH_EXIT_OFF]->textureID[0] = LoadTGA("Image\\Menu\\Exit_Off.tga");
+
+	m_meshList[MESH_HIGHSCORE] = MeshBuilder::Generate2DMesh("Exit off", Color(1, 1, 1), 0, 0, 1, 1);
+	m_meshList[MESH_HIGHSCORE]->textureID[0] = LoadTGA("Image\\Menu\\Highscore.tga");
 }
 
 void SceneMainMenu::DestroyMesh()

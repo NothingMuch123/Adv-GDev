@@ -74,6 +74,17 @@ void SceneOptions::Render()
 
 	RenderGameObject(m_menu->GetCurrentMenu()->GetBackground(), m_lightEnabled, true);
 
+	ostringstream sMusic;
+	if (CGameStateManager::S_MUSIC)
+	{
+		sMusic << "Music: " << "ON";
+	}
+	else
+	{
+		sMusic << "Music: " << "OFF";
+	}
+	RenderTextOnScreen(m_meshList[MESH_TEXT], sMusic.str(), Color(1, 0, 0), 40, m_window_width * 0.5f, m_window_height * 0.5f);
+
 	// Not supposed to have any other rendering codes here as Scenebase handles it
 	// Alternative solution is to render scenegraph here instead as render list does not take into account parent and child nodes
 }

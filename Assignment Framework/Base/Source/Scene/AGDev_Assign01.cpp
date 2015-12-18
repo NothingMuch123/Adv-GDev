@@ -64,7 +64,7 @@ void AGDev_Assign01::Update(CGameStateManager* GSM, double dt)
 	if (m_end->CollideWith(*m_char, dt))
 	{
 		GSM->PopState();
-		if (m_score < CGameStateManager::S_HIGHSCORE)
+		if (CGameStateManager::S_HIGHSCORE == 0.f || m_score < CGameStateManager::S_HIGHSCORE)
 		{
 			CGameStateManager::S_HIGHSCORE = m_score;
 		}
@@ -88,6 +88,37 @@ void AGDev_Assign01::Update(CGameStateManager* GSM, double dt)
 				{
 					proj->Reset();
 				}
+				else
+				{
+					for (int i = 0; i < m_enemyList.size(); ++i)
+					{
+						CSceneNode* enemy = m_enemyList[i];
+						if (enemy && enemy->CObject::GetActive())
+						{
+							if (proj->CollideWith(*enemy, dt))
+							{
+								proj->Reset();
+								enemy->Reset();
+								break;
+							}
+						}
+					}
+					if (proj->CObject::GetActive())
+					{
+						for (int i = 0; i < m_wallList.size(); ++i)
+						{
+							CSceneNode* wall = m_wallList[i];
+							if (wall && wall->CObject::GetActive())
+							{
+								if (proj->CollideWith(*wall, dt))
+								{
+									proj->Reset();
+									break;
+								}
+							}
+						}
+					}
+				}
 			}
 			else
 			{
@@ -95,6 +126,22 @@ void AGDev_Assign01::Update(CGameStateManager* GSM, double dt)
 				if (m_spatialPartition->CheckForCollision(projPos_Start, projPos_End) || proj->GetTransform().m_translate.y > 100.f || proj->GetTransform().m_translate.y < 0.f)
 				{
 					proj->Reset();
+				}
+				else
+				{
+					for (int i = 0; i < m_enemyList.size(); ++i)
+					{
+						CSceneNode* enemy = m_enemyList[i];
+						if (enemy && enemy->CObject::GetActive())
+						{
+							if (proj->CollideWith(*enemy, dt))
+							{
+								proj->Reset();
+								enemy->Reset();
+								break;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -543,9 +590,19 @@ void AGDev_Assign01::InitMap()
 			{
 				node = new CSceneNode();
 				transform = new CTransform();
-				transform->Init(startPos + Vector3(0, SIZE.y * 0.25f, 0), Vector3(), SIZE * 0.5f);
+				transform->Init(startPos + Vector3(0, SIZE.y * 0.25f, 0), Vector3(), SIZE * 0.25f);
 				node->Init(CSceneNode::NODE_ENEMY, m_meshList[MESH_CUBE], transform);
 				node->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_MIDDLE, true);
+
+				// Child
+				CSceneNode* cNode = new CSceneNode();
+				transform = new CTransform();
+				transform->Init(Vector3(0, 0, 0), Vector3(), Vector3(0.5f, 0.5f, 0.5f));
+				cNode->Init(CSceneNode::NODE_ENEMY, m_meshList[MESH_CONE], transform);
+				cNode->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
+
+				node->AddChild(cNode);
+
 				m_enemyList.push_back(node);
 				m_spatialPartition->AddObject(node);
 			}

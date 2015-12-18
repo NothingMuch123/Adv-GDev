@@ -25,6 +25,8 @@ public:
 		MESH_CREDITS_OFF,
 		MESH_EXIT_ON,
 		MESH_EXIT_OFF,
+		
+		MESH_HIGHSCORE,
 
 		NUM_MESH,
 	};
