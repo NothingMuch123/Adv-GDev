@@ -15,6 +15,12 @@ using std::vector;
 class CGameStateManager
 {
 public:
+	// Menus
+	static const float S_CLICK_COOLDOWN;
+	static const float S_ENTER_COOLDOWN;
+	static bool S_MUSIC;
+	static float S_HIGHSCORE;
+
 	enum KEYS
 	{
 		KEY_MOVE_FORWARD = 0,
@@ -69,8 +75,11 @@ public:
 	void SetMousePos(float x, float y);
 	Vector2 GetMousePos();
 
-	static bool S_MUSIC;
-	static float S_HIGHSCORE;
+	void SetEnterTimer(float enterTimer);
+	float GetEnterTimer();
+
+	void SetClickTimer(float clickTimer);
+	float GetClickTimer();
 
 private:
 	void resetKeys();
@@ -87,6 +96,10 @@ private:
 
 	// Window width and height
 	int m_window_width, m_window_height;
+
+	// Mouse and key press timer (For menus)
+	float m_enterTimer;
+	float m_clickTimer;
 };
 
 #endif

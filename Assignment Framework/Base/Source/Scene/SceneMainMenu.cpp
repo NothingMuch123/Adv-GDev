@@ -78,7 +78,7 @@ void SceneMainMenu::Render()
 	
 	modelStack.PushMatrix();
 	modelStack.Translate(m_window_width * 0.1f, m_window_height * 0.1f, 0);
-	modelStack.Scale(500,500,1);
+	modelStack.Scale(300,300,1);
 	RenderMeshIn2D(m_meshList[MESH_HIGHSCORE], m_lightEnabled);
 	modelStack.PopMatrix();
 
@@ -86,12 +86,12 @@ void SceneMainMenu::Render()
 	if (CGameStateManager::S_HIGHSCORE == 0.f)
 	{
 		sHighscore << "None";
-		RenderTextOnScreen(m_meshList[MESH_TEXT], sHighscore.str(), Color(1, 0, 0), 60, m_window_width * 0.225f, m_window_height * 0.25f);
+		RenderTextOnScreen(m_meshList[MESH_TEXT], sHighscore.str(), Color(1, 0, 0), 30, m_window_width * 0.225f, m_window_height * 0.25f);
 	}
 	else
 	{
 		sHighscore << (int)CGameStateManager::S_HIGHSCORE;
-		RenderTextOnScreen(m_meshList[MESH_TEXT], sHighscore.str(), Color(1, 0, 0), 60, m_window_width * 0.275f, m_window_height * 0.25f);
+		RenderTextOnScreen(m_meshList[MESH_TEXT], sHighscore.str(), Color(1, 0, 0), 30, m_window_width * 0.275f, m_window_height * 0.25f);
 	}
 
 	glEnable(GL_DEPTH_TEST);
@@ -119,33 +119,51 @@ void SceneMainMenu::Reset()
 
 void SceneMainMenu::ProcessKeys(CGameStateManager* GSM, double dt, bool* keys, Vector2 mousePos)
 {
-	if (keys[CGameStateManager::KEY_SHOOT_1])
+	float clickTimer = GSM->GetClickTimer();
+	float enterTimer = GSM->GetEnterTimer();
+
+	if (clickTimer > 0.f)
+	{
+		clickTimer -= dt;
+		GSM->SetClickTimer(clickTimer);
+	}
+	if (enterTimer > 0.f)
+	{
+		enterTimer -= dt;
+		GSM->SetEnterTimer(enterTimer);
+	}
+
+	if (keys[CGameStateManager::KEY_SHOOT_1] && clickTimer <= 0.f)
 	{
 		m_menu->MouseUpdate(dt, mousePos.x, mousePos.y);
 		MenuManager::E_RETURN_STATE result = m_menu->OnClick(GSM, mousePos.x, mousePos.y);
+		GSM->SetClickTimer(CGameStateManager::S_CLICK_COOLDOWN);
 		if (result == MenuManager::RS_CHANGE)
 		{
 			return;
 		}
 	}
 
-	if (keys[CGameStateManager::KEY_ENTER])
+	if (keys[CGameStateManager::KEY_ENTER] && enterTimer <= 0.f)
 	{
 		MenuManager::E_RETURN_STATE result = m_menu->OnEnter(GSM);
+		GSM->SetEnterTimer(CGameStateManager::S_ENTER_COOLDOWN);
 		if (result == MenuManager::RS_CHANGE)
 		{
 			return;
 		}
 	}
 
-	if (keys[CGameStateManager::KEY_UP])
+	if (keys[CGameStateManager::KEY_UP] && enterTimer <= 0.f)
 	{
-		m_menu->KeysUpdate(dt, false);
+		GSM->SetEnterTimer(CGameStateManager::S_ENTER_COOLDOWN);
+		m_menu->KeysUpdate(dt, true);
 	}
 
-	if (keys[CGameStateManager::KEY_DOWN])
+	if (keys[CGameStateManager::KEY_DOWN] && enterTimer <= 0.f)
 	{
-		m_menu->KeysUpdate(dt, true);
+		GSM->SetEnterTimer(CGameStateManager::S_ENTER_COOLDOWN);
+		m_menu->KeysUpdate(dt, false);
 	}
 }
 

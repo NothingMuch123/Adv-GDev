@@ -30,8 +30,8 @@ private:
 	~Application();
 
 	const static int m_window_deadzone = 100;
-	const static int m_window_width = 1200;
-	const static int m_window_height = 900;
+	const static int m_window_width = 800;
+	const static int m_window_height = 600;
 
 	//Declare a window object
 	StopWatch m_timer;

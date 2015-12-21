@@ -2,14 +2,18 @@
 
 bool CGameStateManager::S_MUSIC = true;
 float CGameStateManager::S_HIGHSCORE = 0.f;
+const float CGameStateManager::S_CLICK_COOLDOWN = 0.5f;
+const float CGameStateManager::S_ENTER_COOLDOWN = 0.5f;
 
-CGameStateManager::CGameStateManager()
+ CGameStateManager::CGameStateManager()
 	: m_states(NULL)
 	, m_running(true)
 	, m_window_width(800)
 	, m_window_height(600)
 	, m_mousePos()
 	, m_shouldRun(true)
+	, m_clickTimer(S_CLICK_COOLDOWN)
+	, m_enterTimer(S_ENTER_COOLDOWN)
 {
 	resetKeys();
 }
@@ -170,6 +174,26 @@ Vector2 CGameStateManager::GetMousePos()
 	return m_mousePos;
 }
 
+void CGameStateManager::SetEnterTimer(float enterTimer)
+{
+	m_enterTimer = enterTimer;
+}
+
+float CGameStateManager::GetEnterTimer()
+{
+	return m_enterTimer;
+}
+
+void CGameStateManager::SetClickTimer(float clickTimer)
+{
+	m_clickTimer = clickTimer;
+}
+
+float CGameStateManager::GetClickTimer()
+{
+	return m_clickTimer;
+}
+
 void CGameStateManager::resetKeys()
 {
 	for (int i = 0; i < NUM_KEY; ++i)
@@ -182,4 +206,6 @@ void CGameStateManager::resetInputData()
 {
 	resetKeys();
 	m_pending_pitch = m_pending_yaw = 0.f;
+	m_clickTimer = S_CLICK_COOLDOWN;
+	m_enterTimer = S_ENTER_COOLDOWN;
 }

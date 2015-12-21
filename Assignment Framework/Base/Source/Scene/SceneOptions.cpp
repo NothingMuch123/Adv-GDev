@@ -83,7 +83,7 @@ void SceneOptions::Render()
 	{
 		sMusic << "Music: " << "OFF";
 	}
-	RenderTextOnScreen(m_meshList[MESH_TEXT], sMusic.str(), Color(1, 0, 0), 40, m_window_width * 0.5f, m_window_height * 0.5f);
+	RenderTextOnScreen(m_meshList[MESH_TEXT], sMusic.str(), Color(1, 0, 0), 40, m_window_width * 0.f, m_window_height * 0.f);
 
 	// Not supposed to have any other rendering codes here as Scenebase handles it
 	// Alternative solution is to render scenegraph here instead as render list does not take into account parent and child nodes
@@ -108,25 +108,43 @@ void SceneOptions::Reset()
 
 void SceneOptions::ProcessKeys(CGameStateManager* GSM, double dt, bool* keys, Vector2 mousePos)
 {
-	if (keys[CGameStateManager::KEY_SHOOT_1])
+	float clickTimer = GSM->GetClickTimer();
+	float enterTimer = GSM->GetEnterTimer();
+
+	if (clickTimer > 0.f)
+	{
+		clickTimer -= dt;
+		GSM->SetClickTimer(clickTimer);
+	}
+	if (enterTimer > 0.f)
+	{
+		enterTimer -= dt;
+		GSM->SetEnterTimer(enterTimer);
+	}
+
+	if (keys[CGameStateManager::KEY_SHOOT_1] && clickTimer <= 0.f)
 	{
 		m_menu->MouseUpdate(dt, mousePos.x, mousePos.y);
 		m_menu->OnClick(GSM, mousePos.x, mousePos.y);
+		GSM->SetClickTimer(CGameStateManager::S_CLICK_COOLDOWN);
 	}
 
-	if (keys[CGameStateManager::KEY_ENTER])
+	if (keys[CGameStateManager::KEY_ENTER] && enterTimer <= 0.f)
 	{
 		m_menu->OnEnter(GSM);
+		GSM->SetEnterTimer(CGameStateManager::S_ENTER_COOLDOWN);
 	}
 
-	if (keys[CGameStateManager::KEY_UP])
-	{
-		m_menu->KeysUpdate(dt, false);
-	}
-
-	if (keys[CGameStateManager::KEY_DOWN])
+	if (keys[CGameStateManager::KEY_UP] && enterTimer <= 0.f)
 	{
 		m_menu->KeysUpdate(dt, true);
+		GSM->SetEnterTimer(CGameStateManager::S_ENTER_COOLDOWN);
+	}
+
+	if (keys[CGameStateManager::KEY_DOWN] && enterTimer <= 0.f)
+	{
+		m_menu->KeysUpdate(dt, false);
+		GSM->SetEnterTimer(CGameStateManager::S_ENTER_COOLDOWN);
 	}
 }
 
