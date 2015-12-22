@@ -48,6 +48,11 @@ void AGDev_Assign01::Init(int screenWidth, int screenHeight)
 		std::cout << "Could not start sound engine" << std::endl;
 	}
 
+	if (CGameStateManager::S_MUSIC)
+	{
+		sound->play2D("Sound\\HolFix_Savior.mp3", true);
+	}
+
 	InitMesh();
 	initProjList();
 	InitMap();
@@ -75,6 +80,13 @@ void AGDev_Assign01::Update(CGameStateManager* GSM, double dt)
 	{
 		m_shootTimer -= dt;
 	}
+
+	for (int i = 0; i < m_enemyList.size(); ++i)
+	{
+		CSceneNode* enemy = m_enemyList[i];
+		enemy->GetTransform().m_rotate.y += dt * 100.f;
+	}
+
 	for (vector<CProjectile*>::iterator it = m_projList.begin(); it != m_projList.end(); ++it)
 	{
 		CProjectile* proj = *it;
@@ -199,7 +211,8 @@ void AGDev_Assign01::Render()
 	for (vector<CSceneNode*>::iterator it = m_enemyList.begin(); it != m_enemyList.end(); ++it)
 	{
 		CSceneNode* enemy = *it;
-		RenderGameObject(enemy, m_lightEnabled);
+		//RenderGameObject(enemy, m_lightEnabled);
+		enemy->Draw(this);
 	}
 
 	// Render walls
@@ -339,9 +352,13 @@ void AGDev_Assign01::ProcessKeys(CGameStateManager* GSM, double dt, bool* keys, 
 		CProjectile* bullet = fetchProj();
 		if (bullet)
 		{
-			Vector3 dir = (m_char->GetTPView()->target - m_char->GetTPView()->position).Normalized();
+			Vector3 pos = m_char->GetView()->position;
+			pos.y += m_char->GetTransform().m_scale.y;
+			Vector3 target = m_char->GetView()->target;
+			Vector3 dir = (target - pos).Normalized();
+
 			CTransform* transform = new CTransform();
-			transform->Init(m_char->GetTPView()->position, Vector3(), Vector3(1, 1, 1));
+			transform->Init(pos, Vector3(), Vector3(1, 1, 1));
 			bullet->Init(dir, 500.f, m_meshList[MESH_SPHERE], transform);
 			bullet->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_MIDDLE, true);
 			m_shootTimer = S_SHOOT_COUNTDOWN;
@@ -353,9 +370,13 @@ void AGDev_Assign01::ProcessKeys(CGameStateManager* GSM, double dt, bool* keys, 
 		CProjectile* bullet = fetchProj();
 		if (bullet)
 		{
-			Vector3 dir = (m_char->GetTPView()->target - m_char->GetTPView()->position).Normalized();
+			Vector3 pos = m_char->GetView()->position;
+			pos.y += m_char->GetTransform().m_scale.y;
+			Vector3 target = m_char->GetView()->target;
+			Vector3 dir = (target - pos).Normalized();
+
 			CTransform* transform = new CTransform();
-			transform->Init(m_char->GetTPView()->position, m_char->GetTransform().m_rotate, Vector3(1, 1, 1));
+			transform->Init(pos, m_char->GetTransform().m_rotate, Vector3(1, 1, 1));
 			bullet->Init(dir, 500.f, m_meshList[MESH_RAY], transform);
 			bullet->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_MIDDLE, true);
 			bullet->SetLength(m_rayLength);
@@ -532,11 +553,18 @@ void AGDev_Assign01::PreRendering(Vector3 translate, Vector3 rotate, Vector3 sca
 	{
 		glUniform1i(m_parameters[U_LIGHTENABLED], 0);
 	}
+	glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 0);
 }
 
 void AGDev_Assign01::PostRendering()
 {
-	glBindTexture(GL_TEXTURE_2D, 0);
+	for (int i = 0; i < Mesh::MAX_TEXTURES; ++i)
+	{
+		//if (mesh->textureID[i] > 0)
+		{
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
+	}
 	modelStack.PopMatrix();
 }
 
@@ -597,8 +625,16 @@ void AGDev_Assign01::InitMap()
 				// Child
 				CSceneNode* cNode = new CSceneNode();
 				transform = new CTransform();
-				transform->Init(Vector3(0, 0, 0), Vector3(), Vector3(0.5f, 0.5f, 0.5f));
+				transform->Init(Vector3(0, 0.5f, 0), Vector3(), Vector3(0.5f, 0.5f, 0.5f));
 				cNode->Init(CSceneNode::NODE_ENEMY, m_meshList[MESH_CONE], transform);
+				cNode->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
+
+				node->AddChild(cNode);
+
+				cNode = new CSceneNode();
+				transform = new CTransform();
+				transform->Init(Vector3(0, 1, 0), Vector3(), Vector3(0.5f, 0.5f, 0.5f));
+				cNode->Init(CSceneNode::NODE_ENEMY, m_meshList[MESH_CUBE], transform);
 				cNode->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
 
 				node->AddChild(cNode);

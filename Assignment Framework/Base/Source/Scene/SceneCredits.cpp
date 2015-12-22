@@ -73,6 +73,14 @@ void SceneCredits::Render()
 			RenderGameObject(button, m_lightEnabled, true);
 		}
 	}
+	
+	ostringstream text;
+	text << "Done by me";
+	RenderTextOnScreen(m_meshList[MESH_TEXT], text.str(), Color(1, 0, 0), 40, m_window_width * 0.5f - (text.str().length() * 0.5f * 40.f), m_window_height * 0.5f);
+
+	ostringstream soundCredits;
+	soundCredits << "BGM by Holfix";
+	RenderTextOnScreen(m_meshList[MESH_TEXT], soundCredits.str(), Color(1, 0, 0), 40, m_window_width * 0.5f - (soundCredits.str().length() * 0.5f * 40.f), m_window_height * 0.5f - 40.f);
 
 	// Not supposed to have any other rendering codes here as Scenebase handles it
 	// Alternative solution is to render scenegraph here instead as render list does not take into account parent and child nodes
@@ -97,25 +105,43 @@ void SceneCredits::Reset()
 
 void SceneCredits::ProcessKeys(CGameStateManager* GSM, double dt, bool* keys, Vector2 mousePos)
 {
-	if (keys[CGameStateManager::KEY_SHOOT_1])
+	float clickTimer = GSM->GetClickTimer();
+	float enterTimer = GSM->GetEnterTimer();
+
+	if (clickTimer > 0.f)
+	{
+		clickTimer -= dt;
+		GSM->SetClickTimer(clickTimer);
+	}
+	if (enterTimer > 0.f)
+	{
+		enterTimer -= dt;
+		GSM->SetEnterTimer(enterTimer);
+	}
+
+	if (keys[CGameStateManager::KEY_SHOOT_1] && clickTimer <= 0.f)
 	{
 		m_menu->MouseUpdate(dt, mousePos.x, mousePos.y);
 		m_menu->OnClick(GSM, mousePos.x, mousePos.y);
+		GSM->SetClickTimer(CGameStateManager::S_CLICK_COOLDOWN);
 	}
 
-	if (keys[CGameStateManager::KEY_ENTER])
+	if (keys[CGameStateManager::KEY_ENTER] && enterTimer <= 0.f)
 	{
 		m_menu->OnEnter(GSM);
+		GSM->SetEnterTimer(CGameStateManager::S_ENTER_COOLDOWN);
 	}
 
-	if (keys[CGameStateManager::KEY_UP])
+	if (keys[CGameStateManager::KEY_UP] && enterTimer <= 0.f)
 	{
 		m_menu->KeysUpdate(dt, false);
+		GSM->SetEnterTimer(CGameStateManager::S_ENTER_COOLDOWN);
 	}
 
-	if (keys[CGameStateManager::KEY_DOWN])
+	if (keys[CGameStateManager::KEY_DOWN] && enterTimer <= 0.f)
 	{
 		m_menu->KeysUpdate(dt, true);
+		GSM->SetEnterTimer(CGameStateManager::S_ENTER_COOLDOWN);
 	}
 }
 

@@ -3,7 +3,7 @@
 bool CGameStateManager::S_MUSIC = true;
 float CGameStateManager::S_HIGHSCORE = 0.f;
 const float CGameStateManager::S_CLICK_COOLDOWN = 0.5f;
-const float CGameStateManager::S_ENTER_COOLDOWN = 0.5f;
+const float CGameStateManager::S_ENTER_COOLDOWN = 0.25f;
 
  CGameStateManager::CGameStateManager()
 	: m_states(NULL)

@@ -60,6 +60,8 @@ void SceneInstructions::Render()
 	// Render SceneBase
 	SceneBase::Render();
 
+	glDisable(GL_DEPTH_TEST);
+
 	RenderGameObject(m_menu->GetCurrentMenu()->GetBackground(), m_lightEnabled, true);
 
 	vector<Menu*> m_menuList = m_menu->GetMenuList();
@@ -73,6 +75,8 @@ void SceneInstructions::Render()
 			RenderGameObject(button, m_lightEnabled, true);
 		}
 	}
+
+	glEnable(GL_DEPTH_TEST);
 
 	// Not supposed to have any other rendering codes here as Scenebase handles it
 	// Alternative solution is to render scenegraph here instead as render list does not take into account parent and child nodes
@@ -175,6 +179,9 @@ void SceneInstructions::InitMesh()
 	m_meshList[MESH_TEXT]->textureID[0] = LoadTGA("Image\\calibri.tga");
 
 	// Menu
+	m_meshList[MESH_INSTRUCTIONS_BG] = MeshBuilder::Generate2DMesh("Return to main menu on", Color(1, 1, 1), 0, 0, 1, 1);
+	m_meshList[MESH_INSTRUCTIONS_BG]->textureID[0] = LoadTGA("Image\\Menu\\MenuScreens\\instructions_menu_bg.tga");
+
 	m_meshList[MESH_RETURN_TO_MAIN_MENU_ON] = MeshBuilder::Generate2DMesh("Return to main menu on", Color(1, 1, 1), 0, 0, 1, 1);
 	m_meshList[MESH_RETURN_TO_MAIN_MENU_ON]->textureID[0] = LoadTGA("Image\\Menu\\BackToMainMenu_On.tga");
 
@@ -206,7 +213,7 @@ void SceneInstructions::initMenu()
 	Vector3 startPos = Vector3((m_window_width * 0.15f) - (BUTTON_SIZE.x * 0.5f), (m_window_height * 0.05f));// -(BUTTON_SIZE.y * 0.5f));
 
 	Menu* newMenu = new Menu();
-	newMenu->Init(Menu::MENU_INSTRUCTIONS, NULL);
+	newMenu->Init(Menu::MENU_INSTRUCTIONS, m_meshList[MESH_INSTRUCTIONS_BG], Vector3(), Vector3(m_window_width, m_window_height));
 	// Button creation
 	newMenu->AddButton(new UIButton(UIButton::BUTTON_RETURN_TO_MAIN_MENU, m_meshList[MESH_RETURN_TO_MAIN_MENU_OFF], m_meshList[MESH_RETURN_TO_MAIN_MENU_ON], startPos - Vector3(0.f, HEIGHT_OFFSET * buttonCount), BUTTON_SIZE));
 	++buttonCount;
