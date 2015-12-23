@@ -84,7 +84,48 @@ void AGDev_Assign01::Update(CGameStateManager* GSM, double dt)
 	for (int i = 0; i < m_enemyList.size(); ++i)
 	{
 		CSceneNode* enemy = m_enemyList[i];
-		enemy->GetTransform().m_rotate.y += dt * 100.f;
+		CSceneNode* child = enemy->Search(CSceneNode::NODE_ENEMY_1);
+		if (enemy)
+		{
+			static bool goUp = true;
+			if (goUp)
+			{
+				enemy->GetTransform().m_translate.y += dt * 25.f;
+				if (enemy->GetTransform().m_translate.y >= 50.f)
+				{
+					goUp = false;
+				}
+			}
+			else
+			{
+				enemy->GetTransform().m_translate.y -= dt * 25.f;
+				if (enemy->GetTransform().m_translate.y <= 12.5f)
+				{
+					goUp = true;
+				}
+			}
+		}
+		if (child)
+		{
+			static bool scaleUp = true;
+			child->GetTransform().m_rotate.y += dt * 100.f;
+			if (scaleUp)
+			{
+				child->GetTransform().m_scale += Vector3(dt * 0.5f, dt * 0.5f, dt * 0.5f);
+				if (child->GetTransform().m_scale.x >= 2.f)
+				{
+					scaleUp = false;
+				}
+			}
+			else
+			{
+				child->GetTransform().m_scale -= Vector3(dt * 0.5f, dt * 0.5f, dt * 0.5f);
+				if (child->GetTransform().m_scale.x <= 0.5f)
+				{
+					scaleUp = true;
+				}
+			}
+		}
 	}
 
 	for (vector<CProjectile*>::iterator it = m_projList.begin(); it != m_projList.end(); ++it)
@@ -626,18 +667,18 @@ void AGDev_Assign01::InitMap()
 				CSceneNode* cNode = new CSceneNode();
 				transform = new CTransform();
 				transform->Init(Vector3(0, 0.5f, 0), Vector3(), Vector3(0.5f, 0.5f, 0.5f));
-				cNode->Init(CSceneNode::NODE_ENEMY, m_meshList[MESH_CONE], transform);
+				cNode->Init(CSceneNode::NODE_ENEMY_1, m_meshList[MESH_CONE], transform);
 				cNode->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
 
 				node->AddChild(cNode);
 
-				cNode = new CSceneNode();
+				CSceneNode* c2Node = new CSceneNode();
 				transform = new CTransform();
 				transform->Init(Vector3(0, 1, 0), Vector3(), Vector3(0.5f, 0.5f, 0.5f));
-				cNode->Init(CSceneNode::NODE_ENEMY, m_meshList[MESH_CUBE], transform);
-				cNode->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
+				c2Node->Init(CSceneNode::NODE_ENEMY_2, m_meshList[MESH_CUBE], transform);
+				c2Node->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
 
-				node->AddChild(cNode);
+				cNode->AddChild(c2Node);
 
 				m_enemyList.push_back(node);
 				m_spatialPartition->AddObject(node);

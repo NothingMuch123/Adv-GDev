@@ -19,6 +19,8 @@ public:
 		NODE_WALL,
 		NODE_END,
 		NODE_ENEMY,
+		NODE_ENEMY_1,
+		NODE_ENEMY_2,
 		NUM_NODE,
 	};
 
