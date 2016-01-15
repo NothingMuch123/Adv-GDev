@@ -7,6 +7,13 @@
 #include "GameStateManager.h"
 #include "PlayState.h"
 
+// lua
+extern "C" {
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
+}
+
 #define TYPE_OF_VIEW 3	// 2 = 2D, 3 = 3D
 
 class Application
@@ -34,10 +41,12 @@ private:
 	Application();
 	~Application();
 
+	int loadlua();
+
 	// Declare the window width and height as constant integer
 	const static int m_window_deadzone = 100;
-	const static int m_window_width = 800;
-	const static int m_window_height = 600;
+	static int m_window_width;
+	static int m_window_height;
 	//Declare a window object
 	StopWatch m_timer;
 	double m_dElapsedTime;

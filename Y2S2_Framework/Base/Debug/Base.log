@@ -1,26 +1,10 @@
-﻿Build started 16/12/2015 9:54:29 PM.
-     1>Project "C:\Users\Koh Fang Shu\Desktop\Adv-GDev\Y2S2_Framework\Base\Base.vcxproj" on node 2 (Build target(s)).
+﻿Build started 15/1/2016 4:14:46 PM.
+     1>Project "C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\Base\Base.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I"C:\Users\Koh Fang Shu\Desktop\Adv-GDev\Y2S2_Framework\/Common/Source" /I"C:\Users\Koh Fang Shu\Desktop\Adv-GDev\Y2S2_Framework\/glew/include" /I"C:\Users\Koh Fang Shu\Desktop\Adv-GDev\Y2S2_Framework\/glfw/include" /ZI /nologo /W3 /WX- /Od /Oy- /D _VARIADIC_MAX=10 /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Source\SceneManager.cpp Source\SpatialPartition\SpatialPartition.cpp
-         SpatialPartition.cpp
-     1>c:\users\koh fang shu\desktop\adv-gdev\y2s2_framework\base\source\spatialpartition\spatialpartition.cpp(176): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\koh fang shu\desktop\adv-gdev\y2s2_framework\base\source\spatialpartition\spatialpartition.cpp(177): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\koh fang shu\desktop\adv-gdev\y2s2_framework\base\source\spatialpartition\spatialpartition.cpp(221): warning C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
-     1>c:\users\koh fang shu\desktop\adv-gdev\y2s2_framework\base\source\spatialpartition\spatialpartition.cpp(434): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\koh fang shu\desktop\adv-gdev\y2s2_framework\base\source\spatialpartition\spatialpartition.cpp(446): warning C4018: '<' : signed/unsigned mismatch
-         SceneManager.cpp
-     1>c:\users\koh fang shu\desktop\adv-gdev\y2s2_framework\base\source\scenemanager.cpp(298): warning C4244: '-=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\koh fang shu\desktop\adv-gdev\y2s2_framework\base\source\scenemanager.cpp(299): warning C4244: 'argument' : conversion from 'double' to 'const float', possible loss of data
-     1>c:\users\koh fang shu\desktop\adv-gdev\y2s2_framework\base\source\scenemanager.cpp(615): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\koh fang shu\desktop\adv-gdev\y2s2_framework\base\source\scenemanager.cpp(615): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\koh fang shu\desktop\adv-gdev\y2s2_framework\base\source\scenemanager.cpp(615): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\koh fang shu\desktop\adv-gdev\y2s2_framework\base\source\scenemanager.cpp(726): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\koh fang shu\desktop\adv-gdev\y2s2_framework\base\source\scenemanager.cpp(726): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-     1>c:\users\koh fang shu\desktop\adv-gdev\y2s2_framework\base\source\scenemanager.cpp(809): warning C4244: 'argument' : conversion from 'const float' to 'const int', possible loss of data
-     1>c:\users\koh fang shu\desktop\adv-gdev\y2s2_framework\base\source\scenemanager.cpp(809): warning C4244: 'argument' : conversion from 'const float' to 'const int', possible loss of data
-         Generating Code...
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\/Common/Source" /I"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\/glew/include" /I"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\/glfw/include" /I"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\/lua/include" /ZI /nologo /W3 /WX- /Od /Oy- /D _VARIADIC_MAX=10 /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Source\Application.cpp
+         Application.cpp
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Koh Fang Shu\Desktop\Adv-GDev\Y2S2_Framework\Debug\Base.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\Users\Koh Fang Shu\Desktop\Adv-GDev\Y2S2_Framework\Debug" /LIBPATH:"C:\Users\Koh Fang Shu\Desktop\Adv-GDev\Y2S2_Framework\/glfw/lib-msvc100" /LIBPATH:"C:\Users\Koh Fang Shu\Desktop\Adv-GDev\Y2S2_Framework\/glew/lib" Common.lib winmm.lib opengl32.lib glu32.lib glew32.lib glfw3.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Base.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Koh Fang Shu\Desktop\Adv-GDev\Y2S2_Framework\Debug\Base.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Koh Fang Shu\Desktop\Adv-GDev\Y2S2_Framework\Debug\Base.lib" /MACHINE:X86 Debug\Application.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\Debug\Base.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\Debug" /LIBPATH:"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\/glfw/lib-msvc100" /LIBPATH:"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\/glew/lib" /LIBPATH:"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\/lua/lib" Common.lib winmm.lib opengl32.lib glu32.lib glew32.lib glfw3.lib lua5.1.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Base.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\Debug\Base.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\Debug\Base.lib" /MACHINE:X86 Debug\Application.obj
          Debug\Camera.obj
          Debug\Camera3.obj
          Debug\Enemy.obj
@@ -57,11 +41,11 @@
          Debug\Utility.obj
      1>Application.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/INCREMENTAL:NO' specification
      1>LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-         Base.vcxproj -> C:\Users\Koh Fang Shu\Desktop\Adv-GDev\Y2S2_Framework\Debug\Base.exe
+         Base.vcxproj -> C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\Debug\Base.exe
        Manifest:
-         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\Users\Koh Fang Shu\Desktop\Adv-GDev\Y2S2_Framework\Debug\Base.exe;#1" /manifest Debug\Base.exe.intermediate.manifest
-     1>Done Building Project "C:\Users\Koh Fang Shu\Desktop\Adv-GDev\Y2S2_Framework\Base\Base.vcxproj" (Build target(s)).
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\Debug\Base.exe;#1" /manifest Debug\Base.exe.intermediate.manifest
+     1>Done Building Project "C:\Users\Envy 15.Envy\Documents\School Work\Semester 4\DM2240 AGDev (Git)\Y2S2_Framework\Base\Base.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:01.85
+Time Elapsed 00:00:01.36

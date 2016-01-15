@@ -19,6 +19,9 @@ double Application::mouse_last_x = 0.0, Application::mouse_last_y = 0.0,
 	   Application::mouse_diff_x = 0.0, Application::mouse_diff_y = 0.0;
 double Application::camera_yaw = 0.0, Application::camera_pitch = 0.0;
 
+int Application::m_window_width = 800;
+int Application::m_window_height = 600;
+
 /********************************************************************************
  Define an error callback
  ********************************************************************************/
@@ -282,6 +285,35 @@ Application::~Application()
 	}
 }
 
+int Application::loadlua()
+{
+	//Read a value from the lua text file
+	lua_State *L = lua_open();
+	luaL_openlibs(L);
+	if (luaL_loadfile(L, "config.lua") || lua_pcall(L, 0, 0, 0))
+	{
+		printf("error: %s", lua_tostring(L, -1));
+		return -1;
+	}
+	lua_getglobal(L, "SCREENWIDTH");
+	if (!lua_isnumber(L, -1)) {
+		printf("`SCREENWIDTH' should be a number\n");
+		return -1;
+	}
+	m_window_width = (int)lua_tonumber(L, -1);
+
+	lua_getglobal(L, "SCREENHEIGHT");
+	if (!lua_isnumber(L, -1))
+	{
+		printf("`SCREENHEIGHT' should be a number\n");
+		return -1;
+	}
+	m_window_height = (int)lua_tonumber(L, -1);
+
+	lua_close(L);
+	return 0;
+}
+
 /********************************************************************************
  Initialise this program
  ********************************************************************************/
@@ -303,6 +335,7 @@ void Application::Init()
 	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //We don't want the old OpenGL 
 
+	loadlua();
 
 	//Create a window and create its OpenGL context
 	m_window = glfwCreateWindow(m_window_width, m_window_height, "Y2S2_Framework", NULL, NULL);
