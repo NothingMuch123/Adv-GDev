@@ -12,6 +12,8 @@
 #include <stdlib.h>
 
 bool Application::m_hideMouse = false;
+int Application::m_window_width = 800;
+int Application::m_window_height = 600;
 
 GLFWwindow* m_window;
 const unsigned char FPS = 120; // FPS of this game
@@ -59,6 +61,9 @@ Application::~Application()
 
 void Application::Init()
 {
+	// Load app config from lua
+	loadlua();
+
 	//Set the error callback
 	glfwSetErrorCallback(error_callback);
 
@@ -115,6 +120,29 @@ void Application::Init()
 	m_GSM = new CGameStateManager();
 	m_GSM->Init(m_window_width, m_window_height);
 	m_GSM->ChangeState(new CMainMenuState());
+}
+
+bool Application::loadlua()
+{
+	CLua_Wrapper* lua = new CLua_Wrapper();
+	if (!lua->OpenLua("Lua_Scripts//config.lua"))
+	{
+		return false;
+	}
+	double* data = lua->GetNumber("SCREENWIDTH");
+	if (data)
+	{
+		m_window_width = (float)(*data);
+	}
+
+	data = lua->GetNumber("SCREENHEIGHT");
+	if (data)
+	{
+		m_window_height = (float)(*data);
+	}
+
+	lua->CloseLua();
+	return true;
 }
 
 void Application::Run()

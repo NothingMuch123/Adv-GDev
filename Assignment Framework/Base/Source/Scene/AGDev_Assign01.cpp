@@ -693,7 +693,7 @@ void AGDev_Assign01::InitMap()
 				Camera3* view = new Camera3();
 				view->Init(startPos, startPos - Vector3(0, 0, CThirdPerson::S_OFFSET_TARGET), Vector3(0, 1, 0));
 				transform = new CTransform();
-				transform->Init(startPos, Vector3(), Vector3(10, 10, 10));
+				transform->Init(startPos, Vector3(), SIZE * 0.1f);
 				m_char->Init(CSceneNode::NODE_TEST, view, m_meshList[MESH_CHARACTER], transform);
 				m_char->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
 				m_spatialPartition->AddObject(m_char);
@@ -702,7 +702,7 @@ void AGDev_Assign01::InitMap()
 			{
 				m_end = new CSceneNode();
 				transform = new CTransform();
-				transform->Init(startPos, Vector3(), Vector3(50, 50, 50));
+				transform->Init(startPos, Vector3(), SIZE * 0.5f);
 				m_end->Init(CSceneNode::NODE_WALL, m_meshList[MESH_END], transform);
 				m_end->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
 				m_spatialPartition->AddObject(m_end);

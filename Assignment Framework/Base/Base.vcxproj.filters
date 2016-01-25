@@ -55,6 +55,12 @@
     <Filter Include="MenuManager\Menus">
       <UniqueIdentifier>{a830c8eb-4a51-4dfa-bb78-ffada7d6fa5f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Lua Wrapper">
+      <UniqueIdentifier>{349e58f9-1fb2-4b8f-9856-1fe949a06dc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LevelOfDetail">
+      <UniqueIdentifier>{92e68907-4d6e-4a34-9692-650ca63c9a61}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
@@ -206,6 +212,12 @@
     </ClCompile>
     <ClCompile Include="Source\State\OptionsState.cpp">
       <Filter>GameState\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Lua_Wrapper\Lua_Wrapper.cpp">
+      <Filter>Lua Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LevelOfDetail\LevelOfDetail.cpp">
+      <Filter>LevelOfDetail</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -370,6 +382,12 @@
     </ClInclude>
     <ClInclude Include="Source\State\OptionsState.h">
       <Filter>GameState\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Lua_Wrapper\Lua_Wrapper.h">
+      <Filter>Lua Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LevelOfDetail\LevelOfDetail.h">
+      <Filter>LevelOfDetail</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

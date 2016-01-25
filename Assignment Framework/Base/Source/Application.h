@@ -5,6 +5,9 @@
 #include "Scene\AGDev_Assign01.h"
 #include "GameStateManager\GameStateManager.h"
 
+// Lua wrapper
+#include "Lua_Wrapper\Lua_Wrapper.h"
+
 class Application
 {
 public:
@@ -29,9 +32,11 @@ private:
 	Application();
 	~Application();
 
+	bool loadlua();
+
 	const static int m_window_deadzone = 100;
-	const static int m_window_width = 800;
-	const static int m_window_height = 600;
+	static int m_window_width;
+	static int m_window_height;
 
 	//Declare a window object
 	StopWatch m_timer;
