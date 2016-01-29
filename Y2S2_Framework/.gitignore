@@ -56,3 +56,4 @@ Installer/Debug/
 Installer/Release/
 Release/A-Star Path Finding.lib
 ~$ResourceCredits.xlsx
+*.opensdf

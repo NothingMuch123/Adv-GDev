@@ -12,12 +12,22 @@ class CSceneManager;
 class CSceneNode :
 	public CNode
 {
+public:
+	enum FSM
+	{
+		ESCAPE,
+		ATTACK,
+		NUM_FSM,
+	};
+	int health;
+
 private:
 	vector<CNode*> theChildren;
 
 	CModel* theModel;
 	CTransform* theTransform;
 	int sceneNodeID;
+	FSM currentFSM;
 
 	// Check where a line segment between two positions intersects a plane
 	int GetIntersection(float fDst1, float fDst2, Vector3 P1, Vector3 P2, Vector3 &Hit);
@@ -31,6 +41,7 @@ public:
 
 	// Update resolution
 	void Update(const CModel::RESOLUTION_TYPE type);
+	void Update(const float dt, Vector3 pos); // Update the scenenode to move towards a position
 
 	// Draw this Node and its children
 	void Draw(void);

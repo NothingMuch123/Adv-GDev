@@ -9,12 +9,20 @@ CSceneNode::CSceneNode(void)
 , theChildren( NULL )
 , theTransform ( NULL )
 , sceneNodeID (-1)
+, health(100)
+, currentFSM(ESCAPE)
 {
 }
 
 CSceneNode::CSceneNode(const int sceneNodeID)
+	: theModel(NULL)
+	, theChildren(NULL)
+	, theTransform(NULL)
+	, sceneNodeID(-1)
+	, health(100)
+	, currentFSM(ESCAPE)
 {
-	CSceneNode();
+	//CSceneNode();
 	SetSceneNodeID( sceneNodeID );
 }
 
@@ -61,6 +69,45 @@ void CSceneNode::Update(const CModel::RESOLUTION_TYPE type)
 			aChild = theChildren[i];
 			((CSceneNode*)aChild)->Update(type);
 		}
+	}
+}
+
+void CSceneNode::Update(const float dt, Vector3 pos)
+{
+	if (health == 0)
+	{
+		currentFSM = ESCAPE;
+	}
+	else if (health == 100)
+	{
+		currentFSM = ATTACK;
+	}
+	if (currentFSM == ESCAPE)
+	{
+		float x, y, z;
+		theTransform->GetOffset(x, y, z);
+		Vector3 newDirection = pos - Vector3(x, y, z);
+		if (newDirection.Length() > 0.0f)
+		{
+			newDirection.Normalize() * 1.0f * dt;
+			this->ApplyTranslate(newDirection.x, newDirection.y, newDirection.z);
+			this->SetColor(0.0f, 1.0f, 0.0f);
+		}
+		if (health < 100)
+			health++;
+	}
+	else if (currentFSM == ATTACK)
+	{
+		float x, y, z;
+		theTransform->GetOffset(x, y, z);
+		Vector3 newDirection = Vector3(x, y, z) - pos;
+		if (newDirection.Length() > 0.0f)
+		{
+			newDirection.Normalize() * 1.0f * dt;
+			this->ApplyTranslate(newDirection.x, newDirection.y, newDirection.z);
+			this->SetColor(1.0f, 0.0f, 0.0f);
+		}
+		health--;
 	}
 }
 

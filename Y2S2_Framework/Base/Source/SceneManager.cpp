@@ -302,6 +302,7 @@ void CSceneManager::Update(double dt)
 	m_cAvatar->Update(dt);
 	camera.UpdatePosition(m_cAvatar->GetPosition(), m_cAvatar->GetDirection());
 	//camera.Update(dt);
+	m_cSceneGraph->Update(dt, m_cAvatar->GetPosition());
 	m_cSpatialPartition->Update(camera.position, (camera.target - camera.position).Normalized());
 
 	m_ProjectileManager->Update(dt);
@@ -555,13 +556,16 @@ void CSceneManager::RenderGUI()
 	//On screen text
 	std::ostringstream ss, projInfo;
 	ss.precision(5);
-	ss << "FPS: " << fps;
+	//ss << "FPS: " << fps;
+	//RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 30, 0, 6);
+
+	ss << "Health: " << m_cSceneGraph->health;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 30, 0, 6);
 
-	projInfo << "Projectiles: " << m_ProjectileManager->NumOfActiveProjectile;
+	/*projInfo << "Projectiles: " << m_ProjectileManager->NumOfActiveProjectile;
 	RenderTextOnScreen(meshList[GEO_TEXT], projInfo.str(), Color(0, 1, 0), 30, 200, 6);
 	
-	RenderTextOnScreen(meshList[GEO_TEXT], "Hello Screen", Color(0, 1, 0), 3, 0, 0);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Hello Screen", Color(0, 1, 0), 3, 0, 0);*/
 }
 
 /********************************************************************************
