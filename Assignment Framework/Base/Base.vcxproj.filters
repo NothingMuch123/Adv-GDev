@@ -61,6 +61,9 @@
     <Filter Include="LevelOfDetail">
       <UniqueIdentifier>{92e68907-4d6e-4a34-9692-650ca63c9a61}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Enemy">
+      <UniqueIdentifier>{b97c661b-6766-4d1e-a15d-2fcd5e7c3bfb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
@@ -218,6 +221,9 @@
     </ClCompile>
     <ClCompile Include="Source\LevelOfDetail\LevelOfDetail.cpp">
       <Filter>LevelOfDetail</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Enemy\Enemy.cpp">
+      <Filter>Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -388,6 +394,9 @@
     </ClInclude>
     <ClInclude Include="Source\LevelOfDetail\LevelOfDetail.h">
       <Filter>LevelOfDetail</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Enemy\Enemy.h">
+      <Filter>Enemy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
