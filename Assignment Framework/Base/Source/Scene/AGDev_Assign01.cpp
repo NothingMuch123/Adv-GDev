@@ -81,7 +81,8 @@ void AGDev_Assign01::Update(CGameStateManager* GSM, double dt)
 		m_shootTimer -= dt;
 	}
 
-	for (int i = 0; i < m_enemyList.size(); ++i)
+	// Enemy update
+	/*for (int i = 0; i < m_enemyList.size(); ++i)
 	{
 		CSceneNode* enemy = m_enemyList[i];
 		CSceneNode* child = enemy->Search(CSceneNode::NODE_ENEMY_1);
@@ -126,7 +127,7 @@ void AGDev_Assign01::Update(CGameStateManager* GSM, double dt)
 				}
 			}
 		}
-	}
+	}*/
 
 	for (vector<CProjectile*>::iterator it = m_projList.begin(); it != m_projList.end(); ++it)
 	{
