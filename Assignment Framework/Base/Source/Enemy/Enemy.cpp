@@ -152,7 +152,7 @@ void CEnemy::Alert(CSceneNode * target)
 	else
 	{
 		// Attack
-		m_currentFSM = ENEMY_ESCAPE;
+		m_currentFSM = ENEMY_ATTACK;
 	}
 	m_calmDownTimer = 0.f;
 }
