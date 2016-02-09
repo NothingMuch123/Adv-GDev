@@ -89,14 +89,7 @@ void AGDev_Assign01::Update(CGameStateManager* GSM, double dt)
 		CEnemy* e = *it;
 		if (e)
 		{
-			if ((e->GetTransform().m_translate - m_char->GetTransform().m_translate).LengthSquared() < CEnemy::S_DETECTION_RADIUS * CEnemy::S_DETECTION_RADIUS)
-			{
-				e->Alert(m_char);
-			}
-			else
-			{
-				e->CalmDown();
-			}
+			e->Detect(m_char);
 			e->Update(dt);
 		}
 	}

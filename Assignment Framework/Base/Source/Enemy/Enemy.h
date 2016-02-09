@@ -33,6 +33,7 @@ public:
 
 	void Alert(CSceneNode* target);
 	void CalmDown();
+	void Detect(CSceneNode* target);
 
 private:
 	void move(double dt);

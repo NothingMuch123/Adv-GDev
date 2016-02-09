@@ -136,6 +136,35 @@ void CEnemy::CalmDown()
 	m_calmDownTimer = S_ENEMY_CALM_DOWN_TIME;
 }
 
+void CEnemy::Detect(CSceneNode * target)
+{
+	float radiusSquared = 0.f;
+
+	switch (m_currentFSM)
+	{
+	case ENEMY_IDLE:
+		{
+			float halfRadius = S_DETECTION_RADIUS * 0.5f;
+			radiusSquared = halfRadius * halfRadius;
+		}
+		break;
+	default:
+		{
+			radiusSquared = S_DETECTION_RADIUS * S_DETECTION_RADIUS;
+		}
+		break;
+	}
+
+	if ((m_transform.m_translate - target->GetTransform().m_translate).LengthSquared() < radiusSquared)
+	{
+		Alert(target);
+	}
+	else
+	{
+		CalmDown();
+	}
+}
+
 void CEnemy::move(double dt)
 {
 	if (!m_destination || m_destination == m_currentTile)
