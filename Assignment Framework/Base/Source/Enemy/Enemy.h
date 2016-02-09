@@ -7,7 +7,10 @@
 class CEnemy : public CSceneNode
 {
 public:
-	static const float S_ENEMY_SPEED;
+	static const float S_ENEMY_NORMAL_SPEED;
+	static const float S_ENEMY_ESCAPE_SPEED;
+	static const float S_ENEMY_CALM_DOWN_TIME;
+	static const float S_DETECTION_RADIUS;
 	static CTileMap* S_MAP_REF;
 
 	enum E_ENEMY_FSM
@@ -15,6 +18,7 @@ public:
 		ENEMY_IDLE,
 		ENEMY_ATTACK,
 		ENEMY_PATROL,
+		ENEMY_ESCAPE,
 		ENEMY_KO,
 		ENEMY_RESPAWN,
 		NUM_ENEMY_FSM,
@@ -27,15 +31,21 @@ public:
 	virtual void Update(double dt);
 	virtual void Reset();
 
+	void Alert(CSceneNode* target);
+	void CalmDown();
+
 private:
 	void move(double dt);
-	CTile* generateDestination();
+	void escape(double dt);
+	CTile* generateDestination(bool escape = false);
 
 private:
 	E_ENEMY_FSM m_currentFSM;
 	CTile* m_destination;
 	CTile* m_prev;
 	Vector3 m_dir;
+	CSceneNode* m_target;
+	float m_calmDownTimer;
 };
 
 #endif

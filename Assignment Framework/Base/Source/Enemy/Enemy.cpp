@@ -1,6 +1,9 @@
 #include "Enemy.h"
 
-const float CEnemy::S_ENEMY_SPEED = 100.f;
+const float CEnemy::S_ENEMY_NORMAL_SPEED = 100.f;
+const float CEnemy::S_ENEMY_ESCAPE_SPEED = S_ENEMY_NORMAL_SPEED * 2.f;
+const float CEnemy::S_ENEMY_CALM_DOWN_TIME = 3.f;
+const float CEnemy::S_DETECTION_RADIUS = 200.f;
 CTileMap* CEnemy::S_MAP_REF = nullptr;
 
 CEnemy::CEnemy()
@@ -9,6 +12,8 @@ CEnemy::CEnemy()
 	, m_dir(0, 0, 1)
 	, m_destination(nullptr)
 	, m_prev(nullptr)
+	, m_target(nullptr)
+	, m_calmDownTimer(0.f)
 {
 }
 
@@ -27,6 +32,17 @@ void CEnemy::Update(double dt)
 {
 	CSceneNode::Update(dt);
 
+	if (m_calmDownTimer > 0.f)
+	{
+		m_calmDownTimer -= dt;
+		if (m_calmDownTimer <= 0.f)
+		{
+			m_calmDownTimer = 0.f;
+			m_currentFSM = ENEMY_PATROL;
+			m_target = nullptr;
+		}
+	}
+
 	switch (m_currentFSM)
 	{
 	case ENEMY_IDLE:
@@ -41,6 +57,11 @@ void CEnemy::Update(double dt)
 	case ENEMY_PATROL:
 		{
 			move(dt);
+		}
+		break;
+	case ENEMY_ESCAPE:
+		{
+			escape(dt);
 		}
 		break;
 	case ENEMY_KO:
@@ -103,6 +124,18 @@ void CEnemy::Reset()
 	CSceneNode::Reset();
 }
 
+void CEnemy::Alert(CSceneNode * target)
+{
+	m_target = target;
+	m_currentFSM = ENEMY_ESCAPE;
+	m_calmDownTimer = 0.f;
+}
+
+void CEnemy::CalmDown()
+{
+	m_calmDownTimer = S_ENEMY_CALM_DOWN_TIME;
+}
+
 void CEnemy::move(double dt)
 {
 	if (!m_destination || m_destination == m_currentTile)
@@ -112,8 +145,10 @@ void CEnemy::move(double dt)
 	}
 	else
 	{
-		m_transform.m_translate = Vector3::MoveToPoint(m_transform.m_translate, m_destination->GetPosition(), S_ENEMY_SPEED * dt);
-		if (m_transform.m_translate == m_destination->GetPosition())
+		Vector3 des = m_destination->GetPosition();
+		des.y = m_transform.m_translate.y;
+		m_transform.m_translate = Vector3::MoveToPoint(m_transform.m_translate, des, S_ENEMY_NORMAL_SPEED * dt);
+		if (m_transform.m_translate == des)
 		{
 			// Reached destination
 			m_prev = m_currentTile;
@@ -122,11 +157,35 @@ void CEnemy::move(double dt)
 	}
 }
 
-CTile * CEnemy::generateDestination()
+void CEnemy::escape(double dt)
+{
+	if (!m_destination || m_destination == m_currentTile)
+	{
+		// No destination or reached destination
+		m_destination = generateDestination(true);
+	}
+	else
+	{
+		Vector3 des = m_destination->GetPosition();
+		des.y = m_transform.m_translate.y;
+		m_transform.m_translate = Vector3::MoveToPoint(m_transform.m_translate, des, S_ENEMY_ESCAPE_SPEED * dt);
+		if (m_transform.m_translate == des)
+		{
+			// Reached destination
+			m_prev = m_currentTile;
+			m_currentTile = m_destination;
+		}
+	}
+}
+
+CTile * CEnemy::generateDestination(bool escape)
 {
 	vector<CTile*> possibleRoute;
 
-	CTile* tile;
+	CTile* tile = nullptr;
+
+	CTile* selectedTile = nullptr;
+	float distSquared = 0.f;
 
 	// Left
 	tile = S_MAP_REF->FetchTile(m_currentTile->GetRowIndex(), m_currentTile->GetColIndex() - 1);
@@ -134,6 +193,11 @@ CTile * CEnemy::generateDestination()
 	{
 		// Can walk into
 		possibleRoute.push_back(tile);
+		if (escape)
+		{
+			distSquared = (tile->GetPosition() - m_target->GetTransform().m_translate).LengthSquared();
+			selectedTile = tile;
+		}
 	}
 
 	// Right
@@ -142,6 +206,15 @@ CTile * CEnemy::generateDestination()
 	{
 		// Can walk into
 		possibleRoute.push_back(tile);
+		if (escape)
+		{
+			float tempDistSquared = (tile->GetPosition() - m_target->GetTransform().m_translate).LengthSquared();
+			if (tempDistSquared > distSquared)
+			{
+				distSquared = tempDistSquared;
+				selectedTile = tile;
+			}
+		}
 	}
 
 	// Front
@@ -150,6 +223,15 @@ CTile * CEnemy::generateDestination()
 	{
 		// Can walk into
 		possibleRoute.push_back(tile);
+		if (escape)
+		{
+			float tempDistSquared = (tile->GetPosition() - m_target->GetTransform().m_translate).LengthSquared();
+			if (tempDistSquared > distSquared)
+			{
+				distSquared = tempDistSquared;
+				selectedTile = tile;
+			}
+		}
 	}
 
 	// Back
@@ -158,12 +240,31 @@ CTile * CEnemy::generateDestination()
 	{
 		// Can walk into
 		possibleRoute.push_back(tile);
+		if (escape)
+		{
+			float tempDistSquared = (tile->GetPosition() - m_target->GetTransform().m_translate).LengthSquared();
+			if (tempDistSquared > distSquared)
+			{
+				distSquared = tempDistSquared;
+				selectedTile = tile;
+			}
+		}
 	}
 
-	if (possibleRoute.size() > 0)
+	if (escape)
 	{
-		int random = Math::RandIntMinMax(0, possibleRoute.size() - 1);
-		return possibleRoute[random];
+		if (selectedTile)
+		{
+			return selectedTile;
+		}
+	}
+	else
+	{
+		if (possibleRoute.size() > 0)
+		{
+			int random = Math::RandIntMinMax(0, possibleRoute.size() - 1);
+			return possibleRoute[random];
+		}
 	}
 
 	// Backtrack as no other route is found

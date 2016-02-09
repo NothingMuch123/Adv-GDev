@@ -45,6 +45,7 @@ public:
 
 		NUM_MESH,
 	};
+
 	AGDev_Assign01(int width = 1280, int height = 720);
 	virtual ~AGDev_Assign01();
 
