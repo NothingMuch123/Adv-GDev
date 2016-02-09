@@ -2,6 +2,7 @@
 #define _SCENENODE_H_
 
 #include "..\Object\GameObject.h"
+#include "..\TileSystem\Tile.h"
 #include <vector>
 
 using std::vector;
@@ -27,7 +28,7 @@ public:
 	CSceneNode();
 	virtual ~CSceneNode();
 
-	virtual void Init(E_NODE_TYPE type, Mesh* mesh, CTransform* transform, bool active = true, bool render = true);
+	virtual void Init(E_NODE_TYPE type, Mesh* mesh, CTransform* transform, CTile* currentTile = nullptr, bool active = true, bool render = true);
 	virtual void Update(const double dt);
 	virtual void Reset();
 
@@ -54,16 +55,20 @@ public:
 	// Check two positions for collision with objects in any of the grid
 	int CheckForCollision(Vector3 position_start, Vector3 position_end, Vector3 &Hit);
 
+	void SetTile(CTile* tile);
+	CTile* GetTile();
+
 private:
 	// Check where a line segment between two positions intersects a plane
 	int GetIntersection(float fDst1, float fDst2, Vector3 P1, Vector3 P2, Vector3 &Hit);
 	// Check two positions are within a box region
 	int InBox(Vector3 Hit, Vector3 B1, Vector3 B2, const int Axis);
 
-private:
+protected:
 	vector<CSceneNode*> m_children;
 	E_NODE_TYPE m_type;
 	vector<CGrid*> m_locations; // Grid that stores this gameobject
+	CTile* m_currentTile;
 };
 
 #endif

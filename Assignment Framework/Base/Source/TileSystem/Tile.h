@@ -21,6 +21,12 @@ public:
 	void SetWalkable(bool walkable);
 	bool GetWalkable();
 
+	void SetRowIndex(int rowIndex);
+	int GetRowIndex();
+
+	void SetColIndex(int colIndex);
+	int GetColIndex();
+
 private:
 	Vector3 m_position;
 	bool m_walkable;

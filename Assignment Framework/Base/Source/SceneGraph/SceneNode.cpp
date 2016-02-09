@@ -6,6 +6,7 @@ CSceneNode::CSceneNode()
 	: m_children(NULL)
 	, m_type(NODE_NONE)
 	, m_locations(NULL)
+	, m_currentTile(nullptr)
 {
 }
 
@@ -22,10 +23,11 @@ CSceneNode::~CSceneNode()
 	}
 }
 
-void CSceneNode::Init(E_NODE_TYPE type, Mesh * mesh, CTransform * transform, bool active, bool render)
+void CSceneNode::Init(E_NODE_TYPE type, Mesh * mesh, CTransform * transform, CTile* currentTile, bool active, bool render)
 {
 	CGameObject::Init(mesh, transform, active, render);
 	CSceneNode::m_type = type;
+	m_currentTile = currentTile;
 }
 
 void CSceneNode::Update(const double dt)
@@ -242,6 +244,16 @@ int CSceneNode::CheckForCollision(Vector3 position_start, Vector3 position_end, 
 		return true;
 
 	return false;
+}
+
+void CSceneNode::SetTile(CTile * tile)
+{
+	m_currentTile = tile;
+}
+
+CTile * CSceneNode::GetTile()
+{
+	return m_currentTile;
 }
 
 int CSceneNode::GetIntersection(float fDst1, float fDst2, Vector3 P1, Vector3 P2, Vector3 & Hit)

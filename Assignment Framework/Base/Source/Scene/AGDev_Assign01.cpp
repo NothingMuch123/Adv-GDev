@@ -38,6 +38,7 @@ AGDev_Assign01::~AGDev_Assign01()
 void AGDev_Assign01::Init(int screenWidth, int screenHeight)
 {
 	Application::HideMouse(true);
+	Math::InitRNG();
 
 	// Initialise SceneBase
 	SceneBase::Init(screenWidth, screenHeight);
@@ -83,52 +84,14 @@ void AGDev_Assign01::Update(CGameStateManager* GSM, double dt)
 	}
 
 	// Enemy update
-	/*for (int i = 0; i < m_enemyList.size(); ++i)
+	for (vector<CEnemy*>::iterator it = m_enemyList.begin(); it != m_enemyList.end(); ++it)
 	{
-		CSceneNode* enemy = m_enemyList[i];
-		CSceneNode* child = enemy->Search(CSceneNode::NODE_ENEMY_1);
-		if (enemy)
+		CEnemy* e = *it;
+		if (e)
 		{
-			static bool goUp = true;
-			if (goUp)
-			{
-				enemy->GetTransform().m_translate.y += dt * 25.f;
-				if (enemy->GetTransform().m_translate.y >= 50.f)
-				{
-					goUp = false;
-				}
-			}
-			else
-			{
-				enemy->GetTransform().m_translate.y -= dt * 25.f;
-				if (enemy->GetTransform().m_translate.y <= 12.5f)
-				{
-					goUp = true;
-				}
-			}
+			e->Update(dt);
 		}
-		if (child)
-		{
-			static bool scaleUp = true;
-			child->GetTransform().m_rotate.y += dt * 100.f;
-			if (scaleUp)
-			{
-				child->GetTransform().m_scale += Vector3(dt * 0.5f, dt * 0.5f, dt * 0.5f);
-				if (child->GetTransform().m_scale.x >= 2.f)
-				{
-					scaleUp = false;
-				}
-			}
-			else
-			{
-				child->GetTransform().m_scale -= Vector3(dt * 0.5f, dt * 0.5f, dt * 0.5f);
-				if (child->GetTransform().m_scale.x <= 0.5f)
-				{
-					scaleUp = true;
-				}
-			}
-		}
-	}*/
+	}
 
 	for (vector<CProjectile*>::iterator it = m_projList.begin(); it != m_projList.end(); ++it)
 	{
@@ -639,6 +602,7 @@ void AGDev_Assign01::InitMap()
 
 	// Tile map
 	m_tilemap = new CTileMap(map.size(), map.front().length());
+	CEnemy::S_MAP_REF = m_tilemap;
 
 	for (int row = 0; row < map.size(); row++)
 	{
@@ -651,24 +615,28 @@ void AGDev_Assign01::InitMap()
 			
 			if (map[row][col] == '#') // Wall
 			{
-				node = new CSceneNode();
-				transform = new CTransform();
-				transform->Init(startPos, Vector3(), SIZE);
-				node->Init(CSceneNode::NODE_WALL, m_meshList[MESH_WALL], transform);
-				node->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
-				m_wallList.push_back(node);
-				m_spatialPartition->AddObject(node);
-
 				// Map
 				CTile* tile = new CTile(startPos, row, col, false);
 				m_tilemap->AddToMap(tile);
+
+				node = new CSceneNode();
+				transform = new CTransform();
+				transform->Init(startPos, Vector3(), SIZE);
+				node->Init(CSceneNode::NODE_WALL, m_meshList[MESH_WALL], transform, tile);
+				node->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
+				m_wallList.push_back(node);
+				m_spatialPartition->AddObject(node);
 			}
 			else if (map[row][col] == 'M') // Enemy (Monster)
 			{
+				// Map
+				CTile* tile = new CTile(startPos, row, col, true);
+				m_tilemap->AddToMap(tile);
+
 				CEnemy* e = new CEnemy();
 				transform = new CTransform();
 				transform->Init(startPos + Vector3(0, SIZE.y * 0.25f, 0), Vector3(), SIZE * 0.25f);
-				e->Init(CSceneNode::NODE_ENEMY, m_meshList[MESH_CUBE], transform);
+				e->Init(CSceneNode::NODE_ENEMY, m_meshList[MESH_CUBE], transform, tile);
 				e->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_MIDDLE, true);
 
 				// Child
@@ -690,10 +658,6 @@ void AGDev_Assign01::InitMap()
 
 				m_enemyList.push_back(e);
 				m_spatialPartition->AddObject(node);
-
-				// Map
-				CTile* tile = new CTile(startPos, row, col, true);
-				m_tilemap->AddToMap(tile);
 			}
 			else if (map[row][col] == 'C') // Chest
 			{
@@ -703,29 +667,35 @@ void AGDev_Assign01::InitMap()
 			}
 			else if (map[row][col] == 'S') // Start
 			{
+				// Map
+				CTile* tile = new CTile(startPos, row, col, true);
+				m_tilemap->AddToMap(tile);
+
 				// Third person player
 				m_char = new CThirdPerson();
 				Camera3* view = new Camera3();
 				view->Init(startPos, startPos - Vector3(0, 0, CThirdPerson::S_OFFSET_TARGET), Vector3(0, 1, 0));
 				transform = new CTransform();
 				transform->Init(startPos, Vector3(), SIZE * 0.1f);
-				m_char->Init(CSceneNode::NODE_TEST, view, m_meshList[MESH_CHARACTER], transform);
+				m_char->Init(CSceneNode::NODE_TEST, view, m_meshList[MESH_CHARACTER], transform, tile);
 				m_char->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
 				m_spatialPartition->AddObject(m_char);
-
-				// Map
-				CTile* tile = new CTile(startPos, row, col, true);
-				m_tilemap->AddToMap(tile);
 			}
 			else if (map[row][col] == 'E') // End
 			{
+				// Map
+				CTile* tile = new CTile(startPos, row, col, true);
+				m_tilemap->AddToMap(tile);
+
 				m_end = new CSceneNode();
 				transform = new CTransform();
 				transform->Init(startPos, Vector3(), SIZE * 0.5f);
-				m_end->Init(CSceneNode::NODE_WALL, m_meshList[MESH_END], transform);
+				m_end->Init(CSceneNode::NODE_WALL, m_meshList[MESH_END], transform, tile);
 				m_end->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
 				m_spatialPartition->AddObject(m_end);
-
+			}
+			else // Empty area
+			{
 				// Map
 				CTile* tile = new CTile(startPos, row, col, true);
 				m_tilemap->AddToMap(tile);

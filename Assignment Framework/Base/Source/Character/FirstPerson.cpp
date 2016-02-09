@@ -14,7 +14,7 @@ CFirstPerson::~CFirstPerson()
 void CFirstPerson::Init(E_NODE_TYPE type, Camera3 * view, Mesh * mesh, CTransform * transform, bool active, bool render)
 {
 	m_view = view;
-	CSceneNode::Init(type, mesh, transform, active, render);
+	CSceneNode::Init(type, mesh, transform, nullptr, active, render);
 }
 
 void CFirstPerson::SetView(Camera3 * view)

@@ -58,3 +58,23 @@ bool CTile::GetWalkable()
 {
 	return m_walkable;
 }
+
+void CTile::SetRowIndex(int rowIndex)
+{
+	m_rowIndex = rowIndex;
+}
+
+int CTile::GetRowIndex()
+{
+	return m_rowIndex;
+}
+
+void CTile::SetColIndex(int colIndex)
+{
+	m_colIndex = colIndex;
+}
+
+int CTile::GetColIndex()
+{
+	return m_colIndex;
+}
