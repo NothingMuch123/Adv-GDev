@@ -57,6 +57,7 @@ private:
 	// Timers
 	float m_calmDownTimer;
 	float m_respawnTimer;
+	float m_attackTimer;
 };
 
 #endif

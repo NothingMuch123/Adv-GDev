@@ -17,6 +17,7 @@ CEnemy::CEnemy()
 	, m_target(nullptr)
 	, m_calmDownTimer(0.f)
 	, m_respawnTimer(0.f)
+	, m_attackTimer(0.f)
 	, m_defaultY(0.f)
 {
 }
@@ -142,7 +143,17 @@ void CEnemy::Reset()
 void CEnemy::Alert(CSceneNode * target)
 {
 	m_target = target;
-	m_currentFSM = ENEMY_ESCAPE;
+	int random = Math::RandIntMinMax(1, 100);
+	if (random <= 20)
+	{
+		// Escape
+		m_currentFSM = ENEMY_ESCAPE;
+	}
+	else
+	{
+		// Attack
+		m_currentFSM = ENEMY_ESCAPE;
+	}
 	m_calmDownTimer = 0.f;
 }
 
