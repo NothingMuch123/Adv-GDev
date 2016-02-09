@@ -97,7 +97,7 @@ void AGDev_Assign01::Update(CGameStateManager* GSM, double dt)
 	for (vector<CProjectile*>::iterator it = m_projList.begin(); it != m_projList.end(); ++it)
 	{
 		CProjectile* proj = *it;
-		if (proj)
+		if (proj && proj->CObject::GetActive())
 		{
 			proj->Update(dt);
 			Vector3 projPos_Start = proj->GetTransform().m_translate;
@@ -111,13 +111,13 @@ void AGDev_Assign01::Update(CGameStateManager* GSM, double dt)
 				{
 					for (int i = 0; i < m_enemyList.size(); ++i)
 					{
-						CSceneNode* enemy = m_enemyList[i];
+						CEnemy* enemy = m_enemyList[i];
 						if (enemy && enemy->CObject::GetActive())
 						{
 							if (proj->CollideWith(*enemy, dt))
 							{
 								proj->Reset();
-								enemy->Reset();
+								enemy->Kill();
 								break;
 							}
 						}
@@ -150,13 +150,13 @@ void AGDev_Assign01::Update(CGameStateManager* GSM, double dt)
 				{
 					for (int i = 0; i < m_enemyList.size(); ++i)
 					{
-						CSceneNode* enemy = m_enemyList[i];
+						CEnemy* enemy = m_enemyList[i];
 						if (enemy && enemy->CObject::GetActive())
 						{
 							if (proj->CollideWith(*enemy, dt))
 							{
 								proj->Reset();
-								enemy->Reset();
+								enemy->Kill();
 								break;
 							}
 						}

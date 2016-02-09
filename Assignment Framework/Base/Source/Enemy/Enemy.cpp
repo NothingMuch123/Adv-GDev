@@ -3,6 +3,8 @@
 const float CEnemy::S_ENEMY_NORMAL_SPEED = 100.f;
 const float CEnemy::S_ENEMY_ESCAPE_SPEED = S_ENEMY_NORMAL_SPEED * 2.f;
 const float CEnemy::S_ENEMY_CALM_DOWN_TIME = 3.f;
+const float CEnemy::S_ENEMY_SHOOT_TIME = 2.f;
+const float CEnemy::S_ENEMY_RESPAWN_TIME = 3.f;
 const float CEnemy::S_DETECTION_RADIUS = 200.f;
 CTileMap* CEnemy::S_MAP_REF = nullptr;
 
@@ -14,6 +16,8 @@ CEnemy::CEnemy()
 	, m_prev(nullptr)
 	, m_target(nullptr)
 	, m_calmDownTimer(0.f)
+	, m_respawnTimer(0.f)
+	, m_defaultY(0.f)
 {
 }
 
@@ -26,6 +30,7 @@ CEnemy::~CEnemy()
 void CEnemy::Init(E_NODE_TYPE type, Mesh * mesh, CTransform * transform, CTile* currentTile, bool active, bool render)
 {
 	CSceneNode::Init(type, mesh, transform, currentTile, active, render);
+	m_defaultY = transform->m_translate.y;
 }
 
 void CEnemy::Update(double dt)
@@ -66,10 +71,20 @@ void CEnemy::Update(double dt)
 		break;
 	case ENEMY_KO:
 		{
+			if (m_respawnTimer > 0.f)
+			{
+				m_respawnTimer -= dt;
+				if (m_respawnTimer <= 0.f)
+				{
+					m_currentFSM = ENEMY_RESPAWN;
+				}
+			}
+			die(dt);
 		}
 		break;
 	case ENEMY_RESPAWN:
 		{
+			respawn(dt);
 		}
 		break;
 	}
@@ -138,6 +153,11 @@ void CEnemy::CalmDown()
 
 void CEnemy::Detect(CSceneNode * target)
 {
+	if (m_currentFSM == ENEMY_KO || m_currentFSM == ENEMY_RESPAWN)
+	{
+		return;
+	}
+
 	float radiusSquared = 0.f;
 
 	switch (m_currentFSM)
@@ -165,6 +185,13 @@ void CEnemy::Detect(CSceneNode * target)
 	}
 }
 
+void CEnemy::Kill()
+{
+	m_currentFSM = ENEMY_KO;
+	m_respawnTimer = S_ENEMY_RESPAWN_TIME;
+	m_calmDownTimer = 0.f;
+}
+
 void CEnemy::move(double dt)
 {
 	if (!m_destination || m_destination == m_currentTile)
@@ -177,6 +204,7 @@ void CEnemy::move(double dt)
 		Vector3 des = m_destination->GetPosition();
 		des.y = m_transform.m_translate.y;
 		m_transform.m_translate = Vector3::MoveToPoint(m_transform.m_translate, des, S_ENEMY_NORMAL_SPEED * dt);
+		CCollider::Update(m_transform);
 		if (m_transform.m_translate == des)
 		{
 			// Reached destination
@@ -198,12 +226,34 @@ void CEnemy::escape(double dt)
 		Vector3 des = m_destination->GetPosition();
 		des.y = m_transform.m_translate.y;
 		m_transform.m_translate = Vector3::MoveToPoint(m_transform.m_translate, des, S_ENEMY_ESCAPE_SPEED * dt);
+		CCollider::Update(m_transform);
 		if (m_transform.m_translate == des)
 		{
 			// Reached destination
 			m_prev = m_currentTile;
 			m_currentTile = m_destination;
 		}
+	}
+}
+
+void CEnemy::die(double dt)
+{
+	float targetY = -(m_transform.m_scale.y * 0.6f);
+	if (m_transform.m_translate.y > targetY)
+	{
+		m_transform.m_translate = Vector3::MoveToPoint(m_transform.m_translate, Vector3(m_transform.m_translate.x, targetY, m_transform.m_translate.z), S_ENEMY_NORMAL_SPEED * 0.5f * dt);
+	}
+}
+
+void CEnemy::respawn(double dt)
+{
+	if (m_transform.m_translate.y < m_defaultY)
+	{
+		m_transform.m_translate = Vector3::MoveToPoint(m_transform.m_translate, Vector3(m_transform.m_translate.x, m_defaultY, m_transform.m_translate.z), S_ENEMY_NORMAL_SPEED * 0.5f * dt);
+	}
+	else
+	{
+		m_currentFSM = ENEMY_PATROL;
 	}
 }
 
