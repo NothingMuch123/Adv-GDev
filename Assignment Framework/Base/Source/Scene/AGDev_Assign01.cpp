@@ -22,6 +22,7 @@ AGDev_Assign01::AGDev_Assign01(int width, int height)
 	, m_score(0.f)
 	, m_rayLength(5.f)
 	, m_enemyList(NULL)
+	, m_tilemap(nullptr)
 {
 	for (int i = 0; i < NUM_MESH; ++i)
 	{
@@ -624,8 +625,8 @@ void AGDev_Assign01::InitMap()
 	map.pop_back();
 
 	const Vector3 SIZE(100.f, 100.f, 100.f);
-	float rowLength = map.front().length() * SIZE.x; // X-axis length
-	float colLength = map.size() * SIZE.z; // Z-axis length
+	float rowLength = map.size() * SIZE.x; // X-axis length
+	float colLength = map.front().length() * SIZE.z; // Z-axis length
 	Vector3 defaultStart = Vector3(-rowLength * 0.5f, 0.f, -colLength * 0.5f);
 	defaultStart = defaultStart + SIZE * 0.5f;
 	Vector3 startPos;
@@ -636,6 +637,8 @@ void AGDev_Assign01::InitMap()
 	m_spatialPartition = new CSpatialPartition();
 	m_spatialPartition->Init(5, 5, rowLength, colLength, m_meshList[MESH_CUBE]);
 
+	// Tile map
+	m_tilemap = new CTileMap(map.size(), map.front().length());
 
 	for (int row = 0; row < map.size(); row++)
 	{
@@ -655,6 +658,10 @@ void AGDev_Assign01::InitMap()
 				node->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
 				m_wallList.push_back(node);
 				m_spatialPartition->AddObject(node);
+
+				// Map
+				CTile* tile = new CTile(startPos, row, col, false);
+				m_tilemap->AddToMap(tile);
 			}
 			else if (map[row][col] == 'M') // Enemy (Monster)
 			{
@@ -665,7 +672,7 @@ void AGDev_Assign01::InitMap()
 				node->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_MIDDLE, true);
 
 				// Child
-				CSceneNode* cNode = new CSceneNode();
+				/*CSceneNode* cNode = new CSceneNode();
 				transform = new CTransform();
 				transform->Init(Vector3(0, 0.5f, 0), Vector3(), Vector3(0.5f, 0.5f, 0.5f));
 				cNode->Init(CSceneNode::NODE_ENEMY_1, m_meshList[MESH_CONE], transform);
@@ -679,13 +686,20 @@ void AGDev_Assign01::InitMap()
 				c2Node->Init(CSceneNode::NODE_ENEMY_2, m_meshList[MESH_CUBE], transform);
 				c2Node->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
 
-				cNode->AddChild(c2Node);
+				cNode->AddChild(c2Node);*/
 
 				m_enemyList.push_back(node);
 				m_spatialPartition->AddObject(node);
+
+				// Map
+				CTile* tile = new CTile(startPos, row, col, true);
+				m_tilemap->AddToMap(tile);
 			}
 			else if (map[row][col] == 'C') // Chest
 			{
+				// Map
+				CTile* tile = new CTile(startPos, row, col, true);
+				m_tilemap->AddToMap(tile);
 			}
 			else if (map[row][col] == 'S') // Start
 			{
@@ -698,6 +712,10 @@ void AGDev_Assign01::InitMap()
 				m_char->Init(CSceneNode::NODE_TEST, view, m_meshList[MESH_CHARACTER], transform);
 				m_char->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
 				m_spatialPartition->AddObject(m_char);
+
+				// Map
+				CTile* tile = new CTile(startPos, row, col, true);
+				m_tilemap->AddToMap(tile);
 			}
 			else if (map[row][col] == 'E') // End
 			{
@@ -707,6 +725,10 @@ void AGDev_Assign01::InitMap()
 				m_end->Init(CSceneNode::NODE_WALL, m_meshList[MESH_END], transform);
 				m_end->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
 				m_spatialPartition->AddObject(m_end);
+
+				// Map
+				CTile* tile = new CTile(startPos, row, col, true);
+				m_tilemap->AddToMap(tile);
 			}
 		}
 	}

@@ -64,6 +64,9 @@
     <Filter Include="Enemy">
       <UniqueIdentifier>{b97c661b-6766-4d1e-a15d-2fcd5e7c3bfb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TileSystem">
+      <UniqueIdentifier>{b2643541-121f-4fd6-8423-40c1a45f5d5f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp">
@@ -224,6 +227,12 @@
     </ClCompile>
     <ClCompile Include="Source\Enemy\Enemy.cpp">
       <Filter>Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\TileSystem\Tile.cpp">
+      <Filter>TileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\TileSystem\TileMap.cpp">
+      <Filter>TileSystem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -397,6 +406,12 @@
     </ClInclude>
     <ClInclude Include="Source\Enemy\Enemy.h">
       <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\TileSystem\Tile.h">
+      <Filter>TileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\TileSystem\TileMap.h">
+      <Filter>TileSystem</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

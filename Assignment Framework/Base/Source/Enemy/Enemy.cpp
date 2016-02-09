@@ -2,6 +2,7 @@
 
 CEnemy::CEnemy()
 	: CSceneNode()
+	, m_currentFSM(ENEMY_IDLE)
 {
 }
 

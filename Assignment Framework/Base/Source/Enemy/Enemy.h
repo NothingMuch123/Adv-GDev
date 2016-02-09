@@ -6,6 +6,16 @@
 class CEnemy : public CSceneNode
 {
 public:
+	enum E_ENEMY_FSM
+	{
+		ENEMY_IDLE,
+		ENEMY_ATTACK,
+		ENEMY_PATROL,
+		ENEMY_KO,
+		ENEMY_RESPAWN,
+		NUM_ENEMY_FSM,
+	};
+
 	CEnemy();
 	virtual ~CEnemy();
 
@@ -14,7 +24,7 @@ public:
 	virtual void Reset();
 
 private:
-
+	E_ENEMY_FSM m_currentFSM;
 };
 
 #endif

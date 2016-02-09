@@ -63,6 +63,8 @@
     <ClCompile Include="Source\State\PlayState.cpp" />
     <ClCompile Include="Source\State\TemplateState.cpp" />
     <ClCompile Include="Source\Target.cpp" />
+    <ClCompile Include="Source\TileSystem\Tile.cpp" />
+    <ClCompile Include="Source\TileSystem\TileMap.cpp" />
     <ClCompile Include="Source\Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -121,6 +123,8 @@
     <ClInclude Include="Source\State\PlayState.h" />
     <ClInclude Include="Source\State\TemplateState.h" />
     <ClInclude Include="Source\Target.h" />
+    <ClInclude Include="Source\TileSystem\Tile.h" />
+    <ClInclude Include="Source\TileSystem\TileMap.h" />
     <ClInclude Include="Source\Utility.h" />
     <ClInclude Include="Source\Vertex.h" />
   </ItemGroup>

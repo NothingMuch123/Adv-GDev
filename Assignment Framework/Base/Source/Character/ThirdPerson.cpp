@@ -6,7 +6,7 @@ const float CThirdPerson::S_MAX_OFFSET_TARGET = S_MIN_OFFSET_TARGET * 3.f;
 float CThirdPerson::S_OFFSET_TARGET = S_MIN_OFFSET_TARGET;
 
 const float CThirdPerson::S_OFFSET_BACK = 50.f;
-const float CThirdPerson::S_OFFSET_LEFT = 30.f;
+const float CThirdPerson::S_OFFSET_LEFT = 0.f;
 const float CThirdPerson::S_OFFSET_UP = 45.f;
 
 const float CThirdPerson::S_NORMAL_SPEED = 100.f;

@@ -5,6 +5,7 @@
 #include "..\Character\ThirdPerson.h"
 #include "..\SpatialPartition\SpatialPartition.h"
 #include "..\Projectile\Projectile.h"
+#include "..\TileSystem\TileMap.h"
 
 #include <fstream>
 
@@ -90,6 +91,7 @@ private:
 	// Map
 	vector<CSceneNode*> m_wallList;
 	CSceneNode* m_end;
+	CTileMap* m_tilemap;
 
 	// Enemy
 	vector<CSceneNode*> m_enemyList;
