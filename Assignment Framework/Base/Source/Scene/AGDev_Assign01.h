@@ -6,6 +6,7 @@
 #include "..\SpatialPartition\SpatialPartition.h"
 #include "..\Projectile\Projectile.h"
 #include "..\TileSystem\TileMap.h"
+#include "..\Enemy\Enemy.h"
 
 #include <fstream>
 
@@ -94,7 +95,7 @@ private:
 	CTileMap* m_tilemap;
 
 	// Enemy
-	vector<CSceneNode*> m_enemyList;
+	vector<CEnemy*> m_enemyList;
 
 	// Score
 	float m_score;

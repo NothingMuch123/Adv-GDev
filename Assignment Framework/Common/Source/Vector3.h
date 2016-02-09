@@ -69,6 +69,8 @@ struct Vector3
 	friend std::ostream& operator<<( std::ostream& os, Vector3& rhs); //print to ostream
 
 	friend Vector3 operator*( float scalar, const Vector3& rhs ); //what is this for?
+
+	static Vector3 MoveToPoint(Vector3 pos, Vector3 des, float movement);
 };
 
 #endif //VECTOR3_H

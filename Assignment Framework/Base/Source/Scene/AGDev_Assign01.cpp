@@ -251,7 +251,7 @@ void AGDev_Assign01::Render()
 	}
 	
 	// Render enemies
-	for (vector<CSceneNode*>::iterator it = m_enemyList.begin(); it != m_enemyList.end(); ++it)
+	for (vector<CEnemy*>::iterator it = m_enemyList.begin(); it != m_enemyList.end(); ++it)
 	{
 		CSceneNode* enemy = *it;
 		//RenderGameObject(enemy, m_lightEnabled);
@@ -315,7 +315,7 @@ void AGDev_Assign01::Exit()
 			proj = NULL;
 		}
 	}
-	for (vector<CSceneNode*>::iterator it = m_enemyList.begin(); it != m_enemyList.end(); ++it)
+	for (vector<CEnemy*>::iterator it = m_enemyList.begin(); it != m_enemyList.end(); ++it)
 	{
 		CSceneNode* enemy = *it;
 		if (enemy)
@@ -665,11 +665,11 @@ void AGDev_Assign01::InitMap()
 			}
 			else if (map[row][col] == 'M') // Enemy (Monster)
 			{
-				node = new CSceneNode();
+				CEnemy* e = new CEnemy();
 				transform = new CTransform();
 				transform->Init(startPos + Vector3(0, SIZE.y * 0.25f, 0), Vector3(), SIZE * 0.25f);
-				node->Init(CSceneNode::NODE_ENEMY, m_meshList[MESH_CUBE], transform);
-				node->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_MIDDLE, true);
+				e->Init(CSceneNode::NODE_ENEMY, m_meshList[MESH_CUBE], transform);
+				e->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_MIDDLE, true);
 
 				// Child
 				/*CSceneNode* cNode = new CSceneNode();
@@ -688,7 +688,7 @@ void AGDev_Assign01::InitMap()
 
 				cNode->AddChild(c2Node);*/
 
-				m_enemyList.push_back(node);
+				m_enemyList.push_back(e);
 				m_spatialPartition->AddObject(node);
 
 				// Map

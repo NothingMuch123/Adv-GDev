@@ -368,6 +368,18 @@ Vector3& Vector3::Normalize( void ) throw( DivideByZero )
 	return *this;
 }
 
+Vector3 Vector3::MoveToPoint(Vector3 pos, Vector3 des, float movement)
+{
+	Vector3 relative = des - pos;
+	float distanceSquared = relative.LengthSquared();
+	if (movement * movement >= distanceSquared)
+	{
+		return des;
+	}
+	Vector3 dir = relative.Normalized();
+	return pos + (dir * movement);
+}
+
 std::ostream& operator<< (std::ostream& os, Vector3& rhs)
 {
 	os << "[ " << rhs.x << ", " << rhs.y << ", " << rhs.z << " ]";

@@ -2,6 +2,7 @@
 #define ENEMY_H
 
 #include "..\SceneGraph\SceneNode.h"
+#include "..\TileSystem\Tile.h"
 
 class CEnemy : public CSceneNode
 {
@@ -25,6 +26,8 @@ public:
 
 private:
 	E_ENEMY_FSM m_currentFSM;
+	CTile* m_destination;
+	Vector3 m_dir;
 };
 
 #endif

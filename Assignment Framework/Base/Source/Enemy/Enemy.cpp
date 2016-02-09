@@ -3,6 +3,8 @@
 CEnemy::CEnemy()
 	: CSceneNode()
 	, m_currentFSM(ENEMY_IDLE)
+	, m_dir(0,0,1)
+	, m_destination(nullptr)
 {
 }
 
