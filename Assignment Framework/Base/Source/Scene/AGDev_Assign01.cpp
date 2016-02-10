@@ -94,6 +94,11 @@ void AGDev_Assign01::Update(CGameStateManager* GSM, double dt)
 			e->Update(dt);
 			m_spatialPartition->UpdateObject(e);
 			e->UpdateLOD(dt, m_char);
+			if (e->IsAlive() && e->CollideWith(*m_char, dt))
+			{
+				m_char->Injure(1);
+				e->Kill();
+			}
 		}
 	}
 
@@ -167,6 +172,12 @@ void AGDev_Assign01::Update(CGameStateManager* GSM, double dt)
 				}
 			}
 		}
+	}
+
+	if (!m_char->IsAlive())
+	{
+		GSM->PopState();
+		return;
 	}
 
 	m_fps = (float)(1.f / dt);
@@ -729,6 +740,7 @@ void AGDev_Assign01::InitMap()
 				transform->Init(startPos + Vector3(0, SIZE.y * 0.25f, 0), Vector3(), SIZE * 0.25f);
 				e->Init(CSceneNode::NODE_ENEMY, m_meshList[MESH_ENEMY_HIGH_RES], transform, tile);
 				e->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_MIDDLE, true);
+				e->CCollider::SetIgnore(false, true, false);
 
 				// LOD
 				Mesh* resList[CLevelOfDetail::NUM_RES] = {

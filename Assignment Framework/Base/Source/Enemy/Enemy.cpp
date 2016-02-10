@@ -1,4 +1,5 @@
 #include "Enemy.h"
+#include "..\Character\ThirdPerson.h"
 
 float CEnemy::S_ENEMY_NORMAL_SPEED = 100.f;
 float CEnemy::S_ENEMY_ESCAPE_SPEED = S_ENEMY_NORMAL_SPEED * 2.f;
@@ -6,6 +7,7 @@ float CEnemy::S_ENEMY_CALM_DOWN_TIME = 3.f;
 float CEnemy::S_ENEMY_SHOOT_TIME = 2.f;
 float CEnemy::S_ENEMY_RESPAWN_TIME = 3.f;
 float CEnemy::S_DETECTION_RADIUS = 200.f;
+int CEnemy::S_ESCAPE_PROBABILITY = 50;
 CTileMap* CEnemy::S_MAP_REF = nullptr;
 
 CEnemy::CEnemy()
@@ -68,9 +70,15 @@ void CEnemy::InitEnemyDataFromLua()
 	}
 
 	// Detection radius
-	if (data = lua->GetNumber("DETECTION_RADIUS"))
+	if (data = lua->GetNumber("ENEMY_DETECTION_RADIUS"))
 	{
 		S_DETECTION_RADIUS = (float)(*data);
+	}
+
+	// Escape probability
+	if (data = lua->GetNumber("ENEMY_ESCAPE_PROBABILITY"))
+	{
+		S_ESCAPE_PROBABILITY = (int)(*data);
 	}
 
 	lua->CloseLua();
@@ -198,7 +206,7 @@ void CEnemy::Alert(CSceneNode * target)
 
 	m_target = target;
 	int random = Math::RandIntMinMax(1, 100);
-	if (random <= 70)
+	if (random <= S_ESCAPE_PROBABILITY)
 	{
 		// Escape
 		m_currentFSM = ENEMY_ESCAPE;
@@ -255,6 +263,15 @@ void CEnemy::Kill()
 	m_currentFSM = ENEMY_KO;
 	m_respawnTimer = S_ENEMY_RESPAWN_TIME;
 	m_calmDownTimer = 0.f;
+}
+
+bool CEnemy::IsAlive()
+{
+	if (m_currentFSM == ENEMY_KO || m_currentFSM == ENEMY_RESPAWN)
+	{
+		return false;
+	}
+	return true;
 }
 
 void CEnemy::move(double dt)
@@ -326,12 +343,15 @@ void CEnemy::attack(double dt)
 {
 	if (CollideWith(*m_target, dt))
 	{
-		m_currentFSM = ENEMY_KO;
+		dynamic_cast<CThirdPerson*>(m_target)->Injure(1);
+		Kill();
+		m_target = nullptr;
 		return;
 	}
 	Vector3 des = m_target->GetTransform().m_translate;
 	des.y = m_transform.m_translate.y;
 	m_transform.m_translate = Vector3::MoveToPoint(m_transform.m_translate, des, S_ENEMY_ESCAPE_SPEED * dt);
+	CCollider::Update(m_transform);
 }
 
 CTile * CEnemy::generateDestination(bool escape)

@@ -28,6 +28,9 @@ public:
 
 	Camera3* GetTPView();
 
+	void Injure(int damage);
+	bool IsAlive();
+
 protected:
 	Vector3 calcTPviewPos();
 	void generateTPview(Camera3* view);

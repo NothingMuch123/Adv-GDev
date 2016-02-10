@@ -14,6 +14,7 @@ public:
 	static float S_ENEMY_SHOOT_TIME;
 	static float S_ENEMY_RESPAWN_TIME;
 	static float S_DETECTION_RADIUS;
+	static int S_ESCAPE_PROBABILITY;
 	static CTileMap* S_MAP_REF;
 
 	enum E_ENEMY_FSM
@@ -41,6 +42,7 @@ public:
 	void Detect(CSceneNode* target);
 
 	void Kill();
+	bool IsAlive();
 
 private:
 	void move(double dt);

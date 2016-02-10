@@ -1,5 +1,5 @@
 #include "SpatialPartition.h"
-
+#include "Enemy\Enemy.h"
 
 
 CSpatialPartition::CSpatialPartition()
@@ -146,7 +146,7 @@ bool CSpatialPartition::CheckForCollision(Vector3 pos)
 			{
 				if (theListOfObjects[i]->GetType() == CSceneNode::NODE_ENEMY)
 				{
-					theListOfObjects[i]->Reset();
+					dynamic_cast<CEnemy*>(theListOfObjects[i])->Kill();
 				}
 				return result;
 			}

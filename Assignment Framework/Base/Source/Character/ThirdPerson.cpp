@@ -15,6 +15,7 @@ const float CThirdPerson::S_SPRINT_SPEED = S_NORMAL_SPEED * 2.f;
 CThirdPerson::CThirdPerson()
 	: m_speed(S_NORMAL_SPEED)
 	, m_targetSpeed(m_speed * 2.f)
+	, m_health(5)
 {
 }
 
@@ -232,4 +233,18 @@ void CThirdPerson::updateTarget()
 Camera3 * CThirdPerson::GetTPView()
 {
 	return m_TPview;
+}
+
+void CThirdPerson::Injure(int damage)
+{
+	m_health -= damage;
+	if (m_health < 0)
+	{
+		m_health = 0;
+	}
+}
+
+bool CThirdPerson::IsAlive()
+{
+	return m_health > 0;
 }
