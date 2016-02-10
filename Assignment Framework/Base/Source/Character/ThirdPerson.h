@@ -47,6 +47,9 @@ protected:
 	float m_targetSpeed; // The speed in which the target offset increases and decrease when moving
 
 	Camera3* m_TPview; // Third person view camera
+
+	// Temp variable
+	int m_health;
 };
 
 #endif

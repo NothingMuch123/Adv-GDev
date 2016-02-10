@@ -58,6 +58,7 @@ void AGDev_Assign01::Init(int screenWidth, int screenHeight)
 	InitMesh();
 	initProjList();
 	InitMap();
+	CEnemy::InitEnemyDataFromLua();
 
 	m_camera = m_char->GetTPView();
 }
@@ -479,7 +480,7 @@ void AGDev_Assign01::InitMesh()
 	// Enemy
 	Color low, mid, high, ultra;
 	CLua_Wrapper* lua = new CLua_Wrapper();
-	lua->OpenLua("Lua_Scripts//game.lua");
+	lua->OpenLua("Lua_Scripts//enemy.lua");
 	double* data = nullptr;
 
 	// Low res colour
@@ -656,11 +657,11 @@ void AGDev_Assign01::InitMap()
 	}
 	map.pop_back();
 
-	CLua_Wrapper* lua = new CLua_Wrapper();
 	Vector3 size;
+	CLua_Wrapper* lua = new CLua_Wrapper();
 	if (!lua->OpenLua("Lua_Scripts//game.lua"))
 	{
-		return;
+		//return;
 	}
 	double* lua_data = nullptr;
 	if (lua_data = lua->GetNumber("SIZE_X"))

@@ -3,16 +3,17 @@
 
 #include "..\SceneGraph\SceneNode.h"
 #include "..\TileSystem\TileMap.h"
+#include "..\Lua_Wrapper\Lua_Wrapper.h"
 
 class CEnemy : public CSceneNode
 {
 public:
-	static const float S_ENEMY_NORMAL_SPEED;
-	static const float S_ENEMY_ESCAPE_SPEED;
-	static const float S_ENEMY_CALM_DOWN_TIME;
-	static const float S_ENEMY_SHOOT_TIME;
-	static const float S_ENEMY_RESPAWN_TIME;
-	static const float S_DETECTION_RADIUS;
+	static float S_ENEMY_NORMAL_SPEED;
+	static float S_ENEMY_ESCAPE_SPEED;
+	static float S_ENEMY_CALM_DOWN_TIME;
+	static float S_ENEMY_SHOOT_TIME;
+	static float S_ENEMY_RESPAWN_TIME;
+	static float S_DETECTION_RADIUS;
 	static CTileMap* S_MAP_REF;
 
 	enum E_ENEMY_FSM
@@ -29,6 +30,8 @@ public:
 	CEnemy();
 	virtual ~CEnemy();
 
+	static void InitEnemyDataFromLua();
+
 	virtual void Init(E_NODE_TYPE type, Mesh* mesh, CTransform* transform, CTile* currentTile = nullptr, bool active = true, bool render = true);
 	virtual void Update(double dt);
 	virtual void Reset();
@@ -44,6 +47,7 @@ private:
 	void escape(double dt);
 	void die(double dt);
 	void respawn(double dt);
+	void attack(double dt);
 	CTile* generateDestination(bool escape = false);
 
 private:

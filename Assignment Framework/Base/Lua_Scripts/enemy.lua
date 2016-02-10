@@ -1,0 +1,29 @@
+--[[ Enemy mesh colour by resolution ]]--
+--[[ Low res ]]--
+ENEMY_RES_LOW_R = 1
+ENEMY_RES_LOW_G = 1
+ENEMY_RES_LOW_B = 1
+
+--[[ Mid res ]]--
+ENEMY_RES_MID_R = 0
+ENEMY_RES_MID_G = 0
+ENEMY_RES_MID_B = 1
+
+--[[ High res ]]--
+ENEMY_RES_HIGH_R = 0
+ENEMY_RES_HIGH_G = 1
+ENEMY_RES_HIGH_B = 0
+
+--[[ Ultra res ]]--
+ENEMY_RES_ULTRA_R = 1
+ENEMY_RES_ULTRA_G = 0
+ENEMY_RES_ULTRA_B = 0
+
+
+--[[ Enemy data ]]--
+ENEMY_NORMAL_SPEED = 100.0
+ENEMY_ESCAPE_SPEED = 200.0
+ENEMY_CALM_DOWN_TIME = 3.0
+ENEMY_SHOOT_TIME = 2.0
+ENEMY_RESPAWN_TIME = 3.0
+DETECTION_RADIUS = 200.0

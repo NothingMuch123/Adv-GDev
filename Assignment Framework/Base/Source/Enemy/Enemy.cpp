@@ -1,11 +1,11 @@
 #include "Enemy.h"
 
-const float CEnemy::S_ENEMY_NORMAL_SPEED = 100.f;
-const float CEnemy::S_ENEMY_ESCAPE_SPEED = S_ENEMY_NORMAL_SPEED * 2.f;
-const float CEnemy::S_ENEMY_CALM_DOWN_TIME = 3.f;
-const float CEnemy::S_ENEMY_SHOOT_TIME = 2.f;
-const float CEnemy::S_ENEMY_RESPAWN_TIME = 3.f;
-const float CEnemy::S_DETECTION_RADIUS = 200.f;
+float CEnemy::S_ENEMY_NORMAL_SPEED = 100.f;
+float CEnemy::S_ENEMY_ESCAPE_SPEED = S_ENEMY_NORMAL_SPEED * 2.f;
+float CEnemy::S_ENEMY_CALM_DOWN_TIME = 3.f;
+float CEnemy::S_ENEMY_SHOOT_TIME = 2.f;
+float CEnemy::S_ENEMY_RESPAWN_TIME = 3.f;
+float CEnemy::S_DETECTION_RADIUS = 200.f;
 CTileMap* CEnemy::S_MAP_REF = nullptr;
 
 CEnemy::CEnemy()
@@ -26,6 +26,54 @@ CEnemy::CEnemy()
 CEnemy::~CEnemy()
 {
 	Reset();
+}
+
+void CEnemy::InitEnemyDataFromLua()
+{
+	CLua_Wrapper* lua = new CLua_Wrapper();
+	if (!lua->OpenLua("Lua_Scripts//enemy.lua"))
+	{
+		return;
+	}
+	double* data = nullptr;
+
+	// Normal speed
+	if (data = lua->GetNumber("ENEMY_NORMAL_SPEED"))
+	{
+		S_ENEMY_NORMAL_SPEED = (float)(*data);
+	}
+
+	// Escape speed
+	if (data = lua->GetNumber("ENEMY_ESCAPE_SPEED"))
+	{
+		S_ENEMY_ESCAPE_SPEED = (float)(*data);
+	}
+
+	// Calm down time
+	if (data = lua->GetNumber("ENEMY_CALM_DOWN_TIME"))
+	{
+		S_ENEMY_CALM_DOWN_TIME = (float)(*data);
+	}
+
+	// Shoot time
+	if (data = lua->GetNumber("ENEMY_SHOOT_TIME"))
+	{
+		S_ENEMY_SHOOT_TIME = (float)(*data);
+	}
+
+	// Respawn time
+	if (data = lua->GetNumber("ENEMY_RESPAWN_TIME"))
+	{
+		S_ENEMY_RESPAWN_TIME = (float)(*data);
+	}
+
+	// Detection radius
+	if (data = lua->GetNumber("DETECTION_RADIUS"))
+	{
+		S_DETECTION_RADIUS = (float)(*data);
+	}
+
+	lua->CloseLua();
 }
 
 void CEnemy::Init(E_NODE_TYPE type, Mesh * mesh, CTransform * transform, CTile* currentTile, bool active, bool render)
@@ -58,6 +106,7 @@ void CEnemy::Update(double dt)
 		break;
 	case ENEMY_ATTACK:
 		{
+			attack(dt);
 		}
 		break;
 	case ENEMY_PATROL:
@@ -149,7 +198,7 @@ void CEnemy::Alert(CSceneNode * target)
 
 	m_target = target;
 	int random = Math::RandIntMinMax(1, 100);
-	if (random <= 20)
+	if (random <= 70)
 	{
 		// Escape
 		m_currentFSM = ENEMY_ESCAPE;
@@ -157,7 +206,7 @@ void CEnemy::Alert(CSceneNode * target)
 	else
 	{
 		// Attack
-		m_currentFSM = ENEMY_ESCAPE;
+		m_currentFSM = ENEMY_ATTACK;
 	}
 	m_calmDownTimer = 0.f;
 }
@@ -271,6 +320,18 @@ void CEnemy::respawn(double dt)
 	{
 		m_currentFSM = ENEMY_PATROL;
 	}
+}
+
+void CEnemy::attack(double dt)
+{
+	if (CollideWith(*m_target, dt))
+	{
+		m_currentFSM = ENEMY_KO;
+		return;
+	}
+	Vector3 des = m_target->GetTransform().m_translate;
+	des.y = m_transform.m_translate.y;
+	m_transform.m_translate = Vector3::MoveToPoint(m_transform.m_translate, des, S_ENEMY_ESCAPE_SPEED * dt);
 }
 
 CTile * CEnemy::generateDestination(bool escape)
