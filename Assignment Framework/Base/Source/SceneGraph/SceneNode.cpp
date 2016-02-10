@@ -7,6 +7,7 @@ CSceneNode::CSceneNode()
 	, m_type(NODE_NONE)
 	, m_locations(NULL)
 	, m_currentTile(nullptr)
+	, m_lod(nullptr)
 {
 }
 
@@ -30,6 +31,15 @@ void CSceneNode::Init(E_NODE_TYPE type, Mesh * mesh, CTransform * transform, CTi
 	m_currentTile = currentTile;
 }
 
+void CSceneNode::InitLOD(Mesh * resList[CLevelOfDetail::NUM_RES], float m_dist[CLevelOfDetail::NUM_RES])
+{
+	if (!m_lod)
+	{
+		m_lod = new CLevelOfDetail();
+		m_lod->Init(resList, m_dist);
+	}
+}
+
 void CSceneNode::Update(const double dt)
 {
 	CGameObject::Update(dt);
@@ -37,6 +47,14 @@ void CSceneNode::Update(const double dt)
 	{
 		CSceneNode* child = m_children[i];
 		child->CSceneNode::Update(dt);
+	}
+}
+
+void CSceneNode::UpdateLOD(double dt, CSceneNode * target)
+{
+	if (m_lod)
+	{
+		m_mesh = m_lod->Update(dt, &m_transform, &target->GetTransform());
 	}
 }
 

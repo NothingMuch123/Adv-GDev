@@ -142,6 +142,11 @@ void CEnemy::Reset()
 
 void CEnemy::Alert(CSceneNode * target)
 {
+	if (m_currentFSM == ENEMY_ESCAPE || m_currentFSM == ENEMY_ATTACK)
+	{
+		return;
+	}
+
 	m_target = target;
 	int random = Math::RandIntMinMax(1, 100);
 	if (random <= 20)
@@ -152,7 +157,7 @@ void CEnemy::Alert(CSceneNode * target)
 	else
 	{
 		// Attack
-		m_currentFSM = ENEMY_ATTACK;
+		m_currentFSM = ENEMY_ESCAPE;
 	}
 	m_calmDownTimer = 0.f;
 }

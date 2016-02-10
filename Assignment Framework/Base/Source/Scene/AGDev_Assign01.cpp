@@ -91,6 +91,8 @@ void AGDev_Assign01::Update(CGameStateManager* GSM, double dt)
 		{
 			e->Detect(m_char);
 			e->Update(dt);
+			m_spatialPartition->UpdateObject(e);
+			e->UpdateLOD(dt, m_char);
 		}
 	}
 
@@ -473,6 +475,72 @@ void AGDev_Assign01::InitMesh()
 
 	m_meshList[MESH_FLOOR] = MeshBuilder::GenerateQuad("Floor", Color(1,1,1), 1.f);
 	m_meshList[MESH_FLOOR]->textureID[0] = LoadTGA("Image//Object//Floor.tga");
+
+	// Enemy
+	Color low, mid, high, ultra;
+	CLua_Wrapper* lua = new CLua_Wrapper();
+	lua->OpenLua("Lua_Scripts//game.lua");
+	double* data = nullptr;
+
+	// Low res colour
+	if (data = lua->GetNumber("ENEMY_RES_LOW_R"))
+	{
+		low.r = (float)(*data);
+	}
+	if (data = lua->GetNumber("ENEMY_RES_LOW_G"))
+	{
+		low.g = (float)(*data);
+	}
+	if (data = lua->GetNumber("ENEMY_RES_LOW_B"))
+	{
+		low.b = (float)(*data);
+	}
+	m_meshList[MESH_ENEMY_LOW_RES] = MeshBuilder::GenerateSphere("Sphere", low, 4, 9, 0.5f);
+
+	// Mid res colour
+	if (data = lua->GetNumber("ENEMY_RES_MID_R"))
+	{
+		mid.r = (float)(*data);
+	}
+	if (data = lua->GetNumber("ENEMY_RES_MID_G"))
+	{
+		mid.g = (float)(*data);
+	}
+	if (data = lua->GetNumber("ENEMY_RES_MID_B"))
+	{
+		mid.b = (float)(*data);
+	}
+	m_meshList[MESH_ENEMY_MID_RES] = MeshBuilder::GenerateSphere("Sphere", mid, 9, 18, 0.5f);
+
+	// High res colour
+	if (data = lua->GetNumber("ENEMY_RES_HIGH_R"))
+	{
+		high.r = (float)(*data);
+	}
+	if (data = lua->GetNumber("ENEMY_RES_HIGH_G"))
+	{
+		high.g = (float)(*data);
+	}
+	if (data = lua->GetNumber("ENEMY_RES_HIGH_B"))
+	{
+		high.b = (float)(*data);
+	}
+	m_meshList[MESH_ENEMY_HIGH_RES] = MeshBuilder::GenerateSphere("Sphere", high, 18, 36, 0.5f);
+
+	// Ultra res colour
+	if (data = lua->GetNumber("ENEMY_RES_ULTRA_R"))
+	{
+		ultra.r = (float)(*data);
+	}
+	if (data = lua->GetNumber("ENEMY_RES_ULTRA_G"))
+	{
+		ultra.g = (float)(*data);
+	}
+	if (data = lua->GetNumber("ENEMY_RES_ULTRA_B"))
+	{
+		ultra.b = (float)(*data);
+	}
+	m_meshList[MESH_ENEMY_ULTRA_RES] = MeshBuilder::GenerateSphere("Sphere", ultra, 27, 54, 0.5f);
 }
 
 
@@ -588,7 +656,28 @@ void AGDev_Assign01::InitMap()
 	}
 	map.pop_back();
 
-	const Vector3 SIZE(100.f, 100.f, 100.f);
+	CLua_Wrapper* lua = new CLua_Wrapper();
+	Vector3 size;
+	if (!lua->OpenLua("Lua_Scripts//game.lua"))
+	{
+		return;
+	}
+	double* lua_data = nullptr;
+	if (lua_data = lua->GetNumber("SIZE_X"))
+	{
+		size.x = (float)(*lua_data);
+	}
+	if (lua_data = lua->GetNumber("SIZE_Y"))
+	{
+		size.y = (float)(*lua_data);
+	}
+	if (lua_data = lua->GetNumber("SIZE_Z"))
+	{
+		size.z = (float)(*lua_data);
+	}
+	lua->CloseLua();
+
+	const Vector3 SIZE(size);
 	float rowLength = map.size() * SIZE.x; // X-axis length
 	float colLength = map.front().length() * SIZE.z; // Z-axis length
 	Vector3 defaultStart = Vector3(-rowLength * 0.5f, 0.f, -colLength * 0.5f);
@@ -637,8 +726,23 @@ void AGDev_Assign01::InitMap()
 				CEnemy* e = new CEnemy();
 				transform = new CTransform();
 				transform->Init(startPos + Vector3(0, SIZE.y * 0.25f, 0), Vector3(), SIZE * 0.25f);
-				e->Init(CSceneNode::NODE_ENEMY, m_meshList[MESH_CUBE], transform, tile);
+				e->Init(CSceneNode::NODE_ENEMY, m_meshList[MESH_ENEMY_HIGH_RES], transform, tile);
 				e->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_MIDDLE, true);
+
+				// LOD
+				Mesh* resList[CLevelOfDetail::NUM_RES] = {
+															m_meshList[MESH_ENEMY_LOW_RES],
+															m_meshList[MESH_ENEMY_MID_RES],
+															m_meshList[MESH_ENEMY_HIGH_RES],
+															m_meshList[MESH_ENEMY_ULTRA_RES],
+														 };
+				static float distList[CLevelOfDetail::NUM_RES] =	{
+																1000.f,
+																700.f,
+																500.f,
+																200.f,
+															};
+				e->InitLOD(resList, distList);
 
 				// Child
 				/*CSceneNode* cNode = new CSceneNode();
@@ -658,7 +762,7 @@ void AGDev_Assign01::InitMap()
 				cNode->AddChild(c2Node);*/
 
 				m_enemyList.push_back(e);
-				m_spatialPartition->AddObject(node);
+				m_spatialPartition->AddObject(e);
 			}
 			else if (map[row][col] == 'C') // Chest
 			{

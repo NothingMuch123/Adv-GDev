@@ -19,7 +19,7 @@ public:
 	CLevelOfDetail();
 	~CLevelOfDetail();
 
-	void Init(Mesh* resList[NUM_RES]);
+	void Init(Mesh* resList[NUM_RES], float dist[NUM_RES]);
 	Mesh* Update(double dt, CTransform* me, CTransform* target); // Update and return the proper mesh
 
 private:

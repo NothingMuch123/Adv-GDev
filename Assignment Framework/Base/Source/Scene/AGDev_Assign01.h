@@ -43,6 +43,12 @@ public:
 		MESH_WALL,
 		MESH_END, // End point mesh
 
+		// Enemy
+		MESH_ENEMY_LOW_RES,
+		MESH_ENEMY_MID_RES,
+		MESH_ENEMY_HIGH_RES,
+		MESH_ENEMY_ULTRA_RES,
+
 		NUM_MESH,
 	};
 

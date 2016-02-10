@@ -3,6 +3,7 @@
 
 #include "..\Object\GameObject.h"
 #include "..\TileSystem\Tile.h"
+#include "..\LevelOfDetail\LevelOfDetail.h"
 #include <vector>
 
 using std::vector;
@@ -29,7 +30,9 @@ public:
 	virtual ~CSceneNode();
 
 	virtual void Init(E_NODE_TYPE type, Mesh* mesh, CTransform* transform, CTile* currentTile = nullptr, bool active = true, bool render = true);
+	void InitLOD(Mesh* resList[CLevelOfDetail::NUM_RES], float m_dist[CLevelOfDetail::NUM_RES]);
 	virtual void Update(const double dt);
+	void UpdateLOD(double dt, CSceneNode* target);
 	virtual void Reset();
 
 	// Setters and Getters
@@ -69,6 +72,9 @@ protected:
 	E_NODE_TYPE m_type;
 	vector<CGrid*> m_locations; // Grid that stores this gameobject
 	CTile* m_currentTile;
+
+	// Level of Details
+	CLevelOfDetail* m_lod;
 };
 
 #endif
