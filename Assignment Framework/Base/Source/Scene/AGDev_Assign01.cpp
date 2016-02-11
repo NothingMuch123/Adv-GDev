@@ -57,6 +57,33 @@ void AGDev_Assign01::Init(int screenWidth, int screenHeight)
 
 	InitMesh();
 	initProjList();
+
+	// Set up enemy resolution distance from lua
+	CLua_Wrapper* lua = new CLua_Wrapper();
+	if (lua->OpenLua("Lua_Scripts//enemy.lua"))
+	{
+		double* data = nullptr;
+
+		if (data = lua->GetNumber("ENEMY_RES_LOW_DIST"))
+		{
+			m_enemyResDist[CLevelOfDetail::RES_LOW] = (float)(*data);
+		}
+		if (data = lua->GetNumber("ENEMY_RES_MID_DIST"))
+		{
+			m_enemyResDist[CLevelOfDetail::RES_MID] = (float)(*data);
+		}
+		if (data = lua->GetNumber("ENEMY_RES_HIGH_DIST"))
+		{
+			m_enemyResDist[CLevelOfDetail::RES_HIGH] = (float)(*data);
+		}
+		if (data = lua->GetNumber("ENEMY_RES_ULTRA_DIST"))
+		{
+			m_enemyResDist[CLevelOfDetail::RES_ULTRA] = (float)(*data);
+		}
+		lua->CloseLua();
+		delete lua;
+	}
+
 	InitMap();
 	CEnemy::InitEnemyDataFromLua();
 	if (CGameStateManager::S_LOAD)
@@ -235,7 +262,7 @@ void AGDev_Assign01::Render()
 	// Render enemies
 	for (vector<CEnemy*>::iterator it = m_enemyList.begin(); it != m_enemyList.end(); ++it)
 	{
-		CSceneNode* enemy = *it;
+		CEnemy* enemy = *it;
 		//RenderGameObject(enemy, m_lightEnabled);
 		enemy->Draw(this);
 	}
@@ -756,24 +783,18 @@ void AGDev_Assign01::InitMap()
 																m_meshList[MESH_ENEMY_HIGH_RES],
 																m_meshList[MESH_ENEMY_ULTRA_RES],
 					};
-					static float distList[CLevelOfDetail::NUM_RES] = {
-																	1000.f,
-																	700.f,
-																	500.f,
-																	200.f,
-					};
-					e->InitLOD(resList, distList);
+					e->InitLOD(resList, m_enemyResDist);
 
 					// Child
-					/*CSceneNode* cNode = new CSceneNode();
+					CSceneNode* cNode = new CSceneNode();
 					transform = new CTransform();
 					transform->Init(Vector3(0, 0.5f, 0), Vector3(), Vector3(0.5f, 0.5f, 0.5f));
 					cNode->Init(CSceneNode::NODE_ENEMY_1, m_meshList[MESH_CONE], transform);
 					cNode->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
+					cNode->InitLOD(resList, m_enemyResDist);
+					e->AddChild(cNode);
 
-					node->AddChild(cNode);
-
-					CSceneNode* c2Node = new CSceneNode();
+					/*CSceneNode* c2Node = new CSceneNode();
 					transform = new CTransform();
 					transform->Init(Vector3(0, 1, 0), Vector3(), Vector3(0.5f, 0.5f, 0.5f));
 					c2Node->Init(CSceneNode::NODE_ENEMY_2, m_meshList[MESH_CUBE], transform);
@@ -797,15 +818,18 @@ void AGDev_Assign01::InitMap()
 				CTile* tile = new CTile(startPos, row, col, true);
 				m_tilemap->AddToMap(tile);
 
-				// Third person player
-				m_char = new CThirdPerson();
-				Camera3* view = new Camera3();
-				view->Init(startPos, startPos - Vector3(0, 0, CThirdPerson::S_OFFSET_TARGET), Vector3(0, 1, 0));
-				transform = new CTransform();
-				transform->Init(startPos, Vector3(), SIZE * 0.1f);
-				m_char->Init(CSceneNode::NODE_TEST, view, m_meshList[MESH_CHARACTER], transform, tile);
-				m_char->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
-				m_spatialPartition->AddObject(m_char);
+				if (!CGameStateManager::S_LOAD)
+				{
+					// Third person player
+					m_char = new CThirdPerson();
+					Camera3* view = new Camera3();
+					view->Init(startPos, startPos - Vector3(0, 0, CThirdPerson::S_OFFSET_TARGET), Vector3(0, 1, 0));
+					transform = new CTransform();
+					transform->Init(startPos, Vector3(), SIZE * 0.1f);
+					m_char->Init(CSceneNode::NODE_TEST, view, m_meshList[MESH_CHARACTER], transform, tile);
+					m_char->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
+					m_spatialPartition->AddObject(m_char);
+				}
 			}
 			else if (map[row][col] == 'E') // End
 			{
@@ -857,12 +881,17 @@ void AGDev_Assign01::save()
 
 	file.open("Lua_Scripts//save.lua", std::ofstream::out, std::ofstream::trunc);
 
-	// Save player location
+	// Score
+	file << "SCORE = " + to_string((long double)m_score) + "\n\n";
 
+	// Save player
+	m_char->SaveState(&file, 1);
+
+	// Number of enemies
 	file << "NUM_ENEMY = " + to_string((long long)m_enemyList.size()) + "\n\n";
 
 	int id = 1;
-	// Things to save
+	// Save enemies
 	for (vector<CEnemy*>::iterator it = m_enemyList.begin(); it != m_enemyList.end(); ++it)
 	{
 		CEnemy* e = *it;
@@ -881,10 +910,24 @@ void AGDev_Assign01::load()
 	{
 		return;
 	}
+	double* data = nullptr;
+
+	// Score
+	if (data = lua->GetNumber("SCORE"))
+	{
+		m_score = (float)(*data);
+	}
+
+	// Third person player
+	m_char = new CThirdPerson();
+	Camera3* view = new Camera3();
+	m_char->Init(CSceneNode::NODE_TEST, view, m_meshList[MESH_CHARACTER], new CTransform());
+	m_char->LoadState(lua, 1);
+	m_char->CCollider::Init(CCollider::CT_AABB, m_char->GetTransform(), CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
+	m_spatialPartition->AddObject(m_char);
 
 	int enemyCount = 0;
 
-	double* data = nullptr;
 	if (data = lua->GetNumber("NUM_ENEMY"))
 	{
 		enemyCount = *data;
@@ -896,6 +939,14 @@ void AGDev_Assign01::load()
 		e->Init(CSceneNode::NODE_ENEMY, m_meshList[MESH_ENEMY_HIGH_RES], new CTransform());
 		e->LoadState(lua, i + 1);
 		e->CCollider::Init(CCollider::CT_AABB, e->GetTransform(), CCollider::X_MIDDLE, CCollider::Y_MIDDLE, true);
+		if (e->GetFSM() == CEnemy::ENEMY_KO || e->GetFSM() == CEnemy::ENEMY_RESPAWN)
+		{
+			e->CCollider::SetIgnore(false, false, false);
+		}
+		else
+		{
+			e->CCollider::SetIgnore(false, true, false);
+		}
 
 		// LOD
 		Mesh* resList[CLevelOfDetail::NUM_RES] = {
@@ -904,13 +955,16 @@ void AGDev_Assign01::load()
 			m_meshList[MESH_ENEMY_HIGH_RES],
 			m_meshList[MESH_ENEMY_ULTRA_RES],
 		};
-		static float distList[CLevelOfDetail::NUM_RES] = {
-			1000.f,
-			700.f,
-			500.f,
-			200.f,
-		};
-		e->InitLOD(resList, distList);
+		e->InitLOD(resList, m_enemyResDist);
+
+		// Child
+		CSceneNode* cNode = new CSceneNode();
+		CTransform transform;
+		transform.Init(Vector3(0, 0.5f, 0), Vector3(), Vector3(0.5f, 0.5f, 0.5f));
+		cNode->Init(CSceneNode::NODE_ENEMY_1, m_meshList[MESH_CONE], &transform);
+		cNode->CCollider::Init(CCollider::CT_AABB, transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
+		cNode->InitLOD(resList, m_enemyResDist);
+		e->AddChild(cNode);
 
 		m_enemyList.push_back(e);
 		m_spatialPartition->AddObject(e);

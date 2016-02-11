@@ -54,7 +54,13 @@ void CSceneNode::UpdateLOD(double dt, CSceneNode * target)
 {
 	if (m_lod)
 	{
-		m_mesh = m_lod->Update(dt, &m_transform, &target->GetTransform());
+		Mesh* newMesh = m_lod->Update(dt, &m_transform, &target->GetTransform());
+		m_mesh = newMesh;
+		for (vector<CSceneNode*>::iterator it = m_children.begin(); it != m_children.end(); ++it)
+		{
+			CSceneNode* n = *it;
+			n->SetMesh(newMesh);
+		}
 	}
 }
 

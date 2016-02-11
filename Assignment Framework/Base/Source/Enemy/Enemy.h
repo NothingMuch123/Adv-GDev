@@ -21,6 +21,8 @@ public:
 		ENEMY_SCALE_Y,
 		ENEMY_SCALE_Z,
 		ENEMY_CURRENT_FSM_STATE,
+		ENEMY_CURRENT_ROW_INDEX,
+		ENEMY_CURRENT_COL_INDEX,
 		ENEMY_DES_ROW_INDEX,
 		ENEMY_DES_COL_INDEX,
 		ENEMY_PREV_ROW_INDEX,
@@ -71,6 +73,8 @@ public:
 
 	virtual bool SaveState(fstream* file, int id);
 	virtual bool LoadState(CLua_Wrapper* lua, int id);
+
+	E_ENEMY_FSM GetFSM();
 
 private:
 	void move(double dt);

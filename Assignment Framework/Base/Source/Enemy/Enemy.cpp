@@ -21,6 +21,8 @@ string CEnemy::S_PROPERTIES[CEnemy::NUM_ENEMY_SAVE_PROPERTIES] =
 	"ENEMY_SCALE_Y",
 	"ENEMY_SCALE_Z",
 	"ENEMY_CURRENT_FSM_STATE",
+	"ENEMY_CURRENT_ROW_INDEX",
+	"ENEMY_CURRENT_COL_INDEX",
 	"ENEMY_DES_ROW_INDEX",
 	"ENEMY_DES_COL_INDEX",
 	"ENEMY_PREV_ROW_INDEX",
@@ -166,6 +168,8 @@ void CEnemy::Update(double dt)
 		break;
 	}
 
+	CSceneNode* child = this->Search(CSceneNode::NODE_ENEMY_1);
+
 	// Scene node TRS test (AGDev Assignment 1)
 	/*CSceneNode* child = this->Search(CSceneNode::NODE_ENEMY_1);
 	if (this)
@@ -240,7 +244,10 @@ void CEnemy::Alert(CSceneNode * target)
 
 void CEnemy::CalmDown()
 {
-	m_calmDownTimer = S_ENEMY_CALM_DOWN_TIME;
+	if (m_calmDownTimer <= 0.f)
+	{
+		m_calmDownTimer = S_ENEMY_CALM_DOWN_TIME;
+	}
 }
 
 void CEnemy::Detect(CSceneNode * target)
@@ -309,6 +316,17 @@ bool CEnemy::SaveState(fstream * file, int id)
 
 	write(file, S_PROPERTIES[ENEMY_CURRENT_FSM_STATE], id, to_string((long long)m_currentFSM)); // Current FSM
 
+	if (m_currentTile)
+	{
+		write(file, S_PROPERTIES[ENEMY_CURRENT_ROW_INDEX], id, to_string((long long)m_currentTile->GetRowIndex())); // Current tile row index
+		write(file, S_PROPERTIES[ENEMY_CURRENT_COL_INDEX], id, to_string((long long)m_currentTile->GetColIndex())); // Current tile col index
+	}
+	else
+	{
+		write(file, S_PROPERTIES[ENEMY_CURRENT_ROW_INDEX], id, to_string((long long)-1)); // Current tile row index
+		write(file, S_PROPERTIES[ENEMY_CURRENT_COL_INDEX], id, to_string((long long)-1)); // Current tile col index
+	}
+
 	if (m_destination)
 	{
 		write(file, S_PROPERTIES[ENEMY_DES_ROW_INDEX], id, to_string((long long)m_destination->GetRowIndex())); // Destination row index
@@ -365,6 +383,17 @@ bool CEnemy::LoadState(CLua_Wrapper * lua, int id)
 
 	m_currentFSM = (E_ENEMY_FSM)static_cast<int>(read(lua, S_PROPERTIES[ENEMY_CURRENT_FSM_STATE], id)); // Current FSM
 
+	int currRow = (int)read(lua, S_PROPERTIES[ENEMY_CURRENT_ROW_INDEX], id); // Destination row index
+	int currCol = (int)read(lua, S_PROPERTIES[ENEMY_CURRENT_COL_INDEX], id); // Destination col index
+	if (currRow == -1 || currCol == -1)
+	{
+		m_currentTile = nullptr;
+	}
+	else
+	{
+		m_currentTile = S_MAP_REF->FetchTile(currRow, currCol);
+	}
+
 	int desRow = (int)read(lua, S_PROPERTIES[ENEMY_DES_ROW_INDEX], id); // Destination row index
 	int desCol = (int)read(lua, S_PROPERTIES[ENEMY_DES_COL_INDEX], id); // Destination col index
 	if (desRow == -1 || desCol == -1)
@@ -397,6 +426,11 @@ bool CEnemy::LoadState(CLua_Wrapper * lua, int id)
 	m_respawnTimer = (float)read(lua, S_PROPERTIES[ENEMY_RESPAWN_TIMER], id); // Respawn timer
 
 	return true;
+}
+
+CEnemy::E_ENEMY_FSM CEnemy::GetFSM()
+{
+	return m_currentFSM;
 }
 
 void CEnemy::move(double dt)

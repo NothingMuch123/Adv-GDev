@@ -18,6 +18,12 @@ string CThirdPerson::S_PROPERTIES[CThirdPerson::NUM_PLAYER_SAVE_PROPERTIES] =
 	"PLAYER_UP_X",
 	"PLAYER_UP_Y",
 	"PLAYER_UP_Z",
+	"PLAYER_TP_POS_X",
+	"PLAYER_TP_POS_Y",
+	"PLAYER_TP_POS_Z",
+	"PLAYER_TP_UP_X",
+	"PLAYER_TP_UP_Y",
+	"PLAYER_TP_UP_Z",
 	"PLAYER_TOTAL_YAW",
 	"PLAYER_TOTAL_PITCH",
 };
@@ -273,26 +279,72 @@ bool CThirdPerson::IsAlive()
 bool CThirdPerson::SaveState(fstream * file, int id)
 {
 	// Transform
-	write(file, S_PROPERTIES[PLAYER_POS_X], id, to_string((long long)m_transform.m_translate.x)); // Pos X
-	write(file, S_PROPERTIES[PLAYER_POS_Y], id, to_string((long long)m_transform.m_translate.y)); // Pos Y
-	write(file, S_PROPERTIES[PLAYER_POS_Z], id, to_string((long long)m_transform.m_translate.z)); // Pos Z
+	write(file, S_PROPERTIES[PLAYER_POS_X], id, to_string((long double)m_transform.m_translate.x)); // Pos X
+	write(file, S_PROPERTIES[PLAYER_POS_Y], id, to_string((long double)m_transform.m_translate.y)); // Pos Y
+	write(file, S_PROPERTIES[PLAYER_POS_Z], id, to_string((long double)m_transform.m_translate.z)); // Pos Z
 
-	write(file, S_PROPERTIES[PLAYER_ROTATE_X], id, to_string((long long)m_transform.m_rotate.x)); // Rotate X
-	write(file, S_PROPERTIES[PLAYER_ROTATE_Y], id, to_string((long long)m_transform.m_rotate.y)); // Rotate Y
-	write(file, S_PROPERTIES[PLAYER_ROTATE_Z], id, to_string((long long)m_transform.m_rotate.z)); // Rotate Z
+	write(file, S_PROPERTIES[PLAYER_ROTATE_X], id, to_string((long double)m_transform.m_rotate.x)); // Rotate X
+	write(file, S_PROPERTIES[PLAYER_ROTATE_Y], id, to_string((long double)m_transform.m_rotate.y)); // Rotate Y
+	write(file, S_PROPERTIES[PLAYER_ROTATE_Z], id, to_string((long double)m_transform.m_rotate.z)); // Rotate Z
 
-	write(file, S_PROPERTIES[PLAYER_SCALE_X], id, to_string((long long)m_transform.m_scale.x)); // Scale X
-	write(file, S_PROPERTIES[PLAYER_SCALE_Y], id, to_string((long long)m_transform.m_scale.y)); // Scale Y
-	write(file, S_PROPERTIES[PLAYER_SCALE_Z], id, to_string((long long)m_transform.m_scale.z)); // Scale Z
+	write(file, S_PROPERTIES[PLAYER_SCALE_X], id, to_string((long double)m_transform.m_scale.x)); // Scale X
+	write(file, S_PROPERTIES[PLAYER_SCALE_Y], id, to_string((long double)m_transform.m_scale.y)); // Scale Y
+	write(file, S_PROPERTIES[PLAYER_SCALE_Z], id, to_string((long double)m_transform.m_scale.z)); // Scale Z
 
-	write(file, S_PROPERTIES[PLAYER_SCALE_X], id, to_string((long long)m_transform.m_scale.x)); // Pos X
-	write(file, S_PROPERTIES[PLAYER_SCALE_Y], id, to_string((long long)m_transform.m_scale.y)); // Pos Y
-	write(file, S_PROPERTIES[PLAYER_SCALE_Z], id, to_string((long long)m_transform.m_scale.z)); // Pos Z
+	write(file, S_PROPERTIES[PLAYER_TARGET_X], id, to_string((long double)m_view->target.x)); // Target X
+	write(file, S_PROPERTIES[PLAYER_TARGET_Y], id, to_string((long double)m_view->target.y)); // Target Y
+	write(file, S_PROPERTIES[PLAYER_TARGET_Z], id, to_string((long double)m_view->target.z)); // Target Z
+
+	write(file, S_PROPERTIES[PLAYER_UP_X], id, to_string((long double)m_view->up.x)); // Up X
+	write(file, S_PROPERTIES[PLAYER_UP_Y], id, to_string((long double)m_view->up.y)); // Up Y
+	write(file, S_PROPERTIES[PLAYER_UP_Z], id, to_string((long double)m_view->up.z)); // Up Z
+
+	write(file, S_PROPERTIES[PLAYER_TP_POS_X], id, to_string((long double)m_TPview->position.x)); // TP pos X
+	write(file, S_PROPERTIES[PLAYER_TP_POS_Y], id, to_string((long double)m_TPview->position.y)); // TP pos Y
+	write(file, S_PROPERTIES[PLAYER_TP_POS_Z], id, to_string((long double)m_TPview->position.z)); // TP pos Z
+
+	write(file, S_PROPERTIES[PLAYER_TP_UP_X], id, to_string((long double)m_TPview->up.x)); // TP up X
+	write(file, S_PROPERTIES[PLAYER_TP_UP_Y], id, to_string((long double)m_TPview->up.y)); // TP up Y
+	write(file, S_PROPERTIES[PLAYER_TP_UP_Z], id, to_string((long double)m_TPview->up.z)); // TP up Z
+
+	/*write(file, S_PROPERTIES[PLAYER_TOTAL_YAW], id, to_string((long double)m_view->total_yaw)); // Total yaw
+	write(file, S_PROPERTIES[PLAYER_TOTAL_PITCH], id, to_string((long double)m_view->total_pitch)); // Total pitch*/
+
+	(*file) << "\n";
 
 	return true;
 }
 
 bool CThirdPerson::LoadState(CLua_Wrapper * lua, int id)
 {
+	// Transform
+	m_transform.m_translate.x = m_view->position.x = read(lua, S_PROPERTIES[PLAYER_POS_X], id); // Pos X
+	m_transform.m_translate.y = m_view->position.y = read(lua, S_PROPERTIES[PLAYER_POS_Y], id); // Pos Y
+	m_transform.m_translate.z = m_view->position.z = read(lua, S_PROPERTIES[PLAYER_POS_Z], id); // Pos Z
+
+	m_transform.m_rotate.x = read(lua, S_PROPERTIES[PLAYER_ROTATE_X], id); // Rotate X
+	m_transform.m_rotate.y = read(lua, S_PROPERTIES[PLAYER_ROTATE_Y], id); // Rotate Y
+	m_transform.m_rotate.z = read(lua, S_PROPERTIES[PLAYER_ROTATE_Z], id); // Rotate Z
+
+	m_transform.m_scale.x = read(lua, S_PROPERTIES[PLAYER_SCALE_X], id); // Scale X
+	m_transform.m_scale.y = read(lua, S_PROPERTIES[PLAYER_SCALE_Y], id); // Scale Y
+	m_transform.m_scale.z = read(lua, S_PROPERTIES[PLAYER_SCALE_Z], id); // Scale Z
+
+	m_view->target.x = m_TPview->target.x = read(lua, S_PROPERTIES[PLAYER_TARGET_X], id); // Target X
+	m_view->target.y = m_TPview->target.y = read(lua, S_PROPERTIES[PLAYER_TARGET_Y], id); // Target Y
+	m_view->target.z = m_TPview->target.z = read(lua, S_PROPERTIES[PLAYER_TARGET_Z], id); // Target Z
+
+	m_view->up.x = read(lua, S_PROPERTIES[PLAYER_UP_X], id); // Up X
+	m_view->up.y = read(lua, S_PROPERTIES[PLAYER_UP_Y], id); // Up Y
+	m_view->up.z = read(lua, S_PROPERTIES[PLAYER_UP_Z], id); // Up Z
+
+	m_TPview->position.x = read(lua, S_PROPERTIES[PLAYER_TP_POS_X], id); // TP pos X
+	m_TPview->position.y = read(lua, S_PROPERTIES[PLAYER_TP_POS_Y], id); // TP pos Y
+	m_TPview->position.z = read(lua, S_PROPERTIES[PLAYER_TP_POS_Z], id); // TP pos Z
+
+	m_TPview->up.x = read(lua, S_PROPERTIES[PLAYER_TP_UP_X], id); // TP up X
+	m_TPview->up.y = read(lua, S_PROPERTIES[PLAYER_TP_UP_Y], id); // TP up Y
+	m_TPview->up.z = read(lua, S_PROPERTIES[PLAYER_TP_UP_Z], id); // TP up Z
+
 	return true;
 }

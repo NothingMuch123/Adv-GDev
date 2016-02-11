@@ -49,6 +49,9 @@ public:
 		MESH_ENEMY_HIGH_RES,
 		MESH_ENEMY_ULTRA_RES,
 
+		// Health
+		MESH_HEALTH,
+
 		NUM_MESH,
 	};
 
@@ -106,6 +109,7 @@ private:
 
 	// Enemy
 	vector<CEnemy*> m_enemyList;
+	float m_enemyResDist[CLevelOfDetail::NUM_RES];
 
 	// Score
 	float m_score;

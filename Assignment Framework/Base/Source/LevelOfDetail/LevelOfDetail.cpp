@@ -39,5 +39,12 @@ Mesh * CLevelOfDetail::Update(double dt, CTransform * me, CTransform * target)
 	{
 		return m_resList[RES_MID];
 	}
-	return m_resList[RES_LOW];
+	else if (distSquared <= m_dist[RES_LOW] * m_dist[RES_LOW] && distSquared > m_dist[RES_MID] * m_dist[RES_MID])
+	{
+		return m_resList[RES_LOW];
+	}
+	else
+	{
+		return nullptr;
+	}
 }
