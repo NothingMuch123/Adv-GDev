@@ -59,7 +59,10 @@ void AGDev_Assign01::Init(int screenWidth, int screenHeight)
 	initProjList();
 	InitMap();
 	CEnemy::InitEnemyDataFromLua();
-	load();
+	if (CGameStateManager::S_LOAD)
+	{
+		load();
+	}
 
 	m_camera = m_char->GetTPView();
 }
@@ -737,47 +740,50 @@ void AGDev_Assign01::InitMap()
 				CTile* tile = new CTile(startPos, row, col, true);
 				m_tilemap->AddToMap(tile);
 
-				/*CEnemy* e = new CEnemy();
-				transform = new CTransform();
-				transform->Init(startPos + Vector3(0, SIZE.y * 0.25f, 0), Vector3(), SIZE * 0.25f);
-				e->Init(CSceneNode::NODE_ENEMY, m_meshList[MESH_ENEMY_HIGH_RES], transform, tile);
-				e->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_MIDDLE, true);
-				e->CCollider::SetIgnore(false, true, false);
+				if (!CGameStateManager::S_LOAD)
+				{
+					CEnemy* e = new CEnemy();
+					transform = new CTransform();
+					transform->Init(startPos + Vector3(0, SIZE.y * 0.25f, 0), Vector3(), SIZE * 0.25f);
+					e->Init(CSceneNode::NODE_ENEMY, m_meshList[MESH_ENEMY_HIGH_RES], transform, tile);
+					e->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_MIDDLE, true);
+					e->CCollider::SetIgnore(false, true, false);
 
-				// LOD
-				Mesh* resList[CLevelOfDetail::NUM_RES] = {
-															m_meshList[MESH_ENEMY_LOW_RES],
-															m_meshList[MESH_ENEMY_MID_RES],
-															m_meshList[MESH_ENEMY_HIGH_RES],
-															m_meshList[MESH_ENEMY_ULTRA_RES],
-														 };
-				static float distList[CLevelOfDetail::NUM_RES] =	{
-																1000.f,
-																700.f,
-																500.f,
-																200.f,
-															};
-				e->InitLOD(resList, distList);*/
+					// LOD
+					Mesh* resList[CLevelOfDetail::NUM_RES] = {
+																m_meshList[MESH_ENEMY_LOW_RES],
+																m_meshList[MESH_ENEMY_MID_RES],
+																m_meshList[MESH_ENEMY_HIGH_RES],
+																m_meshList[MESH_ENEMY_ULTRA_RES],
+					};
+					static float distList[CLevelOfDetail::NUM_RES] = {
+																	1000.f,
+																	700.f,
+																	500.f,
+																	200.f,
+					};
+					e->InitLOD(resList, distList);
 
-				// Child
-				/*CSceneNode* cNode = new CSceneNode();
-				transform = new CTransform();
-				transform->Init(Vector3(0, 0.5f, 0), Vector3(), Vector3(0.5f, 0.5f, 0.5f));
-				cNode->Init(CSceneNode::NODE_ENEMY_1, m_meshList[MESH_CONE], transform);
-				cNode->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
+					// Child
+					/*CSceneNode* cNode = new CSceneNode();
+					transform = new CTransform();
+					transform->Init(Vector3(0, 0.5f, 0), Vector3(), Vector3(0.5f, 0.5f, 0.5f));
+					cNode->Init(CSceneNode::NODE_ENEMY_1, m_meshList[MESH_CONE], transform);
+					cNode->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
 
-				node->AddChild(cNode);
+					node->AddChild(cNode);
 
-				CSceneNode* c2Node = new CSceneNode();
-				transform = new CTransform();
-				transform->Init(Vector3(0, 1, 0), Vector3(), Vector3(0.5f, 0.5f, 0.5f));
-				c2Node->Init(CSceneNode::NODE_ENEMY_2, m_meshList[MESH_CUBE], transform);
-				c2Node->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
+					CSceneNode* c2Node = new CSceneNode();
+					transform = new CTransform();
+					transform->Init(Vector3(0, 1, 0), Vector3(), Vector3(0.5f, 0.5f, 0.5f));
+					c2Node->Init(CSceneNode::NODE_ENEMY_2, m_meshList[MESH_CUBE], transform);
+					c2Node->CCollider::Init(CCollider::CT_AABB, *transform, CCollider::X_MIDDLE, CCollider::Y_BOTTOM, true);
 
-				cNode->AddChild(c2Node);*/
+					cNode->AddChild(c2Node);*/
 
-				/*m_enemyList.push_back(e);
-				m_spatialPartition->AddObject(e);*/
+					m_enemyList.push_back(e);
+					m_spatialPartition->AddObject(e);
+				}
 			}
 			else if (map[row][col] == 'C') // Chest
 			{
@@ -851,6 +857,8 @@ void AGDev_Assign01::save()
 
 	file.open("Lua_Scripts//save.lua", std::ofstream::out, std::ofstream::trunc);
 
+	// Save player location
+
 	file << "NUM_ENEMY = " + to_string((long long)m_enemyList.size()) + "\n\n";
 
 	int id = 1;
@@ -862,6 +870,7 @@ void AGDev_Assign01::save()
 		++id;
 	}
 
+	CGameStateManager::S_LOAD = true;
 	file.close();
 }
 
@@ -906,6 +915,7 @@ void AGDev_Assign01::load()
 		m_enemyList.push_back(e);
 		m_spatialPartition->AddObject(e);
 	}
+	CGameStateManager::S_LOAD = false;
 
 	lua->CloseLua();
 	delete lua;

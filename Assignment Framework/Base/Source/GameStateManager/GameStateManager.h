@@ -18,6 +18,7 @@ public:
 	// Menus
 	static const float S_CLICK_COOLDOWN;
 	static const float S_ENTER_COOLDOWN;
+	static bool S_LOAD;
 	static bool S_MUSIC;
 	static float S_HIGHSCORE;
 
