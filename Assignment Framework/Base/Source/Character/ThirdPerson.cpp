@@ -1,6 +1,27 @@
 #include "ThirdPerson.h"
 #include "MyMath.h"
 
+string CThirdPerson::S_PROPERTIES[CThirdPerson::NUM_PLAYER_SAVE_PROPERTIES] =
+{
+	"PLAYER_POS_X",
+	"PLAYER_POS_Y",
+	"PLAYER_POS_Z",
+	"PLAYER_ROTATE_X",
+	"PLAYER_ROTATE_Y",
+	"PLAYER_ROTATE_Z",
+	"PLAYER_SCALE_X",
+	"PLAYER_SCALE_Y",
+	"PLAYER_SCALE_Z",
+	"PLAYER_TARGET_X",
+	"PLAYER_TARGET_Y",
+	"PLAYER_TARGET_Z",
+	"PLAYER_UP_X",
+	"PLAYER_UP_Y",
+	"PLAYER_UP_Z",
+	"PLAYER_TOTAL_YAW",
+	"PLAYER_TOTAL_PITCH",
+};
+
 const float CThirdPerson::S_MIN_OFFSET_TARGET = 50.f;
 const float CThirdPerson::S_MAX_OFFSET_TARGET = S_MIN_OFFSET_TARGET * 3.f;
 float CThirdPerson::S_OFFSET_TARGET = S_MIN_OFFSET_TARGET;
@@ -247,4 +268,31 @@ void CThirdPerson::Injure(int damage)
 bool CThirdPerson::IsAlive()
 {
 	return m_health > 0;
+}
+
+bool CThirdPerson::SaveState(fstream * file, int id)
+{
+	// Transform
+	write(file, S_PROPERTIES[PLAYER_POS_X], id, to_string((long long)m_transform.m_translate.x)); // Pos X
+	write(file, S_PROPERTIES[PLAYER_POS_Y], id, to_string((long long)m_transform.m_translate.y)); // Pos Y
+	write(file, S_PROPERTIES[PLAYER_POS_Z], id, to_string((long long)m_transform.m_translate.z)); // Pos Z
+
+	write(file, S_PROPERTIES[PLAYER_ROTATE_X], id, to_string((long long)m_transform.m_rotate.x)); // Rotate X
+	write(file, S_PROPERTIES[PLAYER_ROTATE_Y], id, to_string((long long)m_transform.m_rotate.y)); // Rotate Y
+	write(file, S_PROPERTIES[PLAYER_ROTATE_Z], id, to_string((long long)m_transform.m_rotate.z)); // Rotate Z
+
+	write(file, S_PROPERTIES[PLAYER_SCALE_X], id, to_string((long long)m_transform.m_scale.x)); // Scale X
+	write(file, S_PROPERTIES[PLAYER_SCALE_Y], id, to_string((long long)m_transform.m_scale.y)); // Scale Y
+	write(file, S_PROPERTIES[PLAYER_SCALE_Z], id, to_string((long long)m_transform.m_scale.z)); // Scale Z
+
+	write(file, S_PROPERTIES[PLAYER_SCALE_X], id, to_string((long long)m_transform.m_scale.x)); // Pos X
+	write(file, S_PROPERTIES[PLAYER_SCALE_Y], id, to_string((long long)m_transform.m_scale.y)); // Pos Y
+	write(file, S_PROPERTIES[PLAYER_SCALE_Z], id, to_string((long long)m_transform.m_scale.z)); // Pos Z
+
+	return true;
+}
+
+bool CThirdPerson::LoadState(CLua_Wrapper * lua, int id)
+{
+	return true;
 }

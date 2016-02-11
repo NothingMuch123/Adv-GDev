@@ -2,8 +2,9 @@
 #define _THIRDPERSON_H_
 
 #include "FirstPerson.h"
+#include "..\Lua\Lua_Serializable.h"
 
-class CThirdPerson : public CFirstPerson
+class CThirdPerson : public CFirstPerson, public CLua_Serializable
 {
 public:
 	enum E_PLAYER_SAVE_PROPERTIES
@@ -31,6 +32,7 @@ public:
 	static const float S_MIN_OFFSET_TARGET;
 	static const float S_MAX_OFFSET_TARGET;
 	static float S_OFFSET_TARGET;
+	static string S_PROPERTIES[NUM_PLAYER_SAVE_PROPERTIES];
 
 	CThirdPerson();
 	virtual ~CThirdPerson();
@@ -52,6 +54,9 @@ public:
 
 	void Injure(int damage);
 	bool IsAlive();
+
+	virtual bool SaveState(fstream* file, int id);
+	virtual bool LoadState(CLua_Wrapper* lua, int id);
 
 protected:
 	Vector3 calcTPviewPos();
