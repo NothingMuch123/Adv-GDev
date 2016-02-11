@@ -26,6 +26,8 @@ public:
 	double* GetNumber(string name);
 	bool* GetBool(string name);
 
+	lua_State* GetState();
+
 private:
 	static const int S_TOP_OF_STACK;
 

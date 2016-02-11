@@ -742,16 +742,31 @@ void AGDev_Assign01::InitMap()
 	{
 		size.z = (float)(*lua_data);
 	}
-	lua->CloseLua();
 
 	const Vector3 SIZE(size);
-	float rowLength = map.size() * SIZE.x; // X-axis length
-	float colLength = map.front().length() * SIZE.z; // Z-axis length
+
+	lua_getglobal(lua->GetState(), "multiply");
+	lua_pushnumber(lua->GetState(), map.size());
+	lua_pushnumber(lua->GetState(), SIZE.x);
+	lua_call(lua->GetState(), 2, 1);
+	float rowLength = (float)lua_tonumber(lua->GetState(), lua_gettop(lua->GetState()));//map.size() * SIZE.x; // X-axis length
+	lua_pop(lua->GetState(), 1);
+
+	lua_getglobal(lua->GetState(), "multiply");
+	lua_pushnumber(lua->GetState(), map.front().length());
+	lua_pushnumber(lua->GetState(), SIZE.z);
+	lua_call(lua->GetState(), 2, 1);
+	float colLength = (float)lua_tonumber(lua->GetState(), lua_gettop(lua->GetState()));//map.front().length() * SIZE.z; // Z-axis length
+	lua_pop(lua->GetState(), 1);
+
 	Vector3 defaultStart = Vector3(-rowLength * 0.5f, 0.f, -colLength * 0.5f);
 	defaultStart = defaultStart + SIZE * 0.5f;
 	Vector3 startPos;
 	CSceneNode* node;
 	CTransform* transform;
+
+	lua->CloseLua();
+	delete lua;
 
 	// Spatial partition
 	m_spatialPartition = new CSpatialPartition();

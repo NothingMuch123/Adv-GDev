@@ -10,7 +10,7 @@ Mouse to navigate menus
 In game:
 Up arrow to show spatial partition feedback for character
 Down arrow to hide spatial partition feedback for character
-P - Return to main menu
+P - Save game and return to main menu
 
 Objective: Find the trophy to win
 

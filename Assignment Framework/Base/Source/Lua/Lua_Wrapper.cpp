@@ -87,3 +87,8 @@ bool * CLua_Wrapper::GetBool(string name)
 	lua_pop(m_luaState, S_TOP_OF_STACK);
 	return data;
 }
+
+lua_State * CLua_Wrapper::GetState()
+{
+	return m_luaState;
+}
