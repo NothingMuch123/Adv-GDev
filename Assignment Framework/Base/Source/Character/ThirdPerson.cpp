@@ -348,3 +348,13 @@ bool CThirdPerson::LoadState(CLua_Wrapper * lua, int id)
 
 	return true;
 }
+
+void CThirdPerson::SetHealth(int health)
+{
+	m_health = health;
+}
+
+int CThirdPerson::GetHealth()
+{
+	return m_health;
+}

@@ -31,6 +31,7 @@ public:
 		ENEMY_DEFAULT_Y,
 		ENEMY_CALM_DOWN_TIMER,
 		ENEMY_RESPAWN_TIMER,
+		ENEMY_IDLE_TIMER,
 		NUM_ENEMY_SAVE_PROPERTIES,
 	};
 
@@ -50,6 +51,7 @@ public:
 	static float S_ENEMY_CALM_DOWN_TIME;
 	static float S_ENEMY_SHOOT_TIME;
 	static float S_ENEMY_RESPAWN_TIME;
+	static float S_ENEMY_IDLE_TIME;
 	static float S_DETECTION_RADIUS;
 	static int S_ESCAPE_PROBABILITY;
 	static CTileMap* S_MAP_REF;
@@ -94,6 +96,7 @@ private:
 	// Timers
 	float m_calmDownTimer;
 	float m_respawnTimer;
+	float m_idleTimer;
 };
 
 #endif

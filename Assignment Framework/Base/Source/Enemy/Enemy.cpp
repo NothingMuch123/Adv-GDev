@@ -6,6 +6,7 @@ float CEnemy::S_ENEMY_ESCAPE_SPEED = S_ENEMY_NORMAL_SPEED * 2.f;
 float CEnemy::S_ENEMY_CALM_DOWN_TIME = 3.f;
 float CEnemy::S_ENEMY_SHOOT_TIME = 2.f;
 float CEnemy::S_ENEMY_RESPAWN_TIME = 3.f;
+float CEnemy::S_ENEMY_IDLE_TIME = 2.f;
 float CEnemy::S_DETECTION_RADIUS = 200.f;
 int CEnemy::S_ESCAPE_PROBABILITY = 50;
 CTileMap* CEnemy::S_MAP_REF = nullptr;
@@ -41,6 +42,7 @@ CEnemy::CEnemy()
 	, m_target(nullptr)
 	, m_calmDownTimer(0.f)
 	, m_respawnTimer(0.f)
+	, m_idleTimer(S_ENEMY_IDLE_TIME)
 	, m_defaultY(0.f)
 {
 }
@@ -90,6 +92,12 @@ void CEnemy::InitEnemyDataFromLua()
 		S_ENEMY_RESPAWN_TIME = (float)(*data);
 	}
 
+	// Respawn time
+	if (data = lua->GetNumber("ENEMY_IDLE_TIME"))
+	{
+		S_ENEMY_IDLE_TIME = (float)(*data); 
+	}
+
 	// Detection radius
 	if (data = lua->GetNumber("ENEMY_DETECTION_RADIUS"))
 	{
@@ -130,7 +138,15 @@ void CEnemy::Update(double dt)
 	{
 	case ENEMY_IDLE:
 		{
-			m_currentFSM = ENEMY_PATROL;
+			if (m_idleTimer > 0.f)
+			{
+				m_idleTimer -= dt;
+				if (m_idleTimer <= 0.f)
+				{
+					m_idleTimer = 0.f;
+					m_currentFSM = ENEMY_PATROL;
+				}
+			}
 		}
 		break;
 	case ENEMY_ATTACK:
@@ -233,11 +249,13 @@ void CEnemy::Alert(CSceneNode * target)
 	{
 		// Escape
 		m_currentFSM = ENEMY_ESCAPE;
+		m_idleTimer = 0.f;
 	}
 	else
 	{
 		// Attack
 		m_currentFSM = ENEMY_ATTACK;
+		m_idleTimer = 0.f;
 	}
 	m_calmDownTimer = 0.f;
 }
@@ -460,6 +478,7 @@ void CEnemy::escape(double dt)
 	if (!m_target)
 	{
 		m_currentFSM = ENEMY_IDLE;
+		m_idleTimer = S_ENEMY_IDLE_TIME;
 		return;
 	}
 
@@ -485,7 +504,7 @@ void CEnemy::escape(double dt)
 
 void CEnemy::die(double dt)
 {
-	float targetY = -(m_transform.m_scale.y * 0.6f);
+	float targetY = -(m_transform.m_scale.y * 1.f);
 	if (m_transform.m_translate.y > targetY)
 	{
 		m_transform.m_translate = Vector3::MoveToPoint(m_transform.m_translate, Vector3(m_transform.m_translate.x, targetY, m_transform.m_translate.z), S_ENEMY_NORMAL_SPEED * 0.5f * dt);
@@ -512,6 +531,7 @@ void CEnemy::attack(double dt)
 	if (!m_target)
 	{
 		m_currentFSM = ENEMY_IDLE;
+		m_idleTimer = S_ENEMY_IDLE_TIME;
 		return;
 	}
 

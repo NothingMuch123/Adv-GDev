@@ -114,6 +114,25 @@ void AGDev_Assign01::Update(CGameStateManager* GSM, double dt)
 	{
 		m_shootTimer -= dt;
 	}
+	
+	// LoD Update
+	/*vector<CGrid*> gridList = m_char->GetLocations();
+	for (vector<CGrid*>::iterator it = gridList.begin(); it != gridList.end(); ++it)
+	{
+		CGrid* g = *it;
+		if (g)
+		{
+			vector<CSceneNode*> nodeList = g->GetList();
+			for (vector<CSceneNode*>::iterator it2 = nodeList.begin(); it2 != nodeList.end(); ++it2)
+			{
+				CSceneNode* node = *it2;
+				if (node)
+				{
+					node->UpdateLOD(dt, m_char);
+				}
+			}
+		}
+	}*/
 
 	// Enemy update
 	for (vector<CEnemy*>::iterator it = m_enemyList.begin(); it != m_enemyList.end(); ++it)
@@ -284,6 +303,10 @@ void AGDev_Assign01::Render()
 	ostringstream sTime;
 	sTime << "Time: " << m_score;
 	RenderTextOnScreen(m_meshList[MESH_TEXT], sTime.str(), Color(1, 0, 0), 40, 0, 0);
+
+	ostringstream sLives;
+	sLives << "Lives: " << m_char->GetHealth();
+	RenderTextOnScreen(m_meshList[MESH_TEXT], sLives.str(), Color(1, 0, 0), 40, 0, 40);
 
 	// Not supposed to have any other rendering codes here as Scenebase handles it
 	// Alternative solution is to render scenegraph here instead as render list does not take into account parent and child nodes
@@ -539,7 +562,7 @@ void AGDev_Assign01::InitMesh()
 	{
 		low.b = (float)(*data);
 	}
-	m_meshList[MESH_ENEMY_LOW_RES] = MeshBuilder::GenerateSphere("Sphere", low, 4, 9, 0.5f);
+	m_meshList[MESH_ENEMY_LOW_RES] = MeshBuilder::GenerateSphere("Sphere", low, 6, 12, 0.5f);
 
 	// Mid res colour
 	if (data = lua->GetNumber("ENEMY_RES_MID_R"))
@@ -692,7 +715,7 @@ void AGDev_Assign01::InitMap()
 	std::vector<std::string> map;
 	std::string data;
 	std::ifstream fMap;
-	fMap.open("map.txt");
+	fMap.open("Lua_Scripts//map.lua");
 	while (!fMap.eof())
 	{
 		fMap >> data;
@@ -881,6 +904,9 @@ void AGDev_Assign01::save()
 
 	file.open("Lua_Scripts//save.lua", std::ofstream::out, std::ofstream::trunc);
 
+	// Lives
+	file << "LIVES = " + to_string((long long)m_char->GetHealth()) + "\n\n";
+
 	// Score
 	file << "SCORE = " + to_string((long double)m_score) + "\n\n";
 
@@ -969,6 +995,13 @@ void AGDev_Assign01::load()
 		m_enemyList.push_back(e);
 		m_spatialPartition->AddObject(e);
 	}
+
+	// Lives
+	if (data = lua->GetNumber("LIVES"))
+	{
+		m_char->SetHealth((float)(*data));
+	}
+
 	CGameStateManager::S_LOAD = false;
 
 	lua->CloseLua();

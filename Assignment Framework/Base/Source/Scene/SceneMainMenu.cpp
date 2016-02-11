@@ -209,10 +209,10 @@ void SceneMainMenu::InitMesh()
 	m_meshList[MESH_MAINMENU_BG]->textureID[0] = LoadTGA("Image\\Menu\\MenuScreens\\main_menu_bg.tga");
 
 	m_meshList[MESH_NEWGAME_ON] = MeshBuilder::Generate2DMesh("New game on", Color(1, 1, 1), 0, 0, 1, 1);
-	m_meshList[MESH_NEWGAME_ON]->textureID[0] = LoadTGA("Image\\Menu\\NewGame_On.tga");
+	m_meshList[MESH_NEWGAME_ON]->textureID[0] = LoadTGA("Image\\Menu\\StartGame_On.tga");
 
 	m_meshList[MESH_NEWGAME_OFF] = MeshBuilder::Generate2DMesh("New game off", Color(1,1,1), 0, 0, 1, 1);
-	m_meshList[MESH_NEWGAME_OFF]->textureID[0] = LoadTGA("Image\\Menu\\NewGame_Off.tga");
+	m_meshList[MESH_NEWGAME_OFF]->textureID[0] = LoadTGA("Image\\Menu\\StartGame_Off.tga");
 
 	m_meshList[MESH_INSTRUCTION_ON] = MeshBuilder::Generate2DMesh("Instruction on", Color(1, 1, 1), 0, 0, 1, 1);
 	m_meshList[MESH_INSTRUCTION_ON]->textureID[0] = LoadTGA("Image\\Menu\\Instructions_On.tga");

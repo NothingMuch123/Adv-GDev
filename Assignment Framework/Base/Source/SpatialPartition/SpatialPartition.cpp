@@ -183,7 +183,7 @@ bool CSpatialPartition::CheckForCollision(Vector3 pos_start, Vector3 pos_End)
 			{
 				if (theListOfObjects[i]->GetType() == CSceneNode::NODE_ENEMY)
 				{
-					theListOfObjects[i]->Reset();
+					dynamic_cast<CEnemy*>(theListOfObjects[i])->Kill();
 				}
 				return result;
 			}

@@ -64,6 +64,9 @@ public:
 	virtual bool SaveState(fstream* file, int id);
 	virtual bool LoadState(CLua_Wrapper* lua, int id);
 
+	void SetHealth(int health);
+	int GetHealth();
+
 protected:
 	Vector3 calcTPviewPos();
 	void generateTPview(Camera3* view);
