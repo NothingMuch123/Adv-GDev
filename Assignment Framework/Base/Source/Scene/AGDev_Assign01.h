@@ -81,6 +81,9 @@ private:
 	void initProjList();
 	CProjectile* fetchProj();
 
+	void save();
+	void load();
+
 private:
 	Mesh* m_meshList[NUM_MESH];
 

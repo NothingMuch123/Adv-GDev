@@ -9,17 +9,36 @@ float CEnemy::S_ENEMY_RESPAWN_TIME = 3.f;
 float CEnemy::S_DETECTION_RADIUS = 200.f;
 int CEnemy::S_ESCAPE_PROBABILITY = 50;
 CTileMap* CEnemy::S_MAP_REF = nullptr;
+string CEnemy::S_PROPERTIES[CEnemy::NUM_ENEMY_SAVE_PROPERTIES] = 
+{
+	"ENEMY_POS_X",
+	"ENEMY_POS_Y",
+	"ENEMY_POS_Z",
+	"ENEMY_ROTATE_X",
+	"ENEMY_ROTATE_Y",
+	"ENEMY_ROTATE_Z",
+	"ENEMY_SCALE_X",
+	"ENEMY_SCALE_Y",
+	"ENEMY_SCALE_Z",
+	"ENEMY_CURRENT_FSM_STATE",
+	"ENEMY_DES_ROW_INDEX",
+	"ENEMY_DES_COL_INDEX",
+	"ENEMY_PREV_ROW_INDEX",
+	"ENEMY_PREV_COL_INDEX",
+	"ENEMY_TARGET_ID",
+	"ENEMY_DEFAULT_Y",
+	"ENEMY_CALM_DOWN_TIMER",
+	"ENEMY_RESPAWN_TIMER",
+};
 
 CEnemy::CEnemy()
 	: CSceneNode()
 	, m_currentFSM(ENEMY_IDLE)
-	, m_dir(0, 0, 1)
 	, m_destination(nullptr)
 	, m_prev(nullptr)
 	, m_target(nullptr)
 	, m_calmDownTimer(0.f)
 	, m_respawnTimer(0.f)
-	, m_attackTimer(0.f)
 	, m_defaultY(0.f)
 {
 }
@@ -263,6 +282,7 @@ void CEnemy::Kill()
 	m_currentFSM = ENEMY_KO;
 	m_respawnTimer = S_ENEMY_RESPAWN_TIME;
 	m_calmDownTimer = 0.f;
+	SetIgnore(false, false, false);
 }
 
 bool CEnemy::IsAlive()
@@ -271,6 +291,111 @@ bool CEnemy::IsAlive()
 	{
 		return false;
 	}
+	return true;
+}
+
+bool CEnemy::SaveState(fstream * file, int id)
+{
+	// Transform
+	write(file, S_PROPERTIES[ENEMY_POS_X], id, to_string((long double)m_transform.m_translate.x)); // Pos X
+	write(file, S_PROPERTIES[ENEMY_POS_Y], id, to_string((long double)m_transform.m_translate.y)); // Pos Y
+	write(file, S_PROPERTIES[ENEMY_POS_Z], id, to_string((long double)m_transform.m_translate.z)); // Pos Z
+	write(file, S_PROPERTIES[ENEMY_ROTATE_X], id, to_string((long double)m_transform.m_rotate.x)); // Rotate X
+	write(file, S_PROPERTIES[ENEMY_ROTATE_Y], id, to_string((long double)m_transform.m_rotate.y)); // Rotate Y
+	write(file, S_PROPERTIES[ENEMY_ROTATE_Z], id, to_string((long double)m_transform.m_rotate.z)); // Rotate Z
+	write(file, S_PROPERTIES[ENEMY_SCALE_X], id, to_string((long double)m_transform.m_scale.x)); // Scale X
+	write(file, S_PROPERTIES[ENEMY_SCALE_Y], id, to_string((long double)m_transform.m_scale.y)); // Scale Y
+	write(file, S_PROPERTIES[ENEMY_SCALE_Z], id, to_string((long double)m_transform.m_scale.z)); // Scale Z
+
+	write(file, S_PROPERTIES[ENEMY_CURRENT_FSM_STATE], id, to_string((long long)m_currentFSM)); // Current FSM
+
+	if (m_destination)
+	{
+		write(file, S_PROPERTIES[ENEMY_DES_ROW_INDEX], id, to_string((long long)m_destination->GetRowIndex())); // Destination row index
+		write(file, S_PROPERTIES[ENEMY_DES_COL_INDEX], id, to_string((long long)m_destination->GetColIndex())); // Destination col index
+	}
+	else
+	{
+		write(file, S_PROPERTIES[ENEMY_DES_ROW_INDEX], id, to_string((long long)-1)); // Destination row index
+		write(file, S_PROPERTIES[ENEMY_DES_COL_INDEX], id, to_string((long long)-1)); // Destination col index
+	}
+
+	if (m_prev)
+	{
+		write(file, S_PROPERTIES[ENEMY_PREV_ROW_INDEX], id, to_string((long long)m_prev->GetRowIndex())); // Prev row index
+		write(file, S_PROPERTIES[ENEMY_PREV_COL_INDEX], id, to_string((long long)m_prev->GetColIndex())); // Prev col index
+	}
+	else
+	{
+		write(file, S_PROPERTIES[ENEMY_PREV_ROW_INDEX], id, to_string((long long)-1)); // Prev row index
+		write(file, S_PROPERTIES[ENEMY_PREV_COL_INDEX], id, to_string((long long)-1)); // Prev col index
+	}
+
+	if (m_target)
+	{
+		write(file, S_PROPERTIES[ENEMY_TARGET_ID], id, to_string((long long)1)); // Target id
+	}
+	else
+	{
+		write(file, S_PROPERTIES[ENEMY_TARGET_ID], id, to_string((long long)0)); // Target id
+	}
+
+	write(file, S_PROPERTIES[ENEMY_DEFAULT_Y], id, to_string((long double)m_defaultY)); // Default Y
+
+	write(file, S_PROPERTIES[ENEMY_CALM_DOWN_TIMER], id, to_string((long double)m_calmDownTimer)); // Calm down timer
+
+	write(file, S_PROPERTIES[ENEMY_RESPAWN_TIMER], id, to_string((long double)m_respawnTimer)); // Respawn timer
+
+	(*file) << "\n";
+
+	return true;
+}
+
+bool CEnemy::LoadState(CLua_Wrapper * lua, int id)
+{
+	m_transform.m_translate.x = (float)read(lua, S_PROPERTIES[ENEMY_POS_X], id);
+	m_transform.m_translate.y = (float)read(lua, S_PROPERTIES[ENEMY_POS_Y], id); // Pos Y
+	m_transform.m_translate.z = (float)read(lua, S_PROPERTIES[ENEMY_POS_Z], id); // Pos Z
+	m_transform.m_rotate.x = (float)read(lua, S_PROPERTIES[ENEMY_ROTATE_X], id); // Rotate X
+	m_transform.m_rotate.y = (float)read(lua, S_PROPERTIES[ENEMY_ROTATE_Y], id); // Rotate Y
+	m_transform.m_rotate.z = (float)read(lua, S_PROPERTIES[ENEMY_ROTATE_Z], id); // Rotate Z
+	m_transform.m_scale.x = (float)read(lua, S_PROPERTIES[ENEMY_SCALE_X], id); // Scale X
+	m_transform.m_scale.y = (float)read(lua, S_PROPERTIES[ENEMY_SCALE_Y], id); // Scale Y
+	m_transform.m_scale.z = (float)read(lua, S_PROPERTIES[ENEMY_SCALE_Z], id); // Scale Z
+
+	m_currentFSM = (E_ENEMY_FSM)static_cast<int>(read(lua, S_PROPERTIES[ENEMY_CURRENT_FSM_STATE], id)); // Current FSM
+
+	int desRow = (int)read(lua, S_PROPERTIES[ENEMY_DES_ROW_INDEX], id); // Destination row index
+	int desCol = (int)read(lua, S_PROPERTIES[ENEMY_DES_COL_INDEX], id); // Destination col index
+	if (desRow == -1 || desCol == -1)
+	{
+		m_destination = nullptr;
+	}
+	else
+	{
+		m_destination = S_MAP_REF->FetchTile(desRow, desCol);
+	}
+
+	int prevRow = (int)read(lua, S_PROPERTIES[ENEMY_PREV_ROW_INDEX], id); // Prev row index
+	int prevCol = (int)read(lua, S_PROPERTIES[ENEMY_PREV_COL_INDEX], id); // Prev col index
+	if (prevRow == -1 || prevCol == -1)
+	{
+		m_prev = nullptr;
+	}
+	else
+	{
+		m_prev = S_MAP_REF->FetchTile(prevRow, prevCol);
+	}
+
+	int target = (int)read(lua, S_PROPERTIES[ENEMY_TARGET_ID], id); // Target id
+	m_target = nullptr;
+
+	m_defaultY = (float)read(lua, S_PROPERTIES[ENEMY_DEFAULT_Y], id); // Default Y
+
+	m_calmDownTimer = (float)read(lua, S_PROPERTIES[ENEMY_CALM_DOWN_TIMER], id); // Calm down timer
+
+	m_respawnTimer = (float)read(lua, S_PROPERTIES[ENEMY_RESPAWN_TIMER], id); // Respawn timer
+
 	return true;
 }
 
@@ -298,6 +423,12 @@ void CEnemy::move(double dt)
 
 void CEnemy::escape(double dt)
 {
+	if (!m_target)
+	{
+		m_currentFSM = ENEMY_IDLE;
+		return;
+	}
+
 	if (!m_destination || m_destination == m_currentTile)
 	{
 		// No destination or reached destination
@@ -324,6 +455,7 @@ void CEnemy::die(double dt)
 	if (m_transform.m_translate.y > targetY)
 	{
 		m_transform.m_translate = Vector3::MoveToPoint(m_transform.m_translate, Vector3(m_transform.m_translate.x, targetY, m_transform.m_translate.z), S_ENEMY_NORMAL_SPEED * 0.5f * dt);
+		CCollider::Update(m_transform);
 	}
 }
 
@@ -332,15 +464,23 @@ void CEnemy::respawn(double dt)
 	if (m_transform.m_translate.y < m_defaultY)
 	{
 		m_transform.m_translate = Vector3::MoveToPoint(m_transform.m_translate, Vector3(m_transform.m_translate.x, m_defaultY, m_transform.m_translate.z), S_ENEMY_NORMAL_SPEED * 0.5f * dt);
+		CCollider::Update(m_transform);
 	}
 	else
 	{
 		m_currentFSM = ENEMY_PATROL;
+		SetIgnore(false, true, false);
 	}
 }
 
 void CEnemy::attack(double dt)
 {
+	if (!m_target)
+	{
+		m_currentFSM = ENEMY_IDLE;
+		return;
+	}
+
 	if (CollideWith(*m_target, dt))
 	{
 		dynamic_cast<CThirdPerson*>(m_target)->Injure(1);

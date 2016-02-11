@@ -54,7 +54,7 @@ string * CLua_Wrapper::GetString(string name)
 		return nullptr;
 	}
 	*data = lua_tostring(m_luaState, S_TOP_OF_STACK);
-
+	lua_pop(m_luaState, S_TOP_OF_STACK);
 	return data;
 }
 
@@ -69,7 +69,7 @@ double * CLua_Wrapper::GetNumber(string name)
 		return nullptr;
 	}
 	*data = lua_tonumber(m_luaState, S_TOP_OF_STACK);
-
+	lua_pop(m_luaState, S_TOP_OF_STACK);
 	return data;
 }
 
@@ -84,6 +84,6 @@ bool * CLua_Wrapper::GetBool(string name)
 		return nullptr;
 	}
 	*data = lua_toboolean(m_luaState, S_TOP_OF_STACK);
-
+	lua_pop(m_luaState, S_TOP_OF_STACK);
 	return data;
 }

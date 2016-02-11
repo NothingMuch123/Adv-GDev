@@ -6,7 +6,7 @@
 #include "GameStateManager\GameStateManager.h"
 
 // Lua wrapper
-#include "Lua_Wrapper\Lua_Wrapper.h"
+#include "Lua\Lua_Wrapper.h"
 
 class Application
 {

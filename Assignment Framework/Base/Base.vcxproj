@@ -25,7 +25,8 @@
     <ClCompile Include="Source\LoadHmap.cpp" />
     <ClCompile Include="Source\LoadOBJ.cpp" />
     <ClCompile Include="Source\LoadTGA.cpp" />
-    <ClCompile Include="Source\Lua_Wrapper\Lua_Wrapper.cpp" />
+    <ClCompile Include="Source\Lua\Lua_Serializable.cpp" />
+    <ClCompile Include="Source\Lua\Lua_Wrapper.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\MenuManager\Credits.cpp" />
     <ClCompile Include="Source\MenuManager\Instructions.cpp" />
@@ -84,7 +85,8 @@
     <ClInclude Include="Source\LoadHmap.h" />
     <ClInclude Include="Source\LoadOBJ.h" />
     <ClInclude Include="Source\LoadTGA.h" />
-    <ClInclude Include="Source\Lua_Wrapper\Lua_Wrapper.h" />
+    <ClInclude Include="Source\Lua\Lua_Serializable.h" />
+    <ClInclude Include="Source\Lua\Lua_Wrapper.h" />
     <ClInclude Include="Source\Material.h" />
     <ClInclude Include="Source\MenuManager\Credits.h" />
     <ClInclude Include="Source\MenuManager\Instructions.h" />
